@@ -4,7 +4,7 @@
 //
 // Design brief (PLAN.md §6): institutional, teal, legible from six feet. The reference is
 // their printed schedule, not a boutique gym. Clean community rec. Do not Equinox it.
-import { writeFileSync, mkdirSync, cpSync, readdirSync, statSync, rmSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, mkdirSync, cpSync, readdirSync, statSync, rmSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import {
@@ -39,7 +39,7 @@ const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(
 const CSS = `
 /* ── TFFC design system ───────────────────────────────────────────────
    Logo mark (the ink and the action — never a film over photographs):
-     #182880  royal navy      (the swimmer figure, ~10% of the mark, sat .81)
+     #182880  royal navy      (the figure in the mark, ~10% of it, sat .81)
      #B8D0E0  pale ice blue   (the disc, ~20% — the mark's largest area)
      #88A8C8  mid steel blue  (~15%)
      #101830  near-black navy (~6%)
@@ -1046,7 +1046,7 @@ const todayStrip = () => `
         var nn=next.querySelector('.td-n b').textContent;
         live.innerHTML='<b>Up next:</b> '+nn+' at '+fmt(+next.dataset.start)+'.';
       } else {
-        live.innerHTML='<b>That is the board for today.</b> The pool, the court and the weights are still open.';
+        live.innerHTML='<b>That is the board for today.</b> The court and the weights are still open.';
       }
     }
   }
@@ -1207,7 +1207,7 @@ const P = (path, title, desc, body, extra = {}) => PAGES.push({ path, title, des
 
 /* ============================== HOME ================================== */
 P("/", `${biz.name} — Gym in Red Bluff, CA`,
-  `A 30,000 sq ft family gym on South Main in Red Bluff since 2001. Indoor pool, full basketball court, three indoor pickleball courts, childcare, and ${counts.classes} classes a week.`,
+  `A 30,000 sq ft family gym on South Main in Red Bluff since 2001. Full basketball court, three indoor pickleball courts, racquetball, childcare, and ${counts.classes} classes a week.`,
   `
 <section class="hero">
   <div class="hero-media" id="hm">
@@ -1492,7 +1492,7 @@ ${band("Every one of these is included.",
 
 /* ============================ MEMBERSHIP ============================== */
 P("/membership/", `Membership — What's Included | ${biz.short} Red Bluff`,
-  `One membership at Tehama Family Fitness Center covers the indoor pool, full basketball court, pickleball, the new strength floor, all ${counts.classes} weekly classes, sauna and more.`,
+  `One membership at Tehama Family Fitness Center covers the full basketball court, racquetball, indoor pickleball, the new strength floor, all ${counts.classes} weekly classes, sauna and more.`,
   `
 ${phero(photos.gymfloor, { kick: "Membership",
   h1: "One membership.<br>The <em>whole building.</em>",
@@ -2016,7 +2016,7 @@ ${band("Coffee is free until nine.", "Which is a decent reason to make the early
 
 /* ============================ AMENITIES =============================== */
 P("/amenities/", `Everything in the Building | ${biz.short} Red Bluff`,
-  `The full amenity list at Tehama Family Fitness Center, Red Bluff: 30,000 sq ft with an indoor pool, full basketball court, racquetball, pickleball, sauna, childcare, tanning, esthetician and more.`,
+  `The full amenity list at Tehama Family Fitness Center, Red Bluff: 30,000 sq ft with a full basketball court, racquetball, indoor pickleball, sauna, childcare, tanning, esthetician and more.`,
   `
 ${phero(photos.locker, { kick: `${biz.sqft} square feet \u00b7 single storey`,
   h1: "Everything in <em>the building</em>",
@@ -2235,7 +2235,7 @@ ${band("Find their class on the board.", "Every instructor, every session, one p
 
 /* ========================== SILVERSNEAKERS =========================== */
 P("/silversneakers/", `SilverSneakers in Red Bluff | ${biz.short}`,
-  `SilverSneakers at Tehama Family Fitness Center, Red Bluff: Classic Monday/Wednesday/Friday, Cardio Circuit Tuesday/Thursday, tai chi every weekday morning, and an indoor pool.`,
+  `SilverSneakers at Tehama Family Fitness Center, Red Bluff: Classic Monday/Wednesday/Friday, Cardio Circuit Tuesday/Thursday, and tai chi every weekday morning.`,
   `
 ${phero(photos.studio, { kick: "SilverSneakers",
   h1: "Programming, not just a <em>card reader</em>",
@@ -2452,7 +2452,7 @@ const FAQ = [
   ["Where are you exactly?", `${biz.addr}, on the south end of town with parking out front.`],
 ];
 P("/faq/", `Questions People Actually Ask | ${biz.short} Red Bluff`,
-  `Straight answers about membership, classes, childcare, the pool, pickleball and hours at Tehama Family Fitness Center in Red Bluff.`,
+  `Straight answers about membership, classes, childcare, pickleball and hours at Tehama Family Fitness Center in Red Bluff.`,
   `
 ${phero(photos.corridor, { kick: "Straight answers",
   h1: "Questions people <em>actually ask</em>",
@@ -2590,5 +2590,25 @@ if (needConfirm.length) {
   for (const [, t] of needConfirm) console.log(`     · ${t.q}  [${t.src}]`);
 }
 console.log(`\n  ${retracted.length} claims held back until the front desk confirms them.`);
+// Guard: a retracted claim must not appear ANYWHERE in output — including inside
+// meta descriptions and title attributes, which a tag-stripping check cannot see.
+const BANNED = [/\bpool\b/i, /\bswim\w*\b/i, /\blap lane/i];
+const offenders = [];
+(function scan(dir) {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const fp = join(dir, e.name);
+    if (e.isDirectory()) { scan(fp); continue; }
+    if (!e.name.endsWith(".html")) continue;
+    const raw = readFileSync(fp, "utf8").replace(/<!--[\s\S]*?-->/g, " ");
+    for (const re of BANNED) if (re.test(raw)) { offenders.push(`${fp} :: ${re}`); break; }
+  }
+})(OUT);
+if (offenders.length) {
+  console.log(`\n  \u26a0  RETRACTED CLAIM IN OUTPUT (${offenders.length}):`);
+  offenders.forEach(o => console.log("     " + o));
+  process.exitCode = 1;
+} else {
+  console.log("  retracted-claim scan: clean");
+}
 console.log(`  Kids Fit photo held pending a signed release.`);
 console.log(`  ${"─".repeat(58)}\n`);
