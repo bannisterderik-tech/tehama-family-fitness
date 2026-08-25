@@ -150,6 +150,7 @@ background:var(--ground);transition:.26s var(--ease)}
  .nav .m-cta .btn{width:100%;font-size:1.1rem}
  .burger{display:block;z-index:80}
  body.menu-open{overflow:hidden}
+ body.menu-open .hdr{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--void);border-color:transparent}
  body.menu-open .burger{border-color:rgba(255,255,255,.35)}
  body.menu-open .burger i{background:transparent}
  body.menu-open .burger i::before{top:0;transform:rotate(45deg);background:#fff}
@@ -609,8 +610,8 @@ font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);let
 /* ------------------------------- nav ----------------------------------- */
 const NAV = [
   ["/schedule/", "Schedule"], ["/classes/", "Classes"], ["/amenities/", "The Building"],
-  ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"], ["/membership/", "Membership"],
-  ["/about/", "About"], ["/contact/", "Contact"],
+  ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"], ["/fuel-bar/", "Fuel Bar"],
+  ["/membership/", "Membership"], ["/about/", "About"], ["/contact/", "Contact"],
 ];
 
 const jsonld = page => {
