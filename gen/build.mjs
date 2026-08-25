@@ -494,6 +494,11 @@ border-left:2px solid rgba(61,90,254,.3)}
 display:flex;flex-direction:column;gap:2px;line-height:1.12;transition:transform .16s var(--ease),box-shadow .16s}
 .wg-s:hover{transform:scale(1.035);z-index:6;box-shadow:0 10px 24px -10px rgba(10,13,30,.5)}
 .wg-s.dim{opacity:.13;filter:grayscale(1);pointer-events:none}
+/* a session that continues past the end of the grid — fade the cut edge so it
+   reads as "keeps going", not "stops at 8" */
+.wg-s.runs-on{border-bottom-left-radius:0;border-bottom-right-radius:0;
+-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 22px),transparent);
+mask-image:linear-gradient(to bottom,#000 calc(100% - 22px),transparent)}
 .wg-s::after{content:attr(data-tip) " — " attr(data-when);position:absolute;left:50%;bottom:calc(100% + 8px);
 transform:translate(-50%,4px);background:var(--void);color:#fff;font-family:var(--body);font-size:.78rem;
 font-weight:600;line-height:1.3;letter-spacing:0;padding:9px 12px;border-radius:3px;white-space:nowrap;
@@ -1196,15 +1201,16 @@ const weekGrid = () => `
           ${d === "Sun" ? `<p class="wg-sun">Open. Nothing on the board. The pool is still here.</p>` : ""}
           ${items.map(it => {
             const w = 100 / it.of, L = it.lane * w;
-            const dur = it.b - it.a;
+            const endsAfterGrid = it.b > GRID_END;
+            const dur = Math.min(it.b, GRID_END) - it.a;
             const parent = childcareOpenAt(it.day, it.time);
-            return `<div class="wg-s k-${it.kind}${dur < 50 ? " sm" : ""}${parent ? " parent" : ""}"
+            return `<div class="wg-s k-${it.kind}${dur < 50 ? " sm" : ""}${parent ? " parent" : ""}${endsAfterGrid ? " runs-on" : ""}"
               data-kind="${it.kind}" data-mins="${it.a}" data-cc="${parent ? 1 : 0}"
               style="top:${top(it.a)}px;height:${dur * PPM - 3}px;left:calc(${L}% + 2px);width:calc(${w}% - 4px)"
               tabindex="0"
               title="${esc(it.time)} ${esc(it.name)}${it.who ? " · " + esc(it.who) : ""}"
               data-tip="${esc(it.name)}${it.who ? " · " + esc(it.who) : ""}"
-              data-when="${DAYNAME[it.day]} ${esc(it.time)} · ${parent ? "parent hours" : "kids closed"}">
+              data-when="${DAYNAME[it.day]} ${esc(it.time)}${endsAfterGrid ? " · runs past close" : ""} · ${parent ? "parent hours" : "kids closed"}">
               <b>${esc(it.name)}</b><span>${it.time.replace(":00", "").replace(" AM", "a").replace(" PM", "p")}${it.who ? ` · ${esc(it.who)}` : ""}</span>
             </div>`;
           }).join("")}

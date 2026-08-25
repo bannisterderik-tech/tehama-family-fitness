@@ -93,6 +93,8 @@ Places2Play, Bounce and Pickleballify — and mentioned **zero times** on your o
 | E2 | Drop-in — do you supply nets, or BYO? | |
 | E3 | Reservation needed, or walk on? | |
 | E4 | Non-member fee | |
+| E5 | **League runs 6:30–9:00 PM Tuesday, but you close at 8. Which is right?** — the directory says 9, your posted hours say 8. One of them is wrong and it is on the schedule page. | |
+| E6 | How long does a league session actually run? We are currently assuming 2.5 hours | |
 
 ---
 

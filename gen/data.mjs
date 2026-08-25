@@ -69,6 +69,7 @@ export const tbd = {
   childcareSignup:  { v: null, ask: "Ask at the desk",               q: "Childcare registration + first visit" },
   childcareIncluded:{ v: null, ask: null,                            q: "Childcare included or extra" },
   kidsFitRunning:   { v: null, ask: null,                            q: "Is Kids Fit running again?" },
+  // NB: 6:30–9:00 PM conflicts with the posted 8 PM weekday close. Flagged E5 on the call sheet.
   pickleballLeague: { v: "Sat 8:00–11:30 AM · Tue & Thu 6:30–9:00 PM", ask: null,
                       q: "Confirm play times — TFFC's own calendar shows Tue 6:30 PM and Sat 8 AM only, no Thursday",
                       src: "Places2Play", verify: true },
