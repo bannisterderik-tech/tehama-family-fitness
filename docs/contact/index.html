@@ -295,6 +295,30 @@ padding:2px 0;border-bottom:1px solid transparent;font-family:var(--ser);font-st
 @media(max-width:640px){.wx span{display:none}}
 
 /* ── today strip ── */
+.td-live{margin-top:20px;padding:14px 18px;border-left:3px solid var(--volt);
+background:rgba(42,68,204,.06);color:var(--ink-2);font-size:1rem;max-width:44ch}
+.td-live b{color:var(--ground)}
+.td-list li.is-past{opacity:.42}
+.td-list li.is-past .tag{opacity:.7}
+.td-list li.is-now{background:var(--volt);margin:0 -14px;padding-left:14px;padding-right:14px;
+border-top-color:rgba(255,255,255,.22);position:relative}
+.td-list li.is-now-first{border-top-color:transparent;border-radius:var(--r) var(--r) 0 0;margin-top:4px}
+.td-list li.is-now:not(:has(+ .is-now)){border-radius:0 0 var(--r) var(--r);margin-bottom:4px}
+.td-list li.is-now-first:not(:has(+ .is-now)){border-radius:var(--r)}
+.td-list li.is-now .td-t,.td-list li.is-now .td-n b{color:#fff}
+.td-list li.is-now .td-n i{color:rgba(255,255,255,.8)}
+.td-list li.is-now .tag{background:rgba(255,255,255,.2);color:#fff}
+.td-list li.is-now-first::after{content:"On now";position:absolute;top:-9px;left:14px;
+font-family:var(--disp);font-weight:800;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+background:var(--ground);color:#fff;padding:3px 8px;border-radius:2px}
+.td-bar{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;
+padding:0!important;border:0!important;margin:10px 0}
+.td-bar-t{font-family:var(--disp);font-weight:800;font-size:.68rem;letter-spacing:.06em;
+color:var(--volt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.td-bar-l{height:2px;background:var(--volt);border-radius:2px;position:relative}
+.td-bar-l::before{content:"";position:absolute;left:0;top:50%;width:7px;height:7px;border-radius:50%;
+background:var(--volt);transform:translateY(-50%)}
+
 .td-wrap{border-top:2px solid var(--volt)}
 .td-h{font-family:var(--disp);font-weight:900;font-size:1.5rem;letter-spacing:-.04em;
 text-transform:uppercase;color:var(--ground);padding:20px 0 14px}

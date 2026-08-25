@@ -314,6 +314,30 @@ padding:2px 0;border-bottom:1px solid transparent;font-family:var(--ser);font-st
 @media(max-width:640px){.wx span{display:none}}
 
 /* ── today strip ── */
+.td-live{margin-top:20px;padding:14px 18px;border-left:3px solid var(--volt);
+background:rgba(42,68,204,.06);color:var(--ink-2);font-size:1rem;max-width:44ch}
+.td-live b{color:var(--ground)}
+.td-list li.is-past{opacity:.42}
+.td-list li.is-past .tag{opacity:.7}
+.td-list li.is-now{background:var(--volt);margin:0 -14px;padding-left:14px;padding-right:14px;
+border-top-color:rgba(255,255,255,.22);position:relative}
+.td-list li.is-now-first{border-top-color:transparent;border-radius:var(--r) var(--r) 0 0;margin-top:4px}
+.td-list li.is-now:not(:has(+ .is-now)){border-radius:0 0 var(--r) var(--r);margin-bottom:4px}
+.td-list li.is-now-first:not(:has(+ .is-now)){border-radius:var(--r)}
+.td-list li.is-now .td-t,.td-list li.is-now .td-n b{color:#fff}
+.td-list li.is-now .td-n i{color:rgba(255,255,255,.8)}
+.td-list li.is-now .tag{background:rgba(255,255,255,.2);color:#fff}
+.td-list li.is-now-first::after{content:"On now";position:absolute;top:-9px;left:14px;
+font-family:var(--disp);font-weight:800;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+background:var(--ground);color:#fff;padding:3px 8px;border-radius:2px}
+.td-bar{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;
+padding:0!important;border:0!important;margin:10px 0}
+.td-bar-t{font-family:var(--disp);font-weight:800;font-size:.68rem;letter-spacing:.06em;
+color:var(--volt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.td-bar-l{height:2px;background:var(--volt);border-radius:2px;position:relative}
+.td-bar-l::before{content:"";position:absolute;left:0;top:50%;width:7px;height:7px;border-radius:50%;
+background:var(--volt);transform:translateY(-50%)}
+
 .td-wrap{border-top:2px solid var(--volt)}
 .td-h{font-family:var(--disp);font-weight:900;font-size:1.5rem;letter-spacing:-.04em;
 text-transform:uppercase;color:var(--ground);padding:20px 0 14px}
@@ -980,19 +1004,22 @@ const todayStrip = () => `
     <div><p class="eyebrow">On the board today</p><h2>What's on<br>right now</h2>
       <p class="lede">Every session says whether the kids' room is open at that hour \u2014 which is
       usually the thing that decides whether you make it.</p>
+      <p class="td-live" id="tdLive" hidden></p>
       <p style="margin-top:26px"><a class="btn btn-volt" href="${u("/schedule/")}">See the whole week \u2192</a></p></div>
     <div class="td-wrap">
       ${DAYS.map(d => {
         const rows = sorted(d);
         return `<div class="td-day" data-day="${d}" hidden>
           <p class="td-h">${DAYNAME[d]}</p>
-          ${rows.length ? `<ol class="td-list">${rows.map(x => `<li>
+          ${rows.length ? `<ol class="td-list">${rows.map(x => {
+            const a = mins(x.time), b = a + lengthOf(x);
+            return `<li data-start="${a}" data-end="${b}">
             <span class="td-t">${x.time.replace(":00", "").replace(" AM", "a").replace(" PM", "p")}</span>
             <span class="td-n"><b>${esc(x.name)}</b>${x.who ? `<i>${esc(x.who)}${
-              owners.people.some(o => o.name.split(" ")[0] === x.who) && NAMES ? " · owner" : ""}</i>` : ""}</span>
+              owners.people.some(o => o.name.split(" ")[0] === x.who) && NAMES ? " \u00b7 owner" : ""}</i>` : ""}</span>
             <span class="td-c">${childcareOpenAt(d, x.time)
               ? '<span class="tag tag-cc">Kids open</span>' : '<span class="tag tag-no">Kids closed</span>'}</span>
-          </li>`).join("")}</ol>`
+          </li>`; }).join("")}</ol>`
           : `<p class="td-none">No classes today \u2014 the building is open ${d === "Sun" ? "8 to 6" : "as usual"}.
              Pool, court and weights are all yours.</p>`}
         </div>`;
@@ -1000,9 +1027,58 @@ const todayStrip = () => `
     </div>
   </div>
 </div></section>
-<script>(function(){var k=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date().getDay()];
-var el=document.querySelector('.td-day[data-day="'+k+'"]')||document.querySelector('.td-day');
-if(el)el.hidden=false;})();</script>`;
+<script>
+(function(){
+  var KEY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date().getDay()];
+  var day=document.querySelector('.td-day[data-day="'+KEY+'"]')||document.querySelector('.td-day');
+  if(!day) return;
+  day.hidden=false;
+  var list=day.querySelector('.td-list'), live=document.getElementById('tdLive');
+  if(!list) return;
+  var items=[].slice.call(list.children);
+
+  // the moving marker
+  var bar=document.createElement('li');
+  bar.className='td-bar'; bar.setAttribute('aria-hidden','true');
+  bar.innerHTML='<span class="td-bar-t"></span><span class="td-bar-l"></span>';
+
+  function fmt(m){
+    var h=Math.floor(m/60), mm=m%60, ap=h>=12?'p':'a', hh=h%12===0?12:h%12;
+    return hh+(mm?':'+(mm<10?'0':'')+mm:'')+ap;
+  }
+  function tick(){
+    var d=new Date(), now=d.getHours()*60+d.getMinutes();
+    var running=null, next=null;
+    items.forEach(function(li){
+      var a=+li.dataset.start, b=+li.dataset.end;
+      li.classList.remove('is-now','is-past','is-now-first');
+      if(now>=b){ li.classList.add('is-past'); }
+      else if(now>=a){ li.classList.add('is-now'); if(!running){ li.classList.add('is-now-first'); running=li; } }
+      else if(!next){ next=li; }
+    });
+    // park the marker before whatever is up next; after the last one if the day is done
+    bar.querySelector('.td-bar-t').textContent=fmt(now);
+    if(running){ running.insertAdjacentElement('beforebegin',bar); }
+    else if(next){ next.insertAdjacentElement('beforebegin',bar); }
+    else { list.appendChild(bar); }
+
+    if(live){
+      live.hidden=false;
+      if(running){
+        var nm=running.querySelector('.td-n b').textContent;
+        live.innerHTML='<b>On right now:</b> '+nm+', started '+fmt(+running.dataset.start)+'.';
+      } else if(next){
+        var nn=next.querySelector('.td-n b').textContent;
+        live.innerHTML='<b>Up next:</b> '+nn+' at '+fmt(+next.dataset.start)+'.';
+      } else {
+        live.innerHTML='<b>That is the board for today.</b> The pool, the court and the weights are still open.';
+      }
+    }
+  }
+  tick();
+  setInterval(tick, 60000);
+})();
+</script>`;
 
 const marquee = (items, dark = false) => {
   const run = items.map(t => `<span>${t}</span>`).join("");
