@@ -936,7 +936,7 @@ const marquee = (items, dark = false) => {
 const band = (h, p, links) => `<section class="band"><div class="wrap">
   <h2>${h}</h2><p>${p}</p>
   <div class="acts">${links.map(([href, label, cls]) =>
-    `<a class="btn ${cls || "btn-volt"}" href="${href.startsWith("tel:") || href.startsWith("http") ? href : u(href)}">${label}</a>`).join("")}</div>
+    `<a class="btn ${cls || "btn-volt"}" href="${/^(tel:|mailto:|sms:|https?:|#)/.test(href) ? href : u(href)}">${label}</a>`).join("")}</div>
 </div></section>`;
 
 // Renders a confirmed value, or an honest ask. Never a made-up number.
@@ -963,7 +963,7 @@ const ccTag = s => childcareOpenAt(s.day, s.time)
   ? `<span class="tag tag-ph">Parent hours</span>`
   : `<span class="tag tag-no">Kids closed</span>`;
 
-const dayTable = (d, { childcare = true, notes = true } = {}) => {
+const dayTable = (d, { childcare = true, notes = false } = {}) => {   // notes are internal only
   const rows = sorted(d);
   if (!rows.length) return `<div class="tw" data-day="${d}"><table><caption>${DAYNAME[d]}</caption>
     <tbody><tr class="empty"><td colspan="4" style="color:var(--ink-3)">No classes scheduled — but the building is open
@@ -1070,7 +1070,8 @@ const weekGrid = () => `
 </div>`;
 
 const provisionalNote = has("scheduleSignedOff") ? "" : `<div class="note" style="margin-bottom:26px">
-  <b>Fresh off our calendar.</b> This is more current than the printed sheet on the wall, and a few rows marked \u26d1 still disagree with it. <a href="tel:${biz.tel}">Call ${biz.phone}</a> before you drive out for one particular class.</div>`;
+  <b>Straight off our calendar.</b> Times occasionally move.
+  <a href="tel:${biz.tel}">Call ${biz.phone}</a> if you are coming for one class in particular.</div>`;
 
 /* ------------------------------- pages --------------------------------- */
 const PAGES = [];
@@ -1107,9 +1108,9 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
       <h2>More is going on here than the sign lets on</h2>
     </div>
     <div>
-      <p class="lede">The printed schedule on the wall says 41. We actually run
-      <b style="color:#fff">${counts.total}</b> — ${counts.classes} classes, ${counts.basketball} basketball open-gym blocks
-      and ${counts.pickleball} pickleball sessions, across 15 instructors. Every one of them included.</p>
+      <p class="lede">${counts.total} sessions a week \u2014 ${counts.classes} classes,
+      ${counts.basketball} basketball open-gym blocks and ${counts.pickleball} pickleball sessions, across
+      15 instructors. Every one of them included with your membership.</p>
     </div>
   </div>
   <div class="figs" style="margin-top:clamp(44px,5vw,76px)">
@@ -1272,8 +1273,8 @@ ${phero(photos.studio, { kick: "Straight from our live calendar",
   on the board. The pool, the court and the weight floor are all yours.</p>
 </div></section>
 
-${statement("The printed schedule says 41. We run " + counts.total + ".",
-  "The paper one on the wall is behind. Barre Above, U-Jam, Hybrid, Spin/Tone and Yoga Easy Flow are all running now, with seven instructors the old sheet never listed.")}
+${statement("Sixty-four ways into this building every week.",
+  "Spin before dawn, tai chi at 7:15, Zumba mid-morning, open gym at one and again at six, pickleball on Tuesday nights. All of it included, none of it booked.")}
 
 ${band("Every one of these is included.",
   "No class fee, no booking, no app. Show up a few minutes early the first time and tell the instructor it's your first one.",
@@ -1985,8 +1986,8 @@ ${phero(photos.studio, { kick: "All included with membership",
              ["2", "studios"], ["0", "booking required"]], false)}
 </div></section>
 
-${statement("The printed schedule says 41. We run " + counts.classes + ".",
-  "The live calendar carries a third more than the PDF everyone links to \u2014 including Barre Above, U-Jam, Hybrid, Spin/Tone and Yoga Easy Flow, plus seven instructors the printed version leaves out entirely.")}
+${statement("Fifty-four classes a week, and not one of them costs extra.",
+  "Spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and the rest \u2014 turn up to any of them on the membership you already have.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
