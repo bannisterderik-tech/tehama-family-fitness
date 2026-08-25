@@ -62,7 +62,7 @@ const CSS = `
 --paper:#FFFFFF; --paper-2:#F5F7FC; --paper-3:#E8ECF6;
 --line:#DAE0EE; --line-2:#BDC6DC;
 --warn:#8A4B00; --warn-bg:#FFF6E8;
---disp:'Archivo',system-ui,-apple-system,sans-serif;
+--disp:'Bricolage Grotesque','Archivo',system-ui,-apple-system,sans-serif;
 --ser:'Instrument Serif',Georgia,serif;
 --body:'Source Sans 3',system-ui,-apple-system,sans-serif;
 --wrap:1320px; --r:2px;
@@ -80,7 +80,7 @@ img{max-width:100%;display:block;height:auto}
 a{color:var(--navy);text-underline-offset:3px}
 a:hover{color:var(--volt)}
 h1,h2,h3,h4{font-family:var(--disp);font-weight:800;line-height:.98;letter-spacing:-.045em;color:var(--ground)}
-h1{font-size:clamp(2.4rem,6.4vw,5.5rem);font-weight:900;text-transform:uppercase;overflow-wrap:break-word}
+h1{font-size:clamp(2.4rem,6.4vw,5.5rem);font-weight:800;text-transform:uppercase;overflow-wrap:break-word;font-variation-settings:'opsz' 96}
 h2{font-size:clamp(1.85rem,4.4vw,3.4rem);font-weight:800;text-transform:uppercase;letter-spacing:-.045em;overflow-wrap:break-word;hyphens:auto}
 h3{font-size:clamp(1.15rem,1.8vw,1.45rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 h4{font-size:1rem;font-weight:700}
@@ -91,6 +91,17 @@ p{max-width:64ch}
 .skip{position:absolute;left:-9999px;top:0;background:var(--volt);color:#fff;padding:12px 18px;z-index:200}
 .skip:focus{left:0}
 .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+/* staggered entrance for the first screen — fires once, on load */
+.js .hero .kick,.js .hero h1,.js .hero .lede,.js .hero .acts,.js .hero .under{
+opacity:0;transform:translateY(20px);animation:heroIn .9s var(--ease) forwards}
+.js .hero .kick{animation-delay:.05s}
+.js .hero h1{animation-delay:.16s}
+.js .hero .lede{animation-delay:.30s}
+.js .hero .acts{animation-delay:.42s}
+.js .hero .under{animation-delay:.52s}
+@keyframes heroIn{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.js .hero .kick,.js .hero h1,.js .hero .lede,
+.js .hero .acts,.js .hero .under{opacity:1;transform:none;animation:none}}
 .js .rv.in{opacity:1;transform:none}
 .ser{font-family:var(--ser);font-style:italic;font-weight:400;letter-spacing:-.01em}
 
@@ -106,7 +117,7 @@ border-bottom:1px solid var(--line);transition:background .3s,border-color .3s}
 .hdr .wrap{display:flex;align-items:center;gap:22px;padding-top:12px;padding-bottom:12px}
 .brand{display:flex;align-items:center;gap:13px;text-decoration:none;flex:0 0 auto}
 .brand img{width:52px;height:auto}
-.brand b{font-family:var(--disp);font-weight:900;font-size:1.02rem;line-height:.94;color:var(--ground);
+.brand b{font-family:var(--disp);font-weight:800;font-size:1.02rem;line-height:.94;color:var(--ground);
 letter-spacing:-.05em;display:block;text-transform:uppercase}
 .brand span{display:block;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--volt);
 font-weight:700;margin-top:6px}
@@ -142,7 +153,7 @@ background:var(--ground);transition:.26s var(--ease)}
  .nav{display:none;position:fixed;inset:0;background:var(--void);flex-direction:column;align-items:stretch;
  gap:0;padding:96px clamp(20px,6vw,48px) 48px;overflow-y:auto;z-index:70}
  .nav.open{display:flex}
- .nav a{font-family:var(--disp);font-weight:900;font-size:clamp(1.8rem,7vw,2.4rem);letter-spacing:-.045em;
+ .nav a{font-family:var(--disp);font-weight:800;font-size:clamp(1.8rem,7vw,2.4rem);letter-spacing:-.045em;
  padding:15px 0;border-bottom:1px solid rgba(180,204,216,.14);color:#fff;text-transform:uppercase}
  .nav a::after{display:none}
  .nav a.on{color:var(--volt-lt)}
@@ -184,25 +195,13 @@ color:var(--volt-lt);margin-bottom:26px;display:flex;align-items:flex-start;gap:
 .hero-sm .wrap{padding-top:clamp(56px,8vw,104px);padding-bottom:clamp(56px,8vw,104px)}
 .hero-sm h1{font-size:clamp(2.2rem,5.6vw,4.6rem)}
 
-/* hero video — decorative background only; all meaning lives in the copy */
-.hero-media video{width:100%;height:100%;object-fit:cover;object-position:center 60%;
-filter:saturate(1.02) contrast(1.04);position:absolute;inset:0;opacity:0;
-transition:opacity 1.1s var(--ease)}
-.hero-media video.up{opacity:1}
-.vtoggle{position:absolute;right:clamp(16px,3vw,34px);bottom:clamp(16px,3vw,30px);z-index:5;
-display:inline-flex;align-items:center;gap:9px;background:rgba(6,7,15,.55);backdrop-filter:blur(10px);
-border:1px solid rgba(180,204,216,.32);color:#fff;border-radius:99px;padding:9px 16px;cursor:pointer;
-font-family:var(--disp);font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
-transition:.22s var(--ease)}
-.vtoggle:hover{background:rgba(6,7,15,.85);border-color:var(--volt)}
-.vtoggle .d{width:7px;height:7px;border-radius:50%;background:var(--volt);flex:0 0 auto}
 
 /* ── kinetic marquee ── */
 .mq{background:var(--volt);color:#fff;padding:clamp(16px,2vw,26px) 0;overflow:hidden;
 border-top:1px solid rgba(255,255,255,.16);border-bottom:1px solid rgba(255,255,255,.16)}
 .mq__t{display:flex;width:max-content;animation:mqs 44s linear infinite}
 .mq:hover .mq__t{animation-play-state:paused}
-.mq span{font-family:var(--disp);font-weight:900;font-size:clamp(1.5rem,3.4vw,2.9rem);letter-spacing:-.04em;
+.mq span{font-family:var(--disp);font-weight:800;font-size:clamp(1.5rem,3.4vw,2.9rem);letter-spacing:-.04em;
 text-transform:uppercase;padding-right:clamp(26px,3vw,48px);white-space:nowrap;display:inline-flex;align-items:center;gap:clamp(26px,3vw,48px)}
 .mq span::after{content:"";width:9px;height:9px;background:#fff;border-radius:50%;flex:0 0 auto}
 @keyframes mqs{to{transform:translateX(-50%)}}
@@ -274,7 +273,7 @@ transition:padding .35s var(--ease),background .35s}
 .figs div{padding:clamp(28px,3.4vw,46px) clamp(18px,2vw,28px) clamp(24px,3vw,38px);
 border-right:1px solid rgba(180,204,216,.16);border-bottom:1px solid rgba(180,204,216,.16)}
 .figs div:last-child{border-right:0}
-.figs b{display:block;font-family:var(--disp);font-weight:900;font-size:clamp(3.2rem,7.5vw,6.2rem);
+.figs b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(3.2rem,7.5vw,6.2rem);
 color:#fff;line-height:.84;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
 .figs b.word{font-size:clamp(1.4rem,2.6vw,2.1rem);line-height:1.05;letter-spacing:-.035em;overflow-wrap:anywhere}
 .figs span{display:block;font-family:var(--ser);font-style:italic;font-size:1.02rem;color:var(--steel);margin-top:18px}
@@ -287,7 +286,7 @@ color:#fff;line-height:.84;letter-spacing:-.06em;font-variant-numeric:tabular-nu
 /* ── tables ── */
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
 table{border-collapse:collapse;width:100%;font-size:.97rem}
-caption{text-align:left;padding:20px 22px;font-family:var(--disp);font-weight:900;font-size:1.25rem;
+caption{text-align:left;padding:20px 22px;font-family:var(--disp);font-weight:800;font-size:1.25rem;
 letter-spacing:-.04em;text-transform:uppercase;color:var(--ground);border-bottom:2px solid var(--ground)}
 caption .sub{font-family:var(--ser);font-style:italic;font-weight:400;text-transform:none;letter-spacing:0;
 color:var(--ink-3);font-size:.95rem;margin-left:10px}
@@ -340,7 +339,7 @@ color:var(--volt);font-variant-numeric:tabular-nums;white-space:nowrap}
 background:var(--volt);transform:translateY(-50%)}
 
 .td-wrap{border-top:2px solid var(--volt)}
-.td-h{font-family:var(--disp);font-weight:900;font-size:1.5rem;letter-spacing:-.04em;
+.td-h{font-family:var(--disp);font-weight:800;font-size:1.5rem;letter-spacing:-.04em;
 text-transform:uppercase;color:var(--ground);padding:20px 0 14px}
 .td-list{list-style:none;display:grid;gap:0}
 .td-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;
@@ -409,7 +408,7 @@ font-size:clamp(1.15rem,2.2vw,1.6rem);color:var(--ground);padding:11px 0;border-
 /* ── proof band ── */
 .pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(22px,3vw,44px)}
 .pf-grid div{border-top:2px solid var(--volt);padding-top:20px}
-.pf-grid b{display:block;font-family:var(--disp);font-weight:900;font-size:clamp(2.6rem,5.5vw,4.2rem);
+.pf-grid b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(2.6rem,5.5vw,4.2rem);
 line-height:.9;letter-spacing:-.05em;color:var(--ground)}
 .pf-grid span{display:block;margin-top:14px;color:var(--ink-2);font-size:1rem;max-width:26ch}
 .pf-note{margin-top:clamp(28px,3vw,42px);font-family:var(--ser);font-style:italic;
@@ -417,6 +416,19 @@ font-size:clamp(1.15rem,2.1vw,1.6rem);color:var(--ground);letter-spacing:-.015em
 .pf-note a{font-family:var(--body);font-style:normal;font-weight:700;font-size:.95rem;
 display:inline-block;margin-left:10px;vertical-align:middle}
 .ask-acts{display:flex;flex-wrap:wrap;gap:10px;position:relative}
+
+/* ── atmosphere ── */
+/* A very fine grain over dark grounds. Stops large navy fields reading as dead
+   flat fill, the way ink sits on uncoated stock. */
+.sec-dark,.sec-void,.band,.hero,.ftr{position:relative;isolation:isolate}
+.sec-dark::before,.sec-void::before,.band::before,.ftr::before{
+content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+.sec-dark>*,.sec-void>*,.band>*,.ftr>*{position:relative;z-index:1}
+/* a soft light source, so dark sections have a direction */
+.sec-dark::after,.sec-void::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+background:radial-gradient(120% 80% at 12% -10%,rgba(122,146,244,.16),transparent 60%),
+radial-gradient(90% 70% at 100% 110%,rgba(24,40,128,.5),transparent 62%)}
 
 /* ── body components ── */
 .sp-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:center}
@@ -471,7 +483,7 @@ font-weight:700;font-size:.68rem;color:var(--ink-3);letter-spacing:.04em}
 .wg-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;position:relative;overflow:visible}
 .wg-head{display:flex;align-items:baseline;justify-content:space-between;gap:5px;padding:0 2px 9px;
 border-bottom:2px solid var(--ground);margin-bottom:6px}
-.wg-head b{font-family:var(--disp);font-weight:900;font-size:.82rem;letter-spacing:-.02em;
+.wg-head b{font-family:var(--disp);font-weight:800;font-size:.82rem;letter-spacing:-.02em;
 text-transform:uppercase;color:var(--ground)}
 .wg-head i{font-style:normal;font-family:var(--disp);font-weight:700;font-size:.68rem;color:var(--ink-3)}
 .wg-col{position:relative;background:var(--paper-2);border-radius:2px}
@@ -534,7 +546,7 @@ box-shadow:0 10px 28px -10px rgba(6,7,15,.85);z-index:20;max-width:none}
 position:relative;overflow:hidden}
 .ask::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;
 background:radial-gradient(circle,rgba(61,90,254,.42),transparent 68%)}
-.ask b{display:block;font-family:var(--disp);font-weight:900;font-size:clamp(1.3rem,2.4vw,1.85rem);
+.ask b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(1.3rem,2.4vw,1.85rem);
 letter-spacing:-.04em;text-transform:uppercase;color:#fff;margin-bottom:14px;position:relative}
 .ask p{color:#A9B4CE;font-size:.99rem;margin-bottom:24px;position:relative}
 .ask .btn{position:relative}
@@ -597,7 +609,7 @@ letter-spacing:-.015em;text-transform:uppercase}
 .ftr a:hover{color:var(--volt-lt)}
 .ftr .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:clamp(30px,3vw,52px)}
 .ftr ul{list-style:none;display:grid;gap:11px}
-.ftr .big{font-family:var(--disp);font-weight:900;font-size:1.7rem;color:#fff;letter-spacing:-.055em;
+.ftr .big{font-family:var(--disp);font-weight:800;font-size:1.7rem;color:#fff;letter-spacing:-.055em;
 line-height:.95;display:block;text-transform:uppercase}
 .ftr .bot{margin-top:52px;padding-top:26px;border-top:1px solid rgba(180,204,216,.14);display:flex;
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
@@ -650,7 +662,7 @@ ${PREVIEW ? '<meta name="robots" content="noindex,nofollow">' : ""}
 <link rel="icon" href="${u("/assets/logo.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <script>document.documentElement.className+=' js'</script>
 <style>${CSS}</style>
 ${jsonld(schema)}
@@ -661,7 +673,7 @@ ${PREVIEW ? `<div class="pvw"><span class="wrap"><b>Preview</b> \u2014 work in p
 Tehama Family Fitness Center. Rates, schedule and some photography are still being confirmed with
 the front desk. Not the live site.</span></div>` : ""}
 <div class="top"><div class="wrap">
-  <a class="wx" id="wx" href="${u("/pool/")}" hidden><b id="wxT"></b><span>in Red&nbsp;Bluff. The pool is indoors.</span></a>
+  <a class="wx" id="wx" href="${u("/amenities/")}" hidden><b id="wxT"></b><span>in Red&nbsp;Bluff. It is climate controlled in here.</span></a>
   <span>Open today ${todayHours()}</span><span class="dot">·</span>
   <a href="tel:${biz.tel}">${biz.phone}</a><span class="dot">·</span>
   <span>${biz.street}, ${biz.city}</span>
@@ -707,7 +719,6 @@ ${body}
       <li><a href="${u("/corporate-wellness/")}">Corporate wellness</a></li>
     </ul></div>
     <div><h4>The building</h4><ul>
-      <li><a href="${u("/pool/")}">Indoor pool</a></li>
       <li><a href="${u("/basketball/")}">Basketball &amp; racquetball</a></li>
       <li><a href="${u("/pickleball/")}">Pickleball</a></li>
       <li><a href="${u("/strength-floor/")}">Strength floor</a></li>
@@ -732,49 +743,7 @@ ${body}
   </div>
 </div></footer>
 <script>
-(function(){
-var all=function(){document.querySelectorAll('.rv').forEach(function(e){e.classList.add('in')})};
-if(matchMedia('(prefers-reduced-motion:reduce)').matches||!('IntersectionObserver' in window)){all();return}
-var io=new IntersectionObserver(function(es){es.forEach(function(e){
- if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'200px 0px -5% 0px'});
-document.querySelectorAll('.rv').forEach(function(e){io.observe(e)});
-setTimeout(all,1500);  // nothing stays hidden, whatever the observer does
-})();
-/* Hero film. Decorative only — every claim it illustrates is also in the copy.
-   It never autoplays over a slow link, a data-saver, or reduced-motion; the poster
-   is the same frame the film opens on, so the swap is invisible. */
-(function(){
-var v=document.getElementById('hv'),t=document.getElementById('vt'),l=document.getElementById('vtl');
-if(!v||!t)return;
-var c=navigator.connection||{},
-    reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,
-    small=matchMedia('(max-width:700px)').matches,
-    src=small?'${u("/assets/video/tour-720.mp4")}':'${u("/assets/video/tour-1280.mp4")}',
-    loaded=false,playing=false;
-function load(cb){ if(loaded){cb&&cb();return;} loaded=true;
-  v.src=src; v.loop=true; v.load();
-  v.addEventListener('canplay',function(){cb&&cb()},{once:true}); }
-function play(){ load(function(){ v.play().then(function(){
-    v.classList.add('up');playing=true;l.textContent='Pause the film';
-  }).catch(function(){ l.textContent='Play the film'; }); }); }
-function pause(){ v.pause();v.classList.remove('up');playing=false;l.textContent='Play the film'; }
-t.hidden=false;
-t.addEventListener('click',function(){ playing?pause():play(); });
-// pause when it scrolls away — no point decoding video nobody can see
-if('IntersectionObserver' in window){
-  new IntersectionObserver(function(es){es.forEach(function(e){
-    if(!e.isIntersecting&&playing){v.pause();} else if(e.isIntersecting&&playing){v.play().catch(function(){});}
-  })},{threshold:0.15}).observe(v);
-}
-// effectiveType is a rolling estimate that often reads low DURING load, so decide
-// after the load event has settled — and only refuse on a real user preference
-// (data-saver, reduced motion) or a genuinely unusable link.
-function slowNow(){var k=navigator.connection||{};
-  return k.saveData===true||/^(slow-)?2g$/.test(k.effectiveType||'');}
-function maybeAuto(){ if(!reduce&&!small&&!slowNow()){ play(); } }
-if(document.readyState==='complete'){setTimeout(maybeAuto,120);}
-else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
-})();
+
 /* The valley is the argument. Pull the real reading; if it fails, show nothing —
    never invent a temperature. */
 (function(){
@@ -1027,7 +996,7 @@ const todayStrip = () => `
               ? '<span class="tag tag-cc">Kids open</span>' : '<span class="tag tag-no">Kids closed</span>'}</span>
           </li>`; }).join("")}</ol>`
           : `<p class="td-none">No classes today \u2014 the building is open ${d === "Sun" ? "8 to 6" : "as usual"}.
-             Pool, court and weights are all yours.</p>`}
+             The court, the weights and the cardio deck are all yours.</p>`}
         </div>`;
       }).join("")}
     </div>
@@ -1125,7 +1094,7 @@ const dayTable = (d, { childcare = true, notes = false } = {}) => {   // notes a
   const rows = sorted(d);
   if (!rows.length) return `<div class="tw" data-day="${d}"><table><caption>${DAYNAME[d]}</caption>
     <tbody><tr class="empty"><td colspan="4" style="color:var(--ink-3)">No classes scheduled — but the building is open
-    ${d === "Sun" ? "8:00 a.m. to 6:00 p.m." : ""}. Pool, court, weights, all of it.</td></tr></tbody></table></div>`;
+    ${d === "Sun" ? "8:00 a.m. to 6:00 p.m." : ""}. Court, weights, cardio, all of it.</td></tr></tbody></table></div>`;
   return `<div class="tw" data-day="${d}"><table>
   <caption>${DAYNAME[d]} <span style="font-weight:400;color:var(--ink-3);font-size:.9rem">— ${rows.length} session${rows.length === 1 ? "" : "s"}</span></caption>
   <thead><tr><th scope="col">Time</th><th scope="col">Class</th><th scope="col">Instructor</th>${childcare ? '<th scope="col">Kids</th>' : ""}</tr></thead>
@@ -1199,7 +1168,7 @@ const weekGrid = () => `
         <div class="wg-col" style="height:${GRID_H}px">
           ${cc.map(([a, b]) => `<div class="wg-cc" style="top:${top(a)}px;height:${(b - a) * PPM}px"></div>`).join("")}
           ${HOURS.map(([m]) => `<div class="wg-line" style="top:${top(m)}px"></div>`).join("")}
-          ${d === "Sun" ? `<p class="wg-sun">Open. Nothing on the board. The pool is still here.</p>` : ""}
+          ${d === "Sun" ? `<p class="wg-sun">Open. Nothing on the board. The court and the weights are still here.</p>` : ""}
           ${items.map(it => {
             const w = 100 / it.of, L = it.lane * w;
             const endsAfterGrid = it.b > GRID_END;
@@ -1243,14 +1212,17 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
 <section class="hero">
   <div class="hero-media" id="hm">
     <img src="${u(photos.exterior.src)}" alt="" width="${photos.exterior.w}" height="${photos.exterior.h}" fetchpriority="high">
-    <video id="hv" playsinline muted preload="none" aria-hidden="true" width="1470" height="630"></video>
+    <!-- Hero film removed: the generated loop was chained exterior to pool to court,
+         and there is no pool at this address. Regenerate it from rooms that exist
+         before putting a film back on the first screen. -->
   </div>
-  <button class="vtoggle" id="vt" hidden><span class="d"></span><span id="vtl">Play the film</span></button>
+
   <div class="wrap">
-    <p class="kick">The only indoor pool in Red Bluff \u00b7 Childcare in the building</p>
-    <h1>Pool. Court.<br>Kids' room.<br>All included.</h1>
-    <p class="lede">${biz.sqft} sq ft on South Main since 2001. Indoor pool, full basketball court, three
-    pickleball courts, childcare and ${counts.classes} classes a week. Planet Fitness has none of those.</p>
+    <p class="kick">The only courts in Red Bluff \u00b7 Childcare in the building</p>
+    <h1>Courts. Classes.<br>Kids' room.<br>All <em>included.</em></h1>
+    <p class="lede">${biz.sqft} sq ft on South Main since 2001. A full basketball court, three indoor
+    pickleball courts, racquetball, childcare and ${counts.classes} classes a week. Planet Fitness has
+    none of those.</p>
     <div class="acts">
       <a class="btn btn-volt" href="${u("/membership/")}#rate">Get your rate</a>
       <a class="btn btn-ghost" href="${u("/day-pass/")}">Walk in today \u2014 open till 8</a>
@@ -1275,7 +1247,6 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
   <div class="figs" style="margin-top:clamp(44px,5vw,76px)">
     <div class="rv"><b>${counts.total}</b><span>sessions a week</span></div>
     <div class="rv"><b>15</b><span>instructors</span></div>
-    <div class="rv"><b>3</b><span>indoor pool lanes</span></div>
     <div class="rv"><b>3</b><span>pickleball courts</span></div>
     <div class="rv"><b>${biz.sqft}</b><span>square feet</span></div>
   </div>
@@ -1289,8 +1260,7 @@ ${todayStrip()}
   <p class="eyebrow">One building</p>
   <h2>Six things you can't get anywhere else in town</h2>
   <div class="feats" style="margin-top:44px">
-    ${[["/pool/", "The indoor pool", "Three lanes, indoors, swimmable in July and in January."],
-       ["/basketball/", "A full court", "Open gym twice a day, Monday through Friday. Racquetball too."],
+    ${[["/basketball/", "A full court", "Open gym twice a day, Monday through Friday. Racquetball too."],
        ["/pickleball/", "Pickleball \u2014 $5 to drop in", "Three indoor courts. Permanent lines. Climate controlled."],
        ["/childcare/", "Childcare while you train", "In the building, most of the hours you'd actually use it."],
        ["/classes/", `${counts.classes} classes a week`, "Spin, yoga, barre, Zumba, Pilates, tai chi and more."],
@@ -1325,8 +1295,7 @@ ${NAMES ? `
     <thead><tr><th scope="col">&nbsp;</th><th scope="col">Tehama Family</th>
       <th scope="col">Planet Fitness</th><th scope="col">RB Health &amp; Fitness</th></tr></thead>
     <tbody>
-      ${[["Indoor pool", "3 lanes", "None", "Outdoor only"],
-         ["Childcare", "In the building", "None", "None"],
+      ${[["Childcare", "In the building", "None", "None"],
          ["Pickleball", "3 indoor courts, $5 drop-in", "None", "\u2014"],
          ["Basketball", "Full court, twice a day", "None", "None"],
          ["Racquetball", "Yes", "None", "None"],
@@ -1337,7 +1306,7 @@ ${NAMES ? `
         <td class="no">${c}</td><td class="no">${d}</td></tr>`).join("")}
     </tbody></table></div>
   <p class="lede" style="margin-top:26px;max-width:46ch"><b>If you train after 8, we are the wrong gym.</b>
-  If you need a pool, a court or a kids' room, we are the only one.</p>
+  If you need a court, a kids' room or a class that costs nothing extra, we are the only one.</p>
 </div></section>
 
 <section class="sec sec-dark" style="padding-bottom:0"><div class="wrap">
@@ -1360,16 +1329,16 @@ ${NAMES ? `
 <section class="sec"><div class="wrap narrow">
   <p class="eyebrow">Membership</p>
   <h2>What it costs</h2>
-  <p class="lede">One membership covers the pool, the court, the pickleball courts, the weights, the cardio
+  <p class="lede">One membership covers the court, the pickleball courts, racquetball, the weights, the cardio
   deck, the sauna and every class on the schedule. There's no separate class fee and no per-court charge.</p>
   <div style="margin-top:26px">${askBox("We'll give you the number over the phone.", "priceSingle",
     "Rates aren't published online yet — call the desk and you'll have it in under a minute.")}</div>
   <p style="margin-top:22px"><a class="btn btn-out" href="${u("/membership/")}">What's included →</a></p>
 </div></section>
 
-${spread(photos.spa, { eyebrow: "SilverSneakers", flip: true,
+${spread(photos.studio, { eyebrow: "SilverSneakers", flip: true,
   h2: "Your plan already<br>covers this gym",
-  body: "If you are on SilverSneakers, bring the card to the desk. Classic Monday, Wednesday and Friday. Cardio Circuit Tuesday and Thursday. Tai chi every single weekday morning at 7:15. And an indoor pool that does not care what the weather is doing.",
+  body: "If you are on SilverSneakers, bring the card to the desk. Classic Monday, Wednesday and Friday. Cardio Circuit Tuesday and Thursday. And tai chi every single weekday morning at 7:15, without exception.",
   cta: ["/silversneakers/", "SilverSneakers here \u2192"] })}
 
 <section class="sec"><div class="wrap">
@@ -1391,7 +1360,7 @@ ${spread(photos.spa, { eyebrow: "SilverSneakers", flip: true,
 ${proof()}
 
 ${band("Come and look at it.",
-  `Walk in any day we're open. Nobody's going to put you through a sales process — the front desk will hand you a towel and show you the pool.`,
+  `Walk in any day we're open. Nobody's going to put you through a sales process — the front desk will hand you a towel and walk you round.`,
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/day-pass/", "Day pass &amp; drop-in", "btn-ghost"], ["/tour/", "Take the tour", "btn-ghost"]])}
 `, { og: "/assets/exterior-pano.jpg" });
 
@@ -1429,7 +1398,7 @@ ${phero(photos.studio, { kick: "Straight from our live calendar",
     ${DAYS.map(d => dayTable(d)).join("")}
   </div>
   <p style="margin-top:30px;color:var(--ink-3);font-size:.94rem">Sunday we are open 8 to 6 with nothing
-  on the board. The pool, the court and the weight floor are all yours.</p>
+  on the board. The court and the weight floor are all yours.</p>
 </div></section>
 
 ${statement("Sixty-four ways into this building every week.",
@@ -1527,25 +1496,24 @@ P("/membership/", `Membership — What's Included | ${biz.short} Red Bluff`,
   `
 ${phero(photos.gymfloor, { kick: "Membership",
   h1: "One membership.<br>The <em>whole building.</em>",
-  lede: "There is no class fee. There is no court fee. There is no separate pool charge. If it is in the building, it is in the membership." })}
+  lede: "There is no class fee. There is no court fee. There is no separate charge for anything in here. If it is in the building, it is in the membership." })}
 
 <section class="sec"><div class="wrap">
   ${numbers([[biz.sqft, "square feet"], [String(counts.classes), "classes a week"],
-             ["3", "pool lanes"], ["3", "pickleball courts"], ["0", "extra fees"]], false)}
+             ["1", "racquetball court"], ["3", "pickleball courts"], ["0", "extra fees"]], false)}
 </div></section>
 
 ${statement("Everything in this building is included. All of it.",
-  "The pool, the spa, the sauna, the full court, racquetball, the three pickleball courts, the new strength floor, the women's weight room, the cardio deck and every class on the schedule. There is no tier system here and nothing behind a second paywall.")}
+  "The full court, racquetball, the sauna, the three pickleball courts, the new strength floor, the women's weight room, the cardio deck and every class on the schedule. There is no tier system here and nothing behind a second paywall.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">What's included</p><h2>All of it, actually</h2></div>
-    <div><p class="lede">Most gyms this size run a tier system where the pool or the classes cost
+    <div><p class="lede">Most gyms this size run a tier system where the classes or the courts cost
     extra. This one does not \u2014 which is worth checking against whatever you are comparing it to.</p></div>
   </div>
   <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
-    ${[["3-lane indoor pool and spa", "Swim laps in July without cooking. Swim in January without freezing."],
-       ["Full basketball court", "Plus open gym twice a day, Monday through Friday."],
+    ${[["Full basketball court", "Plus open gym twice a day, Monday through Friday."],
        ["Three indoor pickleball courts", "Concrete, permanent lines, climate controlled."],
        ["Racquetball", "The only court in town."],
        ["The new strength floor", "Commercial Nautilus and Matrix, plus an Olympic platform."],
@@ -1604,7 +1572,7 @@ ${rateForm()}
 
 ${proof()}
 
-${band("Or just come and look at it first.", "Walk in any day we are open. See the pool, walk the floor, decide after.",
+${band("Or just come and look at it first.", "Walk in any day we are open. Walk the floor, see the courts, decide after.",
   [["/day-pass/", "Day pass &amp; drop-in"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
 `);
 
@@ -1624,8 +1592,8 @@ ${statement("Nobody is going to put you through a sales process.",
     <div><p class="eyebrow">What it costs to visit</p><h2>Two ways to drop in</h2></div>
     <div class="grid g2">
       <div class="card"><h3>Gym day pass</h3>
-        <p>Full run of the building for the day \u2014 pool, court, weights, cardio, sauna and whatever
-        class is on while you are here.</p>
+        <p>Full run of the building for the day \u2014 court, weights, cardio, sauna and whatever class is
+        on while you are here.</p>
         <p style="margin-top:16px">${priceOrAsk("dayPass")}</p></div>
       <div class="card"><h3>Pickleball drop-in</h3>
         <p>Three indoor courts with permanent lines.</p>
@@ -1640,9 +1608,8 @@ ${statement("Nobody is going to put you through a sales process.",
 
 ${spread(photos.corridor, { eyebrow: "Your first visit", flip: true,
   h2: "What actually<br>happens",
-  body: "Come in the main doors on South Main. The desk is straight ahead. Tell them it is your first time and ask for the tour \u2014 it takes about ten minutes and covers the pool deck, which is the part most people have never seen.",
+  body: "Come in the main doors on South Main. The desk is straight ahead. Tell them it is your first time and ask for the tour \u2014 it takes about ten minutes and covers the courts, which is the part most people have never seen.",
   list: ["Bring shoes you can train in, a towel and water",
-         "Swimsuit if you want the pool or the spa",
          "Locker rooms are full service, with a sauna on both sides",
          "If a class is running, you are welcome in it \u2014 tell the instructor it is your first",
          "Coffee at the Fuel Bar is free until 9 a.m."] })}
@@ -1696,7 +1663,7 @@ P("/corporate-wellness/", `Corporate Wellness for Red Bluff Employers | ${biz.sh
   `
 ${phero(photos.gymfloor, { kick: "For employers",
   h1: "Corporate <em>wellness</em>",
-  lede: `If you employ people in Red Bluff, there is exactly one facility in this county with an indoor pool, a full court, racquetball, three pickleball courts, childcare and ${counts.classes} classes a week.` })}
+  lede: `If you employ people in Red Bluff, there is exactly one facility in this county with a full basketball court, racquetball, three indoor pickleball courts, childcare and ${counts.classes} classes a week.` })}
 
 ${statement("Four minutes from St. Elizabeth Community Hospital.",
   "About six from downtown. Nobody on your team has to drive to Redding, and there is only one location to administer.")}
@@ -1710,16 +1677,16 @@ ${statement("Four minutes from St. Elizabeth Community Hospital.",
       ["Shift workers can use it", "Open at five in the morning, closed at eight at night."],
       ["Childcare is on site", "Which is what actually decides whether a parent on your team uses a benefit at all."],
       ["Classes are included", "No second bill, no per-visit accounting, no reconciliation."],
-      ["Low-impact options across the board", "Pool, tai chi, SilverSneakers-style circuits, Pilates \u2014 it works for a whole workforce, not just the gym-fit end of it."],
+      ["Low-impact options across the board", "Tai chi, stretch and mobility, SilverSneakers-style circuits, Pilates \u2014 it works for a whole workforce, not just the gym-fit end of it."],
       ["One location", "Nobody drives to Redding."],
     ])}</div>
   </div>
 </div></section>
 
-${spread(photos.pool, { eyebrow: "The differentiator", flip: true, tone: "hot",
-  h2: "An indoor pool,<br>in this valley",
-  body: "Red Bluff clears 110\u00b0F in summer. An indoor pool is the single amenity most likely to keep an older or injured employee moving through the months when nothing outdoors is usable.",
-  cta: ["/pool/", "About the pool \u2192"] })}
+${spread(photos.gymfloor, { eyebrow: "The differentiator", flip: true, tone: "hot",
+  h2: "One building,<br>every option",
+  body: "Low-impact and high-impact under one roof \u2014 tai chi and stretch classes at one end, an Olympic platform at the other. It works for a whole workforce rather than just the gym-fit end of it.",
+  cta: ["/amenities/", "What is in the building \u2192"] })}
 
 <section class="sec sec-tint"><div class="wrap narrow">
   ${askBox("Set up a corporate rate", "priceCorporate",
@@ -1745,7 +1712,7 @@ ${phero(photos.pickleball, { sm: false, kick: "2498 S Main St · Red Bluff",
     <div><b class="word">Permanent</b><span>lines on the floor</span></div>
     <div><b class="word">2.5–4.0</b><span>and beginners welcome</span></div>
   </div>
-  <p class="lede" style="margin-top:28px">Played today? Membership includes these courts, the pool, and
+  <p class="lede" style="margin-top:28px">Played today? Membership includes these courts, the weight floor and
   the kids' room. <a href="${u("/membership/")}#rate">Get your rate \u2192</a></p>
 </div></section>
 
@@ -1793,53 +1760,6 @@ ${band("Bring a paddle.",
 `, { schema: { "@type": ["HealthClub", "SportsActivityLocation"] } });
 
 /* ============================== POOL ================================== */
-P("/pool/", `Indoor Pool &amp; Spa in Red Bluff | ${biz.short}`,
-  `A 3-lane indoor pool and spa at Tehama Family Fitness Center, Red Bluff — swimmable through a 110-degree summer and through winter.`,
-  `
-${phero(photos.pool, { kick: "Three lanes · indoors · year-round",
-  h1: "The <em>pool.</em>",
-  lede: "A three-lane indoor pool and a spa. Indoors is the whole point: this valley runs to 110\u00b0 in August, and an outdoor pool in Red Bluff is a four-month amenity. This one works in January." })}
-
-${statement("The coolest room in Tehama County, most of the summer.",
-  "Red Bluff sits in a valley that regularly clears 110\u00b0F. An outdoor pool here is unusable through the middle of the day for a good stretch of the year, and shut for the rest of it. Three lanes under a roof is a different proposition entirely.",
-  "cool")}
-
-${spread(photos.spa, { eyebrow: "And the spa",
-  h2: "There's a hot tub<br>on the deck",
-  body: "Off to one side of the pool, with a rail and steps. Between the spa and a sauna in both locker rooms, the recovery end of this building is better equipped than the gym half of most places in the county.",
-  list: ["Three swimmable lanes, rarely a queue for one",
-         "A tiled spa on the pool deck",
-         "Sauna in both locker rooms",
-         "Included with membership \u2014 no lane booking, no pool fee"],
-  flip: true })}
-
-<section class="sec sec-cool"><div class="wrap">
-  <div class="split">
-    <div><p class="eyebrow">Who it's for</p><h2>Not just lap swimmers</h2></div>
-    <div>${steps([
-      ["Anyone working around a joint", "Water takes the load off a knee or a hip that will not tolerate a treadmill. It is the most forgiving cardio in the building."],
-      ["People escaping the heat", "In July the pool room is where members go to be somewhere that is not 108\u00b0."],
-      ["Older members", "Between the pool, the spa and tai chi every weekday morning, this is the gentlest corner of the building."],
-      ["Kids, with you", "Ask at the desk about family swim times and pool rules before you bring them."],
-    ])}</div>
-  </div>
-</div></section>
-
-${fullBleed(photos.locker, "Full-service locker rooms on both sides, each with a sauna.")}
-
-<section class="sec"><div class="wrap narrow">
-  <h2>Before you come</h2>
-  <p class="lede">Water temperature moves, lane availability moves, and pool rules are the front desk's
-  call.</p>
-  <div style="margin-top:28px">${askBox("Water temperature, lane availability and pool rules", "poolHeated",
-    "Call the desk \u2014 they will tell you what the pool is doing today.")}</div>
-</div></section>
-
-${band("Come and see it.", "The desk will walk you back to the pool deck. Takes two minutes.",
-  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/day-pass/", "Day pass", "btn-ghost"]])}
-`);
-
-/* =========================== BASKETBALL =============================== */
 P("/basketball/", `Full Court Basketball &amp; Racquetball, Red Bluff | ${biz.short}`,
   `A full-court basketball gymnasium with open gym twice a day Monday–Friday, plus racquetball, at Tehama Family Fitness Center in Red Bluff.`,
   `
@@ -1954,7 +1874,7 @@ ${spread(photos.freeweights, { eyebrow: "What's in it", flip: true,
   list: ["A separate room off the main strength floor",
          "Its own machines, dumbbells and benches",
          "Included with membership, like everything else",
-         "The cardio deck, studios and pool are all a few steps away"] })}
+         "The cardio deck, the studios and the courts are all a few steps away"] })}
 
 <section class="sec sec-tint"><div class="wrap narrow">
   <h2>Want to see it first?</h2>
@@ -2075,7 +1995,7 @@ ${spread(photos.frontdesk, { eyebrow: "Where it is", flip: true,
     <div>${steps([
       ["Before an early class", "Free coffee, and a pre-workout for $2 if you want one. Bucked Up or RYSE behind the counter."],
       ["Straight after lifting", "Protein shake, $7, pick two flavours. Add creatine for a dollar."],
-      ["After the pool, in July", "Recharge smoothie or an LMNT packet. You lose more in that room than you think."],
+      ["After a hard session in July", "Recharge smoothie or an LMNT packet. You lose more in that building than you think."],
       ["Bringing the kids", "Bananas are a dollar and the protein bars are $3.50. Both survive a gym bag."],
     ])}</div>
   </div>
@@ -2115,8 +2035,7 @@ ${statement("Twenty-five amenities. One membership. No tiers.",
     <div><p class="lede">These are the reasons people drive past two other gyms to get here.</p></div>
   </div>
   <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
-    ${[["/pool/", "Indoor pool &amp; spa", "Three lanes, swimmable all year."],
-       ["/basketball/", "Basketball &amp; racquetball", "Full court, open gym twice a day."],
+    ${[["/basketball/", "Basketball &amp; racquetball", "Full court, open gym twice a day."],
        ["/pickleball/", "Pickleball", "Three indoor courts, permanent lines."],
        ["/strength-floor/", "Strength floor", "New commercial Nautilus and Matrix."],
        ["/womens-weight-room/", "Women's weight room", "A separate room, not a corner."],
@@ -2129,9 +2048,8 @@ ${statement("Twenty-five amenities. One membership. No tiers.",
 
 ${spread(photos.sauna, { eyebrow: "The recovery end", flip: true,
   h2: "Sauna in both<br>locker rooms",
-  body: "Full-service locker rooms on each side, each with its own cedar sauna, plus a spa on the pool deck. For a community gym in a town of fourteen thousand, that is an unusually complete recovery setup.",
+  body: "Full-service locker rooms on each side, each with its own cedar sauna. For a community gym in a town of fourteen thousand, that is an unusually good recovery setup.",
   list: ["Cedar sauna on both sides",
-         "A tiled spa on the pool deck",
          "Full-service lockers, showers and benches",
          "Tanning and an on-site esthetician"] })}
 
@@ -2319,7 +2237,7 @@ ${band("Find their class on the board.", "Every instructor, every session, one p
 P("/silversneakers/", `SilverSneakers in Red Bluff | ${biz.short}`,
   `SilverSneakers at Tehama Family Fitness Center, Red Bluff: Classic Monday/Wednesday/Friday, Cardio Circuit Tuesday/Thursday, tai chi every weekday morning, and an indoor pool.`,
   `
-${phero(photos.spa, { kick: "SilverSneakers",
+${phero(photos.studio, { kick: "SilverSneakers",
   h1: "Programming, not just a <em>card reader</em>",
   lede: "Plenty of places accept the card. The question is what is actually on when you get there." })}
 
@@ -2336,10 +2254,10 @@ ${phero(photos.spa, { kick: "SilverSneakers",
 ${statement("Tai chi at 7:15. Five mornings a week. Every week.",
   "Standing the whole time, slow weight-shifting forms, easy on the joints and genuinely hard on your balance \u2014 which is the point. It is the most consistently scheduled thing in this building.")}
 
-${spread(photos.pool, { eyebrow: "The pool",
-  h2: "Water that doesn't<br>care about the weather",
-  body: "Three indoor lanes and a spa. For anyone working around a knee, a hip or a back that will not tolerate a treadmill, this is the most forgiving room in the county \u2014 and it is open in August and in January alike.",
-  cta: ["/pool/", "About the pool \u2192"] })}
+${spread(photos.corridor, { eyebrow: "Low impact", flip: true,
+  h2: "Easy on the joints,<br>hard on your balance",
+  body: "Tai chi is standing work, slow weight shifts, no impact at all. Stretch & Mobility, Mat Pilates and Yoga Easy Flow are the same idea. If a treadmill is out of the question, this is the corner of the building to start in.",
+  cta: ["/classes/tai-chi/", "About tai chi \u2192"] })}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
@@ -2347,7 +2265,7 @@ ${spread(photos.pool, { eyebrow: "The pool",
     <div>${steps([
       ["Bring your card to the front desk", "Whoever is on will take it from there. If you are not sure your plan includes SilverSneakers, call first and ask \u2014 the desk handles this every week."],
       ["Come a few minutes early to your first class", "Tell the instructor it is your first one. Tai chi at 7:15 is the easiest place to start."],
-      ["Use the rest of the building", "The pool, the spa, the sauna, the cardio deck and the weight floor are all part of it."],
+      ["Use the rest of the building", "The sauna, the cardio deck, the courts and the weight floor are all part of it."],
     ])}</div>
   </div>
   <div style="margin-top:34px">${askBox("Not sure if you're eligible?", "priceSenior",
@@ -2390,19 +2308,18 @@ ${statement("We close at eight. We are a family gym, not a 24-hour box.",
     <div>${steps([
       ["If you train after 8 p.m.", "Red Bluff Health & Fitness runs to 10 and Planet Fitness runs later still. That is a real difference and we are not going to pretend otherwise."],
       ["If price is the only thing that matters", "Planet Fitness publishes $15 a month. We do not have a $15 membership and we are not going to tell you we do."],
-      ["If you want a Sunday class", "We are open 8 to 6 with the pool, the court and the weight floor available \u2014 but there is nothing on the board."],
+      ["If you want a Sunday class", "We are open 8 to 6 with the court and the weight floor available \u2014 but there is nothing on the board."],
     ])}
-    <p class="lede" style="margin-top:30px">What you get for the difference is a pool you can use in
-    August, a court you can run at one o'clock, a room to leave the kids in, and ${counts.classes} classes
+    <p class="lede" style="margin-top:30px">What you get for the difference is a court you can run at one o'clock, a room to leave the kids in, and ${counts.classes} classes
     that do not cost extra.</p></div>
   </div>
 </div></section>
 
-${fullBleed(photos.pool, "The one thing neither competitor has indoors \u2014 and in this valley that is most of the argument.")}
+${fullBleed(photos.racquetball, "Racquetball \u2014 the only court in Red Bluff, and neither competitor has one.")}
 
 ${spread(photos.exterior, { eyebrow: "Coming from Corning?", flip: true, tone: "hot",
   h2: "Twenty minutes<br>up 99W",
-  body: "Same county. There is no indoor pool, no full court and no childcare-plus-classes combination between here and there, so a fair number of Corning members make the drive a few times a week and treat the pool as the reason.",
+  body: "Same county. There is no full basketball court, no racquetball and no childcare-plus-classes combination between here and there, so a fair number of Corning members make the drive a few times a week.",
   cta: ["/contact/", "Directions \u2192"] })}
 
 ${proof()}
@@ -2485,7 +2402,7 @@ ${phero(photos.frontdesk, { kick: "2498 S Main St \u00b7 Red Bluff",
     <div>
       <p class="eyebrow">Get in touch</p>
       <h2>Call, or just<br>turn up</h2>
-      <p class="lede" style="margin-top:26px"><a href="tel:${biz.tel}" style="font-family:var(--disp);font-weight:900;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.04em;text-decoration:none">${biz.phone}</a></p>
+      <p class="lede" style="margin-top:26px"><a href="tel:${biz.tel}" style="font-family:var(--disp);font-weight:800;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.04em;text-decoration:none">${biz.phone}</a></p>
       <p class="lede"><a href="mailto:${biz.email}">${biz.email}</a></p>
       <p class="lede" style="margin-top:22px">${biz.street}<br>${biz.city}, ${biz.state} ${biz.zip}</p>
       <p style="margin-top:24px"><a class="btn btn-volt" href="https://maps.google.com/?q=${encodeURIComponent(biz.name + " " + biz.addr)}">Directions in Google Maps \u2192</a></p>
@@ -2527,11 +2444,10 @@ const FAQ = [
   ["Are classes included?", `Yes. All ${counts.classes} of them, every week. There is no class fee, nothing to book and no app to download. Turn up a few minutes early the first time and tell the instructor it's your first one.`],
   ["Do you have childcare?", `Yes, in the building. Mornings 8 to 1 Monday through Saturday, and evenings 4 to 8 Monday through Thursday. Sunday it's closed. Every session on our schedule shows whether the kids' room is open at that hour.`],
   ["Can I try it before I join?", `Walk in any day we're open and ask for a look around. It takes about ten minutes and nobody is going to chase you afterwards.`],
-  ["Is the pool indoors?", `Yes — three lanes, indoors, plus a spa. It's the reason a lot of members are here: an outdoor pool in this valley is a four-month amenity.`],
-  ["Do you have pickleball?", `Three indoor courts with permanent lines on concrete. Non-member drop-in is ${pickleball.dropIn}. Organised play runs Tuesday evenings and Saturday mornings — call to confirm the week you're coming.`],
+    ["Do you have pickleball?", `Three indoor courts with permanent lines on concrete. Non-member drop-in is ${pickleball.dropIn}. Organised play runs Tuesday evenings and Saturday mornings — call to confirm the week you're coming.`],
   ["What time do you close?", `Eight on weeknights, six on weekends. We're a family gym, not a 24-hour box. If you train after eight, we're honestly not the right gym for you.`],
   ["Do you take SilverSneakers?", `Yes. Bring your card to the front desk. There's SilverSneakers Classic on Monday, Wednesday and Friday, Cardio Circuit on Tuesday and Thursday, and tai chi every weekday morning at 7:15.`],
-  ["Is there anything on Sunday?", `The building's open 8 to 6 — pool, court, weights, cardio, all of it — but there are no classes on the board Sunday.`],
+  ["Is there anything on Sunday?", `The building is open 8 to 6 — court, weights, cardio, all of it — but there are no classes on the board Sunday.`],
   ["How do I join?", `Call ${biz.phone}, or walk in. You can also start a single membership through our online sign-up. For a family, couple, student or senior rate, call — it's faster and you'll get a person.`],
   ["Where are you exactly?", `${biz.addr}, on the south end of town with parking out front.`],
 ];
@@ -2540,17 +2456,17 @@ P("/faq/", `Questions People Actually Ask | ${biz.short} Red Bluff`,
   `
 ${phero(photos.corridor, { kick: "Straight answers",
   h1: "Questions people <em>actually ask</em>",
-  lede: "Membership, classes, childcare, the pool, pickleball and the hours \u2014 answered plainly.",
+  lede: "Membership, classes, childcare, pickleball and the hours \u2014 answered plainly.",
   acts: false })}
 
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">The short version</p><h2>Everything is<br>included</h2>
-      <p class="lede">One membership, no tiers, no class fee, no court fee, no pool charge. The two
+      <p class="lede">One membership, no tiers, no class fee, no court fee, no extras. The two
       things we genuinely cannot answer here are price and a few childcare specifics \u2014 both are one
       phone call away.</p>
       <p style="margin-top:26px"><a class="btn btn-volt" href="tel:${biz.tel}">Call ${biz.phone}</a></p></div>
-    <div>${numbers([[String(counts.classes), "classes included"], ["3", "pool lanes"],
+    <div>${numbers([[String(counts.classes), "classes included"], ["1", "racquetball court"],
                     ["0", "class fees"], ["8pm", "weeknight close", true]], false)}</div>
   </div>
 </div></section>
@@ -2582,7 +2498,7 @@ ${phero(photos.exterior, { sm: false, kick: "Room by room",
 <section class="sec"><div class="wrap">
   <figure>
   <div class="grid g2">
-    ${[[photos.pool, "The pool", "Three lanes, indoors, plus the spa."],
+    ${[
        [photos.basketball, "The court", "Full size, with open gym twice a day."],
        [photos.pickleball, "Pickleball", "Three courts, permanent lines, nets up for league nights."],
        [photos.racquetball, "Racquetball", "The only court in town."],
@@ -2603,7 +2519,7 @@ ${phero(photos.exterior, { sm: false, kick: "Room by room",
 
 ${spread(photos.frontdesk, { eyebrow: "The fastest tour", flip: true,
   h2: "Is the real one",
-  body: "Ten minutes, any day we are open. Somebody will walk you through all of it, pool deck included. You will learn more in those ten minutes than we could ever put on a page.",
+  body: "Ten minutes, any day we are open. Somebody will walk you through all of it, the courts included. You will learn more in those ten minutes than we could ever put on a page.",
   cta: ["/day-pass/", "Plan a first visit \u2192"] })}
 
 ${proof()}

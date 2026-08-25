@@ -36,6 +36,7 @@ on a page *about* TFFC. That clinic runs its own pool. Nothing here ships unconf
 
 | # | Claim | True? |
 |---|---|---|
+| B0 | **THE POOL. Your own /amenities page lists "3 Lane Indoor Pool and Spa" — but there is no pool at 2498 S Main.** Almost certainly the PT clinic's pool next door at 2490. **Your own website needs correcting.** | ☐ confirmed no pool |
 | B1 | **Silver Splash** senior aqua class — do you run it? | ☐ yes ☐ no |
 | B2 | Childcare described as **"licensed"** (a CA DSS claim) | ☐ yes ☐ no |
 | B3 | **"Official Spinning® facility"** (a trademark claim) | ☐ yes ☐ no |

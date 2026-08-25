@@ -64,7 +64,6 @@ export const tbd = {
   // the Enjoy Magazine piece is from Jan 2019, and ownership can move in seven years.
   ownerName:        { v: "the Stroman family", ask: null, q: "Confirm ownership + how they want to be named",
                       src: "Enjoy Magazine Jan 2019 · North State Parent", verify: true },
-  poolHeated:       { v: null, ask: null,                            q: "Is the pool heated?" },
   childcareAges:    { v: null, ask: "Ask at the desk",               q: "Childcare ages accepted" },
   childcareSignup:  { v: null, ask: "Ask at the desk",               q: "Childcare registration + first visit" },
   childcareIncluded:{ v: null, ask: null,                            q: "Childcare included or extra" },
@@ -89,11 +88,11 @@ export const askFor = k => tbd[k]?.ask ?? null;
  * this one. These do not render anywhere until confirmed.
  * ------------------------------------------------------------------ */
 export const retracted = [
+  ["A swimming pool", "Their own /amenities page lists \"3 Lane Indoor Pool and Spa\", but there is no pool at this address \u2014 confirmed by Derik. The pool almost certainly belongs to the PT clinic next door at 2490 S Main, which is the same contamination source as the other retracted claims. Removed from the site entirely; their own website still needs correcting."],
   ["Silver Splash senior aqua", "Not on the live calendar. Likely the PT clinic's pool program."],
   ["“Licensed” childcare", "A California DSS licensing claim. Never publish unverified."],
   ["“Official Spinning® facility”", "A trademark claim. Never publish unverified."],
   ["Ladies-only weight section", "Their own site says “Women's Weight Room.” Use their words."],
-  ["Heated pool", "Plausible; only source is the neighbour."],
   ["SilverSneakers accepted at Planet Fitness too", "Could not verify the Red Bluff franchise."],
 ];
 
@@ -281,7 +280,7 @@ export const classes = [
  * AMENITIES — verbatim from their own /amenities page.
  * ------------------------------------------------------------------ */
 export const amenities = [
-  "Full Court Basketball Gymnasium", "Racquetball", "3 Lane Indoor Pool and Spa", "Spin Room",
+  "Full Court Basketball Gymnasium", "Racquetball", "Spin Room",
   "Yoga/Pilates/Dance Studio", "Circuit Training Room", "Women's Weight Room",
   "Freeweight Room with Olympic Platform", "30+ Pieces of Cardio Equipment", "Cardio Theater",
   "TRX Training Station", "Stretching Stations", "Cross Training Box", "Pilates Reformer",
@@ -330,8 +329,6 @@ export const photos = {
                 alt: "New Matrix strength machines on the rubber floor at Tehama Family Fitness Center" },
   taichi:     { src: "/assets/tai-chi.jpg", real: true, w: 320, h: 240,
                 alt: "A tai chi class in progress at Tehama Family Fitness Center" },
-  pool:       { src: "/assets/hero/pool.jpg", real: false, w: 2000, h: 848,
-                alt: "A three-lane indoor lap pool and spa" },
   basketball: { src: "/assets/hero/basketball.jpg", real: false, w: 2000, h: 848,
                 alt: "A full-size indoor basketball court" },
   pickleball: { src: "/assets/hero/pickleball.jpg", real: false, w: 2000, h: 848,
@@ -364,8 +361,6 @@ export const photos = {
                 alt: "Inside the cedar sauna" },
   gymfloor:   { src: "/assets/hero/gymfloor.jpg", real: false, w: 2000, h: 848,
                 alt: "A wide view of the main gym floor" },
-  spa:        { src: "/assets/hero/spa.jpg", real: false, w: 2000, h: 848,
-                alt: "The indoor spa beside the pool deck" },
   exteriorDay:{ src: "/assets/hero/exterior-day.jpg", real: false, w: 2000, h: 848,
                 alt: "Tehama Family Fitness Center on South Main Street on a clear morning" },
   corridor:   { src: "/assets/hero/corridor.jpg", real: false, w: 2000, h: 848,
@@ -381,12 +376,12 @@ export const generatedShots = Object.entries(photos)
 /* What survives scrutiny as unique in Red Bluff. Checked against both
    competitors. No claim here that hasn't been verified on both sides. */
 export const onlyHere = [
-  ["Indoor lap lanes", "Three of them, swimmable in July and January. Red Bluff Health & Fitness has a pool — outdoors."],
-  ["A full basketball court", "Open gym twice a day, Monday through Friday."],
-  ["Racquetball", "Nobody else in town has a court."],
-  ["Three indoor pickleball courts", "Permanent lines, concrete, climate controlled."],
-  ["Childcare while you train", "No other gym in Red Bluff offers it."],
+  ["A full basketball court", "Open gym twice a day, Monday through Friday. Nobody else in town has one."],
+  ["Racquetball", "The only court in Red Bluff."],
+  ["Three indoor pickleball courts", "Permanent lines, concrete, climate controlled \u2014 playable in August and in January."],
+  ["Childcare while you train", "No other gym in Red Bluff offers it at all."],
   [`${sessions.filter(s => s.kind === "class").length} classes a week`, "Across 15 instructors, included with membership."],
+  ["Sauna in both locker rooms", "Plus a full-service locker room on each side."],
 ];
 
 /* ------------------------------------------------------------------ *
