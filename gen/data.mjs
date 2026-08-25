@@ -389,6 +389,26 @@ export const onlyHere = [
 ];
 
 /* ------------------------------------------------------------------ *
+ * LEAD CAPTURE
+ *
+ * A static site has no server, so the form needs a posting endpoint. This is
+ * the one value to change if you move providers.
+ *
+ * Default is FormSubmit's AJAX endpoint: no account, no key — but the FIRST
+ * submission sends a one-time confirmation email to `to`, and nothing is
+ * delivered until somebody clicks it. Do that before the site goes live, or
+ * the first real enquiry is lost.
+ *
+ * Set `endpoint: null` to fall back to opening the visitor's own mail/SMS app.
+ * ------------------------------------------------------------------ */
+export const leadForm = {
+  endpoint: "https://formsubmit.co/ajax/frontdesk@clubtehama.com",
+  to: "frontdesk@clubtehama.com",
+  subject: "Membership rate request \u2014 tehamafamilyfitness.com",
+  confirmed: false,   // flip once the confirmation email has been clicked
+};
+
+/* ------------------------------------------------------------------ *
  * OWNERSHIP — the trust signal their own /about page throws away.
  * Their site says "locally owned and operated" and names nobody, in a
  * town of 14,000 where everyone already knows these people.

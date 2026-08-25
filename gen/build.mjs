@@ -10,7 +10,7 @@ import { join } from "node:path";
 import {
   biz, tbd, has, val, askFor, sessions, DAYS, DAYNAME, mins, counts, childcareOpenAt,
   instructors, staff, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
-  CHILDCARE_WINDOWS, lengthOf,
+  CHILDCARE_WINDOWS, lengthOf, leadForm,
   joinFlow, retracted,
 } from "./data.mjs";
 
@@ -335,14 +335,30 @@ font-size:.95rem;min-width:3.6em}
 .cmp .no{color:var(--ink-3)}
 
 /* ── rate request form ── */
+.rf-form{grid-template-columns:1fr 1fr;display:grid;gap:18px 16px;align-content:start}
+.rf-form>label,.rf-form>.rf-check,.rf-form>.rf-note,.rf-form>.rf-msg,.rf-form>button{grid-column:1/-1}
+.rf-row{display:contents}
+.rf-row>label{grid-column:auto}
+@media(max-width:620px){.rf-form{grid-template-columns:1fr}.rf-row>label{grid-column:1/-1}}
+.rf-opt{font-weight:400;letter-spacing:0;text-transform:none;color:var(--steel);opacity:.75}
+.rf-form input.is-bad,.rf-form select.is-bad{border-color:#F0A428;background:rgba(240,164,40,.1)}
+.rf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.rf-msg{margin-top:4px;font-size:.98rem;padding:14px 16px;border-radius:var(--r);max-width:46ch}
+.rf-msg.is-ok{background:rgba(184,208,224,.14);color:#fff;border-left:3px solid var(--volt-lt)}
+.rf-msg.is-err{background:rgba(240,164,40,.14);color:#FFE0AE;border-left:3px solid #F0A428}
+.rf-form button[disabled]{opacity:.55;cursor:default;transform:none}
+
 .rf-form{display:grid;gap:18px;align-content:start}
-.rf-form label{display:grid;gap:8px;font-family:var(--disp);font-weight:700;font-size:.76rem;
+.rf-form label{display:grid;gap:9px;align-content:start;font-family:var(--disp);font-weight:700;font-size:.76rem;
 letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
-.rf-form input[type=text],.rf-form select{font-family:var(--body);font-size:1.05rem;padding:14px 16px;
+.rf-form input[type=text],.rf-form input[type=tel],.rf-form input[type=email],.rf-form select{
+font-family:var(--body);font-size:1.05rem;line-height:1.2;height:54px;padding:0 16px;
 border-radius:var(--r);border:1px solid rgba(184,208,224,.28);background:rgba(255,255,255,.06);
-color:#fff;width:100%;letter-spacing:0;text-transform:none;font-weight:400}
-.rf-form select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--steel) 50%),linear-gradient(135deg,var(--steel) 50%,transparent 50%);
-background-position:calc(100% - 20px) 22px,calc(100% - 14px) 22px;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+color:#fff;width:100%;letter-spacing:0;text-transform:none;font-weight:400;
+appearance:none;-webkit-appearance:none;box-sizing:border-box}
+.rf-form select{background-image:linear-gradient(45deg,transparent 50%,var(--steel) 50%),linear-gradient(135deg,var(--steel) 50%,transparent 50%);
+background-position:calc(100% - 21px) 25px,calc(100% - 15px) 25px;background-size:6px 6px,6px 6px;
+background-repeat:no-repeat;padding-right:44px}
 .rf-form option{color:#101830}
 .rf-form input:focus,.rf-form select:focus{outline:2px solid var(--volt-lt);outline-offset:1px;background:rgba(255,255,255,.1)}
 .rf-check{display:flex!important;flex-direction:row;align-items:center;gap:11px;
@@ -844,60 +860,120 @@ const rateForm = () => `
   <div class="split">
     <div>
       <p class="eyebrow">One minute, no sales process</p>
-      <h2>Get your rate<br>without phoning</h2>
-      <p class="lede">Tell us who is joining and when suits, and the desk comes back to you with the
-      number. On a phone this opens a text message. On a computer it opens an email. Either way
-      nothing gets stored anywhere.</p>
+      <h2>Get your rate</h2>
+      <p class="lede">Leave your name and a number and we'll come back to you with what it costs
+      for exactly who's joining. No queue, no pitch, no signing up for anything first.</p>
       <p class="lede" style="margin-top:20px"><b style="color:#fff">${staff.frontDesk}</b> is usually the
       one who answers.</p>
+      <p class="lede" style="margin-top:20px">Would rather just ask?
+      <a href="tel:${biz.tel}" style="color:#fff;font-weight:700">${biz.phone}</a></p>
     </div>
-    <form class="rf-form" id="rateForm">
-      <label>Your first name
-        <input type="text" name="who" autocomplete="given-name" placeholder="e.g. Jen" required></label>
-      <label>How many people are joining?
-        <select name="size">
-          <option value="just me">Just me</option>
-          <option value="two of us">Two of us</option>
-          <option value="a family of 3–4">A family of 3&ndash;4</option>
-          <option value="a family of 5+">A family of 5+</option>
-        </select></label>
-      <label>Best time to hear back
-        <select name="when">
-          <option value="any time today">Any time today</option>
-          <option value="this morning">This morning</option>
-          <option value="early afternoon">Early afternoon</option>
-          <option value="after 4pm">After 4pm</option>
-        </select></label>
-      <label class="rf-check"><input type="checkbox" name="kids"> I&rsquo;d also like the childcare details</label>
-      <button type="submit" class="btn btn-volt">Send it &rarr;</button>
-      <p class="rf-note">Opens your own messaging app so you can see exactly what is sent.
-      Or just call <a href="tel:${biz.tel}">${biz.phone}</a>.</p>
+
+    <form class="rf-form" id="rateForm" novalidate
+          ${leadForm.endpoint ? `action="${leadForm.endpoint}" method="post"` : ""}>
+      <div class="rf-row">
+        <label for="rfName">Your name <span aria-hidden="true">*</span>
+          <input id="rfName" type="text" name="name" autocomplete="name" required
+                 placeholder="Jen Alvarez"></label>
+        <label for="rfPhone">Mobile number <span aria-hidden="true">*</span>
+          <input id="rfPhone" type="tel" name="phone" autocomplete="tel" required
+                 inputmode="tel" placeholder="530-555-0142"></label>
+      </div>
+      <label for="rfEmail">Email <span class="rf-opt">optional</span>
+        <input id="rfEmail" type="email" name="email" autocomplete="email"
+               placeholder="you@example.com"></label>
+      <div class="rf-row">
+        <label for="rfSize">Who's joining?
+          <select id="rfSize" name="joining">
+            <option>Just me</option><option>Two of us</option>
+            <option>A family of 3&ndash;4</option><option>A family of 5+</option>
+          </select></label>
+        <label for="rfWhen">Best time to reach you
+          <select id="rfWhen" name="best_time">
+            <option>Any time today</option><option>This morning</option>
+            <option>Early afternoon</option><option>After 4pm</option>
+          </select></label>
+      </div>
+      <label class="rf-check"><input type="checkbox" name="childcare" value="yes">
+        Send me the childcare details too &mdash; ages, sign-up, first visit</label>
+
+      <!-- spam trap: real people never fill this in -->
+      <div class="rf-hp" aria-hidden="true"><label>Leave this empty
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <input type="hidden" name="_subject" value="${esc(leadForm.subject)}">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <button type="submit" class="btn btn-volt" id="rfBtn">Send it &rarr;</button>
+      <p class="rf-note" id="rfNote">We'll text or call you back the same day we're open.
+      Your details go to the front desk and nowhere else.</p>
+      <p class="rf-msg" id="rfMsg" role="status" aria-live="polite" hidden></p>
     </form>
   </div>
 </div></section>
 <script>
 (function(){
   var f=document.getElementById('rateForm'); if(!f) return;
-  f.addEventListener('submit',function(e){
+  var btn=document.getElementById('rfBtn'), msg=document.getElementById('rfMsg'),
+      note=document.getElementById('rfNote');
+  var ENDPOINT=${leadForm.endpoint ? `'${leadForm.endpoint}'` : 'null'};
+
+  function say(text, ok){
+    msg.hidden=false; msg.textContent=text;
+    msg.className='rf-msg '+(ok?'is-ok':'is-err');
+  }
+  function invalid(){
+    var bad=null;
+    [['rfName','your name'],['rfPhone','a number we can reach you on']].forEach(function(pair){
+      var el=document.getElementById(pair[0]);
+      var empty=!el.value.trim();
+      el.setAttribute('aria-invalid', empty?'true':'false');
+      el.classList.toggle('is-bad', empty);
+      if(empty && !bad) bad=pair;
+    });
+    return bad;
+  }
+  f.addEventListener('submit', function(e){
     e.preventDefault();
-    var d=new FormData(f), who=(d.get('who')||'').toString().trim()||'Hi';
-    var msg='Hi \u2014 this is '+who+'. I\'m interested in joining ('+d.get('size')+
-            '). Could you send me the rate? Best time to reach me: '+d.get('when')+'.'+
-            (d.get('kids')?' I\'d also like the childcare details (ages, sign-up, first visit).':'');
-    var mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(mobile){
-      var sep=/iPhone|iPad|iPod|Mac/i.test(navigator.userAgent)?'&':'?';
-      location.href='sms:${biz.tel}'+sep+'body='+encodeURIComponent(msg);
-    } else {
-      location.href='mailto:${biz.email}?subject='+encodeURIComponent('Membership rate request')+
-                    '&body='+encodeURIComponent(msg);
+    if(f.querySelector('[name=_honey]').value) return;      // bot
+    var bad=invalid();
+    if(bad){ say('We just need '+bad[1]+'.', false); document.getElementById(bad[0]).focus(); return; }
+
+    var d=new FormData(f); d.delete('_honey');
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Sending\u2026';
+
+    if(!ENDPOINT){                                           // no endpoint configured yet
+      var body='Name: '+d.get('name')+'\\nMobile: '+d.get('phone')+
+        (d.get('email')?'\\nEmail: '+d.get('email'):'')+
+        '\\nJoining: '+d.get('joining')+'\\nBest time: '+d.get('best_time')+
+        (d.get('childcare')?'\\nAlso wants childcare details.':'');
+      location.href='mailto:${leadForm.to}?subject='+encodeURIComponent('${leadForm.subject}')+
+                    '&body='+encodeURIComponent(body);
+      btn.disabled=false; btn.textContent=label; return;
     }
+
+    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return{}}) : Promise.reject(r.status); })
+      .then(function(){
+        f.querySelectorAll('input,select,button').forEach(function(el){ el.disabled=true; });
+        note.hidden=true;
+        say("Thanks "+(d.get("name")||"").split(" ")[0]+". "+staffName+" will come back to you on "+
+            d.get("phone")+". Rather not wait? The desk is on ${biz.phone}.", true);
+      })
+      .catch(function(){
+        btn.disabled=false; btn.textContent=label;
+        say("That did not send. Call the desk on ${biz.phone} and we will sort it in a minute.", false);
+      });
+  });
+  var staffName='${staff.frontDesk}';
+  ['rfName','rfPhone'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',function(){
+      this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false');
+    });
   });
 })();
 </script>`;
 
-// Grok #4: a Tuesday-evening visitor was being shown Monday 6 AM Spin. Useless.
-// Rendered server-side for every day, then the client reveals the one that is actually today.
 const todayStrip = () => `
 <section class="sec sec-tint" id="today"><div class="wrap">
   <div class="split">
@@ -1876,30 +1952,62 @@ P("/fuel-bar/", `The Fuel Bar — Shakes, Smoothies &amp; Free Morning Coffee | 
   `
 ${phero(photos.fuelbar, { kick: "Tehama Nutrition Center",
   h1: "The <em>Fuel Bar</em>",
-  lede: "Just off the floor. And the thing worth knowing before anything else: the coffee is free until 9 a.m." })}
+  lede: "Just off the floor, by the lobby. Protein, smoothies, cold drinks, snacks \u2014 and coffee that costs nothing before nine." })}
+
+<section class="sec"><div class="wrap">
+  ${numbers([["Free", "coffee before 9am", true], ["$2", "pre-workout"],
+             ["$5", "recharge smoothie"], ["$7", "protein shake"]], false)}
+</div></section>
 
 ${statement("Coffee is free until nine.",
-  "Which is a better argument for making the 6 a.m. spin than anything else we could put here.")}
+  "Which is a better argument for making the 6 a.m. spin than anything else we could put here. After nine it is a dollar twenty-five, which is still the cheapest cup on South Main.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
-    <div><p class="eyebrow">The menu</p><h2>Straight off<br>the menu board</h2></div>
-    <div><p class="lede">Ask at the counter if something has moved.</p></div>
+    <div><p class="eyebrow">The menu</p><h2>Straight off<br>the board</h2>
+      <p class="lede">Ask at the counter if something has moved. If you are not sure what you want
+      after a session, the honest answer is usually the protein shake with two scoops and a banana.</p></div>
+    <div><p class="lede">Pick two flavours in a protein shake at no extra cost. Spinach, creatine or
+    almond milk go in for a little more \u2014 nobody is going to charge you for a scoop of ice.</p></div>
   </div>
-  <div class="grid g2" style="margin-top:clamp(30px,3.5vw,44px)">
+  <div class="grid g2" style="margin-top:clamp(30px,3.5vw,46px)">
     ${fuelBar.map(g => `<div class="tw"><table><caption>${g.group}</caption>
       <thead><tr><th scope="col">Item</th><th scope="col">Price</th></tr></thead>
-      <tbody>${g.items.map(([n, p2, note]) => `<tr><td><b>${n}</b>${note ? `<br><span style="font-size:.86rem;color:var(--ink-3)">${note}</span>` : ""}</td>
-      <td class="t-time">${p2}</td></tr>`).join("")}</tbody></table></div>`).join("")}
+      <tbody>${g.items.map(([n, pr, note]) => `<tr><td><b>${n}</b>${note ? `<br><span style="font-size:.86rem;color:var(--ink-3)">${note}</span>` : ""}</td>
+      <td class="t-time">${pr}</td></tr>`).join("")}</tbody></table></div>`).join("")}
   </div>
 </div></section>
 
 ${spread(photos.frontdesk, { eyebrow: "Where it is", flip: true,
   h2: "A few steps<br>off the floor",
-  body: "The counter sits by the lobby, which means it also works as the place people stand around talking after a class. In a gym this size that matters more than the menu does.",
-  cta: ["/schedule/", "The early classes \u2192"] })}
+  body: "The counter sits by the lobby, which means it doubles as the place people stand around talking after a class. In a building this size that matters more than the menu does.",
+  list: ["Open whenever the building is",
+         "Card or cash at the counter",
+         "Grab a bar on the way out \u2014 nobody minds",
+         "Coffee free until 9 a.m., $1.25 after"] })}
 
-${band("Coffee's free until nine.", "Which is a decent reason to make the early class.",
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">What to have, when</p><h2>If you are<br>not sure</h2></div>
+    <div>${steps([
+      ["Before an early class", "Free coffee, and a pre-workout for $2 if you want one. Bucked Up or RYSE behind the counter."],
+      ["Straight after lifting", "Protein shake, $7, pick two flavours. Add creatine for a dollar."],
+      ["After the pool, in July", "Recharge smoothie or an LMNT packet. You lose more in that room than you think."],
+      ["Bringing the kids", "Bananas are a dollar and the protein bars are $3.50. Both survive a gym bag."],
+    ])}</div>
+  </div>
+</div></section>
+
+${fullBleed(photos.gymfloor, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
+
+<section class="sec"><div class="wrap narrow">
+  <h2>Nutrition coaching</h2>
+  <p class="lede">Kristi Havlin runs KH Macro Coaching out of here if you want more than a shake and
+  a guess. Ask at the desk and we will point you at her.</p>
+  <p style="margin-top:26px"><a class="btn btn-out" href="${u("/personal-training/")}">Training and coaching \u2192</a></p>
+</div></section>
+
+${band("Coffee is free until nine.", "Which is a decent reason to make the early class.",
   [["/schedule/", "The early classes"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
 `);
 
