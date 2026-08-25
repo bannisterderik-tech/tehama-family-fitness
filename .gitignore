@@ -1,0 +1,12 @@
+# Intermediate generation artefacts — 200MB of source PNGs and raw clips.
+# The web-sized derivatives in assets/ are what the site actually serves.
+gen-img/
+gen-vid/
+
+# Local recovery snapshot
+.snapshot/
+
+# Local tooling
+node_modules/
+.DS_Store
+*.log
