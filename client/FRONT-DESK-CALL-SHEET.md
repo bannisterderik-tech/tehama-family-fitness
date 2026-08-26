@@ -61,6 +61,8 @@ Bring the printed 2026 schedule. Mark it up.
 | C4 | Thu 5:30 PM — AMRAP/Derek or Yoga Easy Flow/Kathy? | |
 | C5 | SilverSneakers — Tue/Thu/Fri noon, or M/W/F Classic + Tu/Th 1PM Circuit? | |
 | C6 | Barre — Tue 8:15 w/ Tami, or M/W/F 9:00 w/ Maggie? Both? | |
+| C6b | **Your own “New Barre Class” flyer is a fourth answer:** Barre Basics M/W/F 8:45, Barre Burn M/W/F 9:30, Barre 30 Tu/Th 12:15 — all with Maggie. Is that flyer current? | |
+| C6c | **Your own spin flyer** says Mon 6:00 AM & 5:30 PM, Tue 5:30 PM, Wed 6:00 AM & 5:30 PM, Fri 6:00 AM — Karla, Roxane & Kris. The calendar also has 8:30 AM Mon/Thu and 8:30 AM Sat. Which is right? | |
 | C7 | Basketball open gym — confirm twice daily, Mon–Fri, times | |
 | C8 | Any class on the calendar that no longer runs? | |
 | C9 | 15 instructors: Karla, Kevin, Tonnie, Amie, Aubrie, Jami, Roxane, Tami, Kris, Sally, Kyle, Debbie, Leslie, Kathy, Ty — correct spellings? Anyone missing/gone? | |
@@ -111,6 +113,26 @@ Places2Play, Bounce and Pickleballify — and mentioned **zero times** on your o
 | F6 | Who has the Google Business Profile login? | |
 | F7 | Corporate wellness — who handles the inquiry? | |
 | F8 | Racquetball — still active? Reservations? | |
+
+---
+
+## F2. The blog and the newsletter (new — /blog/ and the sign-up form)
+
+The site now has twelve posts across three shelves (routines, workouts, food) and an email
+opt-in on every one of them. Three of the food posts are **Kristi Havlin's recipes**, transcribed
+from her own graphics with her macros exactly as she published them and credited to her by name.
+
+| # | Question | Answer |
+|---|---|---|
+| N1 | **Where should sign-ups actually land?** Right now the form emails the front desk. That is a holding pattern, not a mailing list — it cannot unsubscribe anybody. Mailchimp and Constant Contact are both free at this size. | |
+| N2 | **Somebody has to click the confirmation email.** The first sign-up triggers a one-time confirmation from formsubmit.co. Until a human clicks it, **every sign-up is silently lost.** Same for the rate-request form. | ☐ done |
+| N3 | Who writes the newsletter, and how often? The site currently promises "about twice a month." | |
+| N4 | **Kristi Havlin** — is KH Macro Coach & Trainer offered *through* the club, or her own separate business? The recipes are credited to her; her direct email, her phone and her $250 partner-coaching price are **deliberately not published** until you say. | |
+| N5 | Can we use **Kristi's own recipe photographs**? Those three posts currently run with no photo rather than borrow one. | |
+| N6 | Anything on the blog you want changed or pulled? Every post is house-written from facts already on this site — no invented studies, no invented member stories. | |
+
+> **Say out loud:** the newsletter is the only thing on this website that lets you talk to a
+> member *after* they leave the building. It is worth twenty minutes of setup.
 
 ---
 

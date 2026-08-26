@@ -12,6 +12,7 @@ import {
   instructors, staff, team, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
   CHILDCARE_WINDOWS, lengthOf, leadForm,
   joinFlow, retracted,
+  newsletter, posts, postsIn, CATS, catOf, authors,
 } from "./data.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -29,11 +30,37 @@ const SITE = PREVIEW
 // attributed inline and can be switched off in one place with NAMES=0 until the family
 // signs off on how they want to be named.
 const NAMES = process.env.NAMES !== "0";
+// Marker.io — the visual feedback widget, so review comments land on the page
+// they are about instead of in a text message. It is a REVIEW tool: it renders a
+// floating button for every visitor and pulls a third-party script from
+// edge.marker.io, so it must come off before real members see this site.
+//   MARKER=0 node gen/build.mjs   → ship without it
+// Defaults to on, and the build report shouts on every run that includes it, so
+// it cannot go live by being forgotten about.
+const MARKER = process.env.MARKER !== "0";
+const MARKER_PROJECT = "6a8f2210f6df292d9ca1da9d";
+const markerTag = () => MARKER ? `
+<script>
+  window.markerConfig = { project: '${MARKER_PROJECT}', source: 'snippet' };
+  !function(e,r,a){if(!e.__Marker){e.__Marker={};var t=[],n={__cs:t};["show","hide","isVisible","capture","cancelCapture","unload","reload","isExtensionInstalled","setReporter","clearReporter","setCustomData","on","off"].forEach(function(e){n[e]=function(){var r=Array.prototype.slice.call(arguments);r.unshift(e),t.push(r)}}),e.Marker=n;var s=r.createElement("script");s.async=1,s.src="https://edge.marker.io/latest/shim.js";var i=r.getElementsByTagName("script")[0];i.parentNode.insertBefore(s,i)}}(window,document);
+</` + `script>` : "";
 
 const u = p => (p === "/" ? (BASE || "/") : `${BASE}${p}`);
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /* ------------------------------- tokens -------------------------------- */
+// Every block that paints a dark ground. Kept in one place so the
+// adjacent-section padding collapse below cannot silently miss a new one.
+const DARK_BLOCKS = [".sec-dark", ".sec-void", ".nl", ".band"];
+const TINT_BLOCKS = [".sec-tint", ".sec-cool", ".sec-hot"];
+const adjacent = (list, wrap = x => x) =>
+  list.flatMap(a => list.map(b => wrap(`${a}+${b}`))).join(",");
+const DARK_ADJ = [adjacent(DARK_BLOCKS), adjacent(TINT_BLOCKS)].join(",");
+const DARK_ADJ_HAS = [
+  DARK_BLOCKS.flatMap(a => DARK_BLOCKS.map(b => `${a}:has(+${b})`)),
+  TINT_BLOCKS.flatMap(a => TINT_BLOCKS.map(b => `${a}:has(+${b})`)),
+].flat().join(",");
+
 // --teal / --deep sampled from their own graphics. --lime is the Kids Fit room wall,
 // sampled from their own photograph and reserved for actions only.
 const CSS = `
@@ -294,6 +321,14 @@ text-transform:uppercase;padding-right:clamp(26px,3vw,48px);white-space:nowrap;d
    because the clamp floor never dropped below the desktop-ish 64px. */
 .sec+.sec{padding-top:clamp(28px,8.5vw,132px)}
 .sec:has(+.sec){padding-bottom:clamp(28px,8.5vw,132px)}
+/* Two dark blocks back to back read as ONE dark field with a hole punched in
+   the middle: you cannot see where one ends, so the doubled padding is not
+   breathing room, it is 260px of dead screen. Collapse the shared edge and let
+   the tonal step (--ground vs --void) do the dividing instead. Same for two
+   tinted blocks. :has() trims the first block's bottom; browsers without it
+   still get the second block's top trimmed, which is most of the fix. */
+${DARK_ADJ}{padding-top:clamp(20px,3vw,46px)}
+${DARK_ADJ_HAS}{padding-bottom:clamp(20px,3vw,46px)}
 .sec-tint{background:var(--paper-2)}
 .sec-dark{background:var(--ground);color:#B9C3DA}
 .sec-void{background:var(--void);color:#B9C3DA}
@@ -717,6 +752,156 @@ line-height:.95;display:block;text-transform:uppercase}
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
+
+/* ── the blog ─────────────────────────────────────────────────────────
+   Reading pages, not marketing pages. The body column is capped at 68ch
+   and set at 19px — everything else on this site is built to be read from
+   six feet away, but an article is read from eighteen inches. */
+.bl-hero{background:var(--void);color:#fff;padding:clamp(56px,9vw,120px) 0 clamp(40px,6vw,72px);position:relative}
+.bl-hero h1{color:#fff}
+.bl-hero .lede{color:var(--ice);max-width:56ch;margin-top:clamp(16px,2vw,24px)}
+.bl-hero .kick{color:var(--volt-lt);font-family:var(--disp);font-weight:800;font-size:.72rem;
+letter-spacing:.22em;text-transform:uppercase;margin-bottom:clamp(14px,2vw,20px)}
+
+/* category chips */
+.bl-cats{display:flex;flex-wrap:wrap;gap:9px;margin-top:clamp(26px,4vw,40px)}
+.bl-cats a{font-family:var(--disp);font-weight:800;font-size:.82rem;padding:10px 19px;border-radius:2px;
+border:1px solid rgba(184,208,224,.32);color:var(--ice);text-decoration:none;transition:.22s var(--ease);
+letter-spacing:-.015em;text-transform:uppercase}
+.bl-cats a:hover{background:var(--volt);border-color:var(--volt);color:#fff}
+.bl-cats a[aria-current="page"]{background:#fff;border-color:#fff;color:var(--void)}
+.bl-cats.on-light a{border-color:var(--line-2);color:var(--ink-2)}
+.bl-cats.on-light a:hover{background:var(--volt);border-color:var(--volt);color:#fff}
+.bl-cats.on-light a[aria-current="page"]{background:var(--ground);border-color:var(--ground);color:#fff}
+
+/* the card grid */
+.bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(22px,2.6vw,34px)}
+.bl-card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;
+border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:.28s var(--ease)}
+.bl-card:hover{border-color:var(--volt);transform:translateY(-3px);color:inherit}
+.bl-img{aspect-ratio:16/10;background:var(--paper-3);overflow:hidden}
+.bl-img img{width:100%;height:100%;object-fit:cover}
+/* No photograph? Then say so with type rather than borrow a picture of
+   something else. Recipe posts land here on purpose — see tbd.khPhotos. */
+.bl-nib{aspect-ratio:16/10;display:grid;place-items:center;padding:20px;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%)}
+.bl-nib b{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:-.04em;
+font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:.98;color:#fff;text-align:center;max-width:16ch}
+.bl-body{padding:clamp(20px,2.2vw,28px);display:flex;flex-direction:column;gap:10px;flex:1}
+.bl-card h3,.bl-lead h2{letter-spacing:-.035em}
+.bl-card p,.bl-lead p{color:var(--ink-2);font-size:.97rem;max-width:none}
+.bl-meta{font-family:var(--disp);font-weight:800;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+color:var(--volt);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.bl-meta .dim{color:var(--ink-3)}
+.bl-card .more{margin-top:auto;padding-top:8px}
+.bl-lead .more{padding-top:4px}
+
+/* lead card — first post on the index gets the room */
+.bl-lead{display:grid;grid-template-columns:1.15fr 1fr;gap:0;border:1px solid var(--line);
+border-radius:var(--r);overflow:hidden;text-decoration:none;color:inherit;transition:.28s var(--ease);background:#fff}
+.bl-lead:hover{border-color:var(--volt);color:inherit}
+.bl-lead .bl-img,.bl-lead .bl-nib{aspect-ratio:auto;min-height:320px;height:100%}
+.bl-lead .bl-nib b{font-size:clamp(1.5rem,3vw,2.2rem);max-width:14ch}
+.bl-lead .bl-body{padding:clamp(26px,3.4vw,46px);justify-content:center;gap:14px}
+.bl-lead h2{font-size:clamp(1.6rem,3.2vw,2.6rem)}
+.bl-lead p{font-size:1.06rem}
+@media(max-width:860px){.bl-lead{grid-template-columns:1fr}.bl-lead .bl-img,.bl-lead .bl-nib{min-height:0;aspect-ratio:16/10}}
+
+/* ── the article ─────────────────────────────────────────────────────── */
+.post{padding:clamp(38px,5vw,64px) 0 clamp(48px,7vw,90px)}
+.post .col{max-width:68ch;margin:0 auto}
+.post .col p,.post .col li{font-size:1.06rem;line-height:1.68;color:var(--ink);max-width:none}
+.post .col h3{font-size:clamp(1.35rem,2.4vw,1.85rem);text-transform:none;letter-spacing:-.03em;
+margin:clamp(34px,4vw,52px) 0 14px;color:var(--ground)}
+.post .col h4{margin:28px 0 10px}
+.post .col p+p{margin-top:16px}
+.post .col .md-ul,.post .col .md-ol{margin:18px 0 18px 24px;display:grid;gap:10px}
+.post .col .md-ul li{list-style:disc}.post .col .md-ol li{list-style:decimal}
+.post .col .md-q{border-left:3px solid var(--volt);padding:6px 0 6px 22px;margin:26px 0;
+font-family:var(--ser);font-style:italic;font-size:1.2rem;color:var(--ink-2)}
+.post .col .tw{margin:26px 0}
+.post .col hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+.post-lede{font-size:clamp(1.15rem,2vw,1.4rem);line-height:1.45;color:var(--ink-2);
+font-family:var(--ser);font-style:italic;letter-spacing:-.01em;max-width:none;margin-bottom:clamp(24px,3vw,38px)}
+.post-by{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:18px 0;
+border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:clamp(28px,3.5vw,44px)}
+.post-by .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%);color:#fff;
+font-family:var(--disp);font-weight:800;font-size:1.05rem;letter-spacing:-.04em}
+.post-by b{display:block;font-family:var(--disp);letter-spacing:-.03em;font-size:1.02rem;color:var(--ground)}
+.post-by span{color:var(--ink-3);font-size:.9rem}
+.post-src{background:var(--paper-2);border-left:3px solid var(--steel);padding:16px 20px;margin:0 0 clamp(26px,3vw,38px);
+font-size:.94rem;color:var(--ink-2)}
+.post-src b{color:var(--ground)}
+.post-note{margin-top:clamp(40px,5vw,64px);padding-top:22px;border-top:1px solid var(--line);
+font-size:.88rem;color:var(--ink-3)}
+
+/* ── recipe card ─────────────────────────────────────────────────────── */
+.rec{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:clamp(28px,3.5vw,44px) 0}
+.rec-top{background:var(--void);color:#fff;padding:clamp(22px,3vw,34px)}
+.rec-top .eyebrow{color:var(--volt-lt)}
+.rec-mac{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+.rec-mac div{text-align:center;padding:14px 6px;background:rgba(184,208,224,.08);border-radius:2px}
+.rec-mac b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(1.2rem,2.4vw,1.65rem);
+letter-spacing:-.045em;color:#fff;line-height:1}
+.rec-mac span{display:block;margin-top:5px;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
+.rec-serves{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-size:.9rem;color:var(--ice)}
+.rec-serves b{color:#fff}
+.rec-cols{display:grid;grid-template-columns:.85fr 1.15fr;gap:0}
+.rec-cols>div{padding:clamp(22px,3vw,34px)}
+.rec-cols>div+div{border-left:1px solid var(--line)}
+.rec-cols h4{font-family:var(--disp);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+color:var(--volt);margin-bottom:16px}
+.rec-ing{list-style:none;display:grid;gap:9px}
+.rec-ing li{padding-left:18px;position:relative;font-size:.99rem;line-height:1.5}
+.rec-ing li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;background:var(--volt);border-radius:50%}
+.rec-steps{list-style:none;display:grid;gap:16px;counter-reset:rs}
+.rec-steps li{counter-increment:rs;display:grid;grid-template-columns:30px 1fr;gap:12px;font-size:.99rem;line-height:1.55}
+.rec-steps li::before{content:counter(rs);font-family:var(--disp);font-weight:800;font-size:.85rem;
+width:26px;height:26px;border-radius:50%;background:var(--paper-3);color:var(--ground);display:grid;place-items:center}
+.rec-keeps{background:var(--paper-2);border-top:1px solid var(--line);padding:16px clamp(22px,3vw,34px);
+font-size:.93rem;color:var(--ink-2)}
+.rec-keeps b{color:var(--ground)}
+@media(max-width:760px){.rec-cols{grid-template-columns:1fr}
+.rec-cols>div+div{border-left:0;border-top:1px solid var(--line)}
+.rec-mac{grid-template-columns:repeat(2,1fr)}}
+
+/* ── newsletter ──────────────────────────────────────────────────────── */
+.nl{background:var(--ground);color:#fff}
+.nl h2{color:#fff}
+.nl .lede{color:var(--ice)}
+.nl-topics{list-style:none;display:grid;gap:11px;margin-top:22px}
+.nl-topics li{padding-left:26px;position:relative;color:var(--ice);font-size:1rem}
+.nl-topics li::before{content:"";position:absolute;left:0;top:.55em;width:9px;height:9px;
+background:var(--volt-lt);border-radius:50%}
+.nl-form{display:grid;gap:14px;align-content:start}
+.nl-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.nl-row{grid-template-columns:1fr}}
+.nl-form label{display:block;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.16em;
+text-transform:uppercase;color:var(--ice)}
+.nl-form input[type=text],.nl-form input[type=email]{width:100%;margin-top:8px;padding:14px 16px;font:inherit;
+font-size:1rem;background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.28);border-radius:2px;color:#fff}
+.nl-form input::placeholder{color:#8794B8}
+.nl-form input:focus{outline:3px solid var(--volt-lt);outline-offset:2px;background:rgba(255,255,255,.1)}
+.nl-form input.is-bad{border-color:#FF8C7A;background:rgba(255,140,122,.09)}
+.nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
+letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer}
+.nl-check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
+.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* Stretched edge to edge the button read as a banner, not a control. Sized to
+   its own label on desktop; full width on a phone, where a wide tap target wins. */
+.nl-form button{justify-self:start}
+@media(max-width:640px){.nl-form button{justify-self:stretch}}
+.nl-note{font-size:.86rem;color:#9AA7C6;max-width:46ch}
+.nl-note a{color:var(--ice)}
+.nl-msg{font-size:.97rem;padding:13px 16px;border-radius:2px;max-width:none}
+.nl-msg.is-ok{background:rgba(123,147,244,.16);color:#fff;border:1px solid var(--volt-lt)}
+.nl-msg.is-err{background:rgba(255,140,122,.12);color:#FFD9D2;border:1px solid #FF8C7A}
+/* footer variant — one line, no headline */
+.ftr-nl{margin-top:clamp(30px,5vw,52px);padding-top:26px;border-top:1px solid rgba(180,204,216,.14)}
+.ftr-nl h4{margin-bottom:12px}
+.ftr-nl .nl-form{max-width:560px}
+.ftr-nl .nl-form label{color:var(--steel)}
 `;
 
 
@@ -725,7 +910,8 @@ font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);let
 const NAV = [
   ["/schedule/", "Schedule"], ["/classes/", "Classes"], ["/amenities/", "The Building"],
   ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"], ["/fuel-bar/", "Fuel Bar"],
-  ["/membership/", "Membership"], ["/about/", "About"], ["/contact/", "Contact"],
+  ["/blog/", "Blog"],
+  ["/membership/", "Membership"], ["/team/", "Our Team"], ["/about/", "About"], ["/contact/", "Contact"],
 ];
 
 const jsonld = page => {
@@ -747,7 +933,7 @@ const jsonld = page => {
 function to24(t) { const m = mins(t); return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; }
 
 /* ------------------------------ layout --------------------------------- */
-const layout = ({ path, title, desc, body, og, schema, doc }) => `<!doctype html>
+const layout = ({ path, title, desc, body, og, schema, ld, doc }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -768,6 +954,8 @@ ${doc || PREVIEW ? '<meta name="robots" content="noindex,nofollow">' : ""}
 <script>document.documentElement.className+=' js'</script>
 <style>${CSS}</style>
 ${jsonld(schema)}
+${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ""}
+${markerTag()}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -827,6 +1015,7 @@ ${doc ? `<footer class="dftr"><div class="wrap">
       <li><a href="${u("/silversneakers/")}">SilverSneakers</a></li>
       <li><a href="${u("/personal-training/")}">Personal training</a></li>
       <li><a href="${u("/corporate-wellness/")}">Corporate wellness</a></li>
+      <li><a href="${u("/blog/")}">Tips, workouts &amp; recipes</a></li>
     </ul></div>
     <div><h4>The building</h4><ul>
       <li><a href="${u("/basketball/")}">Basketball &amp; racquetball</a></li>
@@ -846,6 +1035,7 @@ ${doc ? `<footer class="dftr"><div class="wrap">
       <li><a href="${u("/about/")}">About us</a></li>
     </ul></div>
   </div>
+  ${newsletterBlock({ compact: true })}
   <p class="honest">Mon&ndash;Fri 5a&ndash;8p &middot; Sat&ndash;Sun 8a&ndash;6p &middot; Childcare from 8.</p>
   <div class="bot">
     <span>© ${new Date().getFullYear()} ${biz.name} · Locally owned in Red Bluff since 2001</span>
@@ -1130,7 +1320,7 @@ const proof = () => `
 // and a large share of parents will not place a voice call to a gym. This is the
 // one conversion mechanism the site was missing entirely.
 const rateForm = () => `
-<section class="sec sec-dark rf" id="rate"><div class="wrap">
+<section class="sec sec-void rf" id="rate"><div class="wrap">
   <div class="split">
     <div>
       <p class="eyebrow">One minute, no sales process</p>
@@ -1329,6 +1519,104 @@ const todayStrip = () => `
   setInterval(tick, 60000);
 })();
 </script>`;
+
+
+/* ── newsletter opt-in ────────────────────────────────────────────────
+   Two variants off one component so the markup and the JS never drift:
+     newsletterBlock()  — the full dark section, for /blog/ and the posts
+     newsletterBlock({compact:true}) — the one-line version in the footer
+   Both post to the same endpoint, both degrade to a mailto: if there is
+   no endpoint configured, and both refuse to pretend a sign-up worked.
+   `id` keeps the two instances apart when a page carries both. */
+let nlSeq = 0;
+const newsletterBlock = ({ compact = false, heading, lede } = {}) => {
+  const id = `nl${++nlSeq}x`;   // trailing x: keeps nl8-e from ever colliding with nl81
+  const form = `
+<form class="nl-form" id="${id}" novalidate
+      ${newsletter.endpoint ? `action="${newsletter.endpoint}" method="post"` : ""}>
+  <div class="nl-row">
+    <label for="${id}e">Email <span aria-hidden="true">*</span>
+      <input id="${id}e" type="email" name="email" autocomplete="email" required
+             inputmode="email" placeholder="you@example.com"></label>
+    <label for="${id}n">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
+      <input id="${id}n" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
+  </div>
+  <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
+    Send me the recipes too &mdash; macros already worked out</label>
+
+  <!-- spam trap: real people never fill this in -->
+  <div class="nl-hp" aria-hidden="true"><label>Leave this empty
+    <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+  <input type="hidden" name="_subject" value="${esc(newsletter.subject)}">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
+
+  <button type="submit" class="btn btn-volt" id="${id}b">Sign me up &rarr;</button>
+  <p class="nl-note" id="${id}t">${newsletter.cadence}. Unsubscribe by replying to any of them, or
+  just <a href="tel:${biz.tel}">tell the desk</a>. We do not sell or share your address, ever.</p>
+  <p class="nl-msg" id="${id}m" role="status" aria-live="polite" hidden></p>
+</form>
+<script>
+(function(){
+  var f=document.getElementById('${id}'); if(!f) return;
+  var btn=document.getElementById('${id}b'), msg=document.getElementById('${id}m'),
+      note=document.getElementById('${id}t'), em=document.getElementById('${id}e');
+  var ENDPOINT=${newsletter.endpoint ? `'${newsletter.endpoint}'` : "null"};
+  function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='nl-msg '+(ok?'is-ok':'is-err'); }
+  em.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); });
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.querySelector('[name=_honey]').value) return;                 // bot
+    var v=em.value.trim();
+    // Deliberately loose. A regex that rejects real addresses is worse than
+    // one that lets a typo through — the confirmation email catches those.
+    if(!v || v.indexOf('@')<1 || v.indexOf('.',v.indexOf('@'))<0){
+      em.classList.add('is-bad'); em.setAttribute('aria-invalid','true'); em.focus();
+      say('That does not look like an email address yet.',false); return;
+    }
+    var d=new FormData(f); d.delete('_honey');
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up\\u2026';
+    if(!ENDPOINT){
+      location.href='mailto:${newsletter.to}?subject='+encodeURIComponent('${newsletter.subject}')+
+        '&body='+encodeURIComponent('Please add '+v+' to the newsletter list.');
+      btn.disabled=false; btn.textContent=label; return;
+    }
+    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return{};}) : Promise.reject(r.status); })
+      .then(function(){
+        f.querySelectorAll('input,button').forEach(function(el){ el.disabled=true; });
+        if(note) note.hidden=true;
+        say((d.get('first_name')?'Thanks '+d.get('first_name')+'. ':'')+
+            'You are on the list \\u2014 next one goes out within a couple of weeks.',true);
+      })
+      .catch(function(){
+        btn.disabled=false; btn.textContent=label;
+        say('That did not send. Give the desk your email on ${biz.phone} and we will add you.',false);
+      });
+  });
+})();
+</script>`;
+
+  if (compact) return `<div class="ftr-nl">
+  <h4>The newsletter</h4>
+  <p style="margin-bottom:16px;max-width:52ch">${newsletter.cadence} &mdash; schedule changes, a recipe,
+  and what is new in the building.</p>
+  ${form}
+</div>`;
+
+  return `<section class="sec nl" id="newsletter"><div class="wrap">
+  <div class="split">
+    <div>
+      <p class="eyebrow">${newsletter.cadence.replace(/^About /, "About ")} &middot; no spam</p>
+      <h2>${heading || "Get it in<br>your inbox"}</h2>
+      <p class="lede">${lede || `The schedule moves, and the board is not always the first place you find out.
+      Sign up and it comes to you instead.`}</p>
+      <ul class="nl-topics">${newsletter.topics.map(t => `<li>${t}</li>`).join("")}</ul>
+    </div>
+    ${form}
+  </div>
+</div></section>`;
+};
 
 const marquee = (items, dark = false) => {
   const run = items.map(t => `<span>${t}</span>`).join("");
@@ -2377,9 +2665,27 @@ const miniTable = rows => rows.length ? `<div class="tw"><table>
     <td><b>${esc(s.name)}</b></td><td class="who">${s.who ? esc(s.who) : "—"}</td><td>${ccTag(s)}</td></tr>`).join("")}</tbody>
 </table></div>` : `<p class="lede">Not on the board right now — <a href="tel:${biz.tel}">call the desk</a> to check.</p>`;
 
-const classPages = classes.filter(c => c.slug);
+/* Every class on the board has a page now, so the lookup has to be exact.
+   Prefix matching quietly cross-wired three pairs of pages: "tone" dragged
+   Zumba & Tone and Spin/Tone onto the Tone Zone page, "silversneakers" put
+   both SilverSneakers classes on each other's, and "yoga" put Yoga Easy Flow
+   on the yoga page and vice versa. */
+const sessionsOf = c => sessions.filter(s => (c.match || [c.name]).includes(s.name))
+  .sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day) || mins(a.time) - mins(b.time));
+
+const featured = classes.filter(c => c.feature);
+const rest = classes.filter(c => !c.feature);
+
+// A flyer that disagrees with the calendar is a fact about this business, not a
+// bug to hide. Name both, and say which one we cannot resolve.
+const flyerNote = c => !c.flyer ? "" : `<div class="note" style="margin-top:26px">
+  <b>Heads up — our sources disagree.</b>
+  ${c.flyer.says ? `${esc(c.flyer.src[0].toUpperCase() + c.flyer.src.slice(1))} says: ${esc(c.flyer.says)} ` : ""}
+  ${esc(c.flyer.conflict)}
+  <a href="tel:${biz.tel}">Call ${biz.phone}</a> and we will tell you what is running this week.</div>`;
+
 P("/classes/", `Group Classes — ${counts.classes} a Week, All Included | ${biz.short}`,
-  `Every group class at Tehama Family Fitness Center in Red Bluff: spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and more. ${counts.classes} a week, included with membership.`,
+  `Every group class at Tehama Family Fitness Center in Red Bluff: spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and more. ${counts.classes} a week, included with membership — and a page for every one of them.`,
   `
 ${phero(photos.studio, { kick: "All included with membership",
   h1: `${counts.classes} classes <em>a week</em>`,
@@ -2387,39 +2693,41 @@ ${phero(photos.studio, { kick: "All included with membership",
 
 <section class="sec"><div class="wrap">
   ${numbers([[String(counts.classes), "classes a week"], ["15", "instructors"],
-             ["2", "studios"], ["0", "booking required"]], false)}
+             [String(classes.length), "classes with a page"], ["0", "booking required"]], false)}
 </div></section>
 
 ${statement("Fifty-four classes a week, and not one of them costs extra.",
-  "Spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and the rest \u2014 turn up to any of them on the membership you already have.")}
+  "Spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and the rest — turn up to any of them on the membership you already have.")}
 
-${fullBleed(photos.reformer, "Reformers, barre and mats live in the studio \u2014 you do not bring any of it.")}
+${fullBleed(photos.reformer, "Reformers, barre and mats live in the studio — you do not bring any of it.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">The ones people search for</p><h2>Classes people<br>ask about most</h2></div>
-    <div><p class="lede">These six are the ones people ask about most. Everything else runs just as often \u2014
-    it is all on the board below.</p></div>
+    <div><p class="lede">These six are the ones people ask about most — but every class on the board
+    has its own page now, with its times, its room and what to bring.</p></div>
   </div>
   <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
-    ${classPages.map(c => `<a class="card rv" href="${u("/classes/" + c.slug + "/")}">
-      <h3>${c.name}</h3><p>${c.blurb}</p><span class="more">More \u2192</span></a>`).join("")}
+    ${featured.map(c => `<a class="card rv" href="${u("/classes/" + c.slug + "/")}">
+      <h3>${c.name}</h3><p>${c.blurb}</p><span class="more">More →</span></a>`).join("")}
   </div>
 </div></section>
 
-${fullBleed(photos.barre, "Two purpose-built studios \u2014 a spin room and a yoga, Pilates and dance studio.")}
+${fullBleed(photos.barre, "Two purpose-built studios — a spin room and a yoga, Pilates and dance studio.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
-    <div><p class="eyebrow">Everything else</p><h2>Also on the board<br>every week</h2></div>
-    <div><p class="lede">These run just as often \u2014 they simply do not need a page.</p></div>
+    <div><p class="eyebrow">Everything else</p><h2>The rest of<br>the board</h2></div>
+    <div><p class="lede">These run just as often. Every name below is a link — times, room,
+    instructor and what to bring.</p></div>
   </div>
   <div class="tw" style="margin-top:clamp(30px,3.5vw,44px)"><table>
     <thead><tr><th scope="col">Class</th><th scope="col">Where</th><th scope="col">What it is</th><th scope="col">Times a week</th></tr></thead>
-    <tbody>${classes.filter(c => !c.slug).map(c => {
-      const n = sessions.filter(x => x.name === c.name).length;
-      return `<tr><td><b>${esc(c.name)}</b></td><td class="who">${esc(c.room || "\u2014")}</td>
-      <td>${esc(c.blurb)}</td><td class="t-time">${n || "\u2014"}</td></tr>`; }).join("")}</tbody>
+    <tbody>${rest.map(c => {
+      const n = sessionsOf(c).length;
+      return `<tr><td><a href="${u("/classes/" + c.slug + "/")}"><b>${esc(c.name)}</b></a></td>
+      <td class="who">${esc(c.room || "—")}</td>
+      <td>${esc(c.blurb)}</td><td class="t-time">${n || "—"}</td></tr>`; }).join("")}</tbody>
   </table></div>
 </div></section>
 
@@ -2435,60 +2743,87 @@ ${fullBleed(photos.barre, "Two purpose-built studios \u2014 a spin room and a yo
   </div>
 </div></section>
 
-${band("Your first one is on us \u2014 because they all are.",
+${newsletterBlock({ heading: "Know before<br>the board does",
+  lede: `Class times move. Sign up and the changes reach you before you drive down for a class that
+  has shifted an hour — plus a recipe with the macros already worked out.` })}
+
+${band("Your first one is on us — because they all are.",
   "Classes are included with membership. Come a few minutes early and tell the instructor it is your first.",
   [["/schedule/", "The schedule"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
 `);
 
-for (const c of classPages) {
-  const rows = sessionsFor([c.name.toLowerCase().split(" ")[0]]);
+for (const c of classes) {
+  const rows = sessionsOf(c);
+  const others = classes.filter(x => x.slug !== c.slug && x.room === c.room).slice(0, 4);
+  const near = (others.length >= 4 ? others : [...others, ...featured.filter(x =>
+    x.slug !== c.slug && !others.some(o => o.slug === x.slug))]).slice(0, 4);
+  const related = posts.filter(p => (p.classes || []).includes(c.slug)).slice(0, 2);
+
   P(`/classes/${c.slug}/`, `${c.name} Classes in Red Bluff | ${biz.short}`,
-    `${c.name} at Tehama Family Fitness Center, Red Bluff — ${rows.length} sessions a week, included with membership. ${c.blurb}`,
+    `${c.name} at Tehama Family Fitness Center, Red Bluff — ${rows.length} session${rows.length === 1 ? "" : "s"} a week, included with membership. ${c.blurb}`,
     `
-${phero(photos[c.hero], { kick: `${rows.length} a week \u00b7 included with membership`,
+${phero(photos[c.hero], { kick: `${rows.length ? `${rows.length} a week · ` : ""}included with membership`,
   h1: `${c.name.replace(/ (.*)$/, " <em>$1</em>")}`,
   lede: c.blurb })}
 
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">When it runs</p><h2>${rows.length} time${rows.length === 1 ? "" : "s"}<br>a week</h2>
-      <p class="lede">Every row shows whether childcare is open at that hour \u2014 which is usually the
+      <p class="lede">Every row shows whether childcare is open at that hour — which is usually the
       thing that decides whether you make it.</p>
       ${has("scheduleSignedOff") ? "" : `<p style="margin-top:18px;color:var(--ink-3);font-size:.92rem">
       Straight from our live calendar. Call ${biz.phone} if you are coming for one class in particular.</p>`}</div>
-    <div>${miniTable(rows)}</div>
+    <div>${miniTable(rows)}${flyerNote(c)}</div>
   </div>
 </div></section>
 
 ${statement(`Included. No class fee, nothing to book.`,
-  `${c.name} is part of the membership, like every other class on the board. Turn up a few minutes early the first time and tell the instructor it is your first one \u2014 that is the whole process.`)}
+  `${c.name} is part of the membership, like every other class on the board. Turn up a few minutes early the first time and tell the instructor it is your first one — that is the whole process.`)}
 
 ${spread(photos[c.hero === "studio" ? "barre" : "studio"], { eyebrow: "What actually happens", flip: true,
   h2: "In the room",
   body: c.what,
   list: [`<b>Where:</b> ${c.room}`, `<b>Bring:</b> ${c.bring}`,
          "Mats, blocks, bands and weights are already in the studio",
-         "Included with membership \u2014 there is nothing to pay"] })}
+         "Included with membership — there is nothing to pay"],
+  cta: c.more || null })}
 
-${fullBleed(photos[c.hero2] || photos.studio, `${c.room} \u2014 where ${c.name} runs.`)}
+${c.benefits ? `<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Benefits you'll love</p><h2>What it<br>is for</h2>
+      <p class="lede" style="margin-top:18px">In our own words — quoted from ${esc(c.benefitsSrc)}.</p></div>
+    <div>${steps(c.benefits)}</div>
+  </div>
+</div></section>` : ""}
+
+${fullBleed(photos[c.hero2] || photos.studio, `${c.room} — where ${c.name} runs.`)}
+
+${related.length ? `<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">From the blog</p><h2>Before you<br>come in</h2></div>
+    <div class="grid g2">${related.map(p => `<a class="card rv" href="${u("/blog/" + p.slug + "/")}">
+      <h3>${esc(p.title)}</h3><p>${esc(p.dek)}</p><span class="more">Read it →</span></a>`).join("")}</div>
+  </div>
+</div></section>` : ""}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">More on the board</p><h2>Other classes<br>you might like</h2></div>
     <div class="grid g2">
-      ${classPages.filter(x => x.slug !== c.slug).slice(0, 4).map(x =>
+      ${near.map(x =>
         `<a class="card rv" href="${u("/classes/" + x.slug + "/")}"><h3>${x.name}</h3>
-        <p>${x.blurb}</p><span class="more">More \u2192</span></a>`).join("")}
+        <p>${x.blurb}</p><span class="more">More →</span></a>`).join("")}
     </div>
   </div>
-  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/classes/")}">All ${counts.classes} classes \u2192</a></p>
+  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/classes/")}">All ${classes.length} classes →</a></p>
 </div></section>
 
 ${band("It's included. Just turn up.",
-  `${c.name} is part of the membership \u2014 no class fee and nothing to book.`,
+  `${c.name} is part of the membership — no class fee and nothing to book.`,
   [["/schedule/", "Full schedule"], ["/membership/", "Membership", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
 `);
 }
+
 
 /* =========================== INSTRUCTORS ============================== */
 P("/team/", `Our Team — ${team.length} People | ${biz.short} Red Bluff`,
@@ -2753,6 +3088,28 @@ ${statement("The person taking your six o'clock spin class owns the building.",
   <h2>Locally owned and operated</h2><p class="lede">Same family, same building, since 2001.</p>
 </div></section>`}
 
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Everybody who works here</p><h2>All ${team.length} of us,<br>with names on</h2>
+      <p class="lede" style="margin-top:20px">${instructors.length} instructors, the front desk and the
+      childcare room. Every name is a page — their classes, their days, and the room they teach in.</p>
+      <p style="margin-top:24px"><a class="btn btn-volt" href="${u("/team/")}">Our team \u2192</a></p></div>
+    <div><p class="lede">Nobody here is an agency hire on a six-month contract. Most of them have
+    been teaching in this building for years, and three of them own it.</p></div>
+  </div>
+
+  <div class="tm-grid" style="margin-top:clamp(34px,4vw,52px)">
+    ${team.map(m => `<a class="tm rv" href="${u(`/team/${m.slug}/`)}">
+      ${portrait(m, { sizes: "(max-width:520px) 44vw, 200px" })}
+      <h3>${esc(m.name)}</h3>
+      <span class="r">${esc(m.role)}</span>
+      <span class="t">${m.teaches.length ? esc(m.teaches.slice(0, 3).join(" \u00b7 "))
+        : esc(m.blurb || "")}</span>
+      ${m.sessions.length ? `<span class="t">${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week</span>` : ""}
+    </a>`).join("")}
+  </div>
+</div></section>
+
 ${spread(photos.frontdesk, { eyebrow: "What we're for", flip: true,
   h2: "Second to none in quality,<br>cleanliness and service",
   body: "That is what we are aiming at, every day. Our staff are nationally accredited college graduates, personal trainers, exercise physiologists, strength and conditioning specialists, certified nutrition consultants, college athletes and certified instructors.",
@@ -2776,7 +3133,7 @@ ${fullBleed(photos.exteriorDusk, "Thirty thousand square feet, single storey, on
 ${proof()}
 
 ${band("Come and see the building.", "Walk in any day we are open. Ten-minute tour, no pressure.",
-  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/tour/", "Take the tour", "btn-ghost"], ["/contact/", "Directions", "btn-ghost"]])}
+  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/team/", "Meet the team", "btn-ghost"], ["/tour/", "Take the tour", "btn-ghost"], ["/contact/", "Directions", "btn-ghost"]])}
 `);
 
 /* ============================= CONTACT ================================ */
@@ -2968,6 +3325,224 @@ PAGES.push({ path: "/instructors/", redirect: u("/team/") });
     { doc: true, unlisted: true });
 }
 
+/* ================================ BLOG ================================
+   Three shelves — routines, workouts, food — plus a page per post.
+
+   The recipes are Kristi Havlin's, transcribed from her own graphics with
+   the macros exactly as she published them, credited on every post. Her
+   photographs are NOT copied into assets/: those posts run with a type
+   cover instead of borrowing an image (tbd.khPhotos). Same rule as the
+   rest of this site — we do not put up a picture of something that is not
+   the thing, and we do not use somebody's work without asking first.
+   ====================================================================== */
+const fmtDate = d => {
+  const [y, m, day] = d.split("-").map(Number);
+  return `${["January","February","March","April","May","June","July","August",
+    "September","October","November","December"][m - 1]} ${day}, ${y}`;
+};
+
+// A reading-time that is a count, not a guess: the words are right there.
+const readMins = post => {
+  const words = (post.lede + " " + post.body + " " +
+    (post.recipe ? post.recipe.ingredients.join(" ") + post.recipe.steps.join(" ") : ""))
+    .split(/\s+/).filter(Boolean).length;
+  return Math.max(2, Math.round(words / 210));
+};
+
+const postCard = (post, { lead = false } = {}) => {
+  const cat = catOf(post.cat);
+  const cover = post.hero
+    ? `<div class="bl-img">${pimg(photos[post.hero], {
+        sizes: lead ? "(max-width:860px) 92vw, 55vw" : "(max-width:700px) 92vw, 380px", alt: "" })}</div>`
+    : `<div class="bl-nib"><b>${esc(post.kicker || cat.name)}</b></div>`;
+  return `<a class="${lead ? "bl-lead" : "bl-card"} rv" href="${u(`/blog/${post.slug}/`)}">
+  ${cover}
+  <div class="bl-body">
+    <p class="bl-meta">${cat.name} <span class="dim">${fmtDate(post.date)}</span>
+      <span class="dim">${readMins(post)} min</span></p>
+    ${lead ? `<h2>${esc(post.title)}</h2>` : `<h3>${esc(post.title)}</h3>`}
+    <p>${esc(post.dek)}</p>
+    <span class="more">Read it →</span>
+  </div>
+</a>`;
+};
+
+const byline = post => {
+  const a = authors[post.author];
+  return `<div class="post-by">
+  <span class="av" aria-hidden="true">${esc(a.name.split(" ").map(w => w[0]).join("").slice(0, 2))}</span>
+  <span><b>${esc(a.name)}</b><span>${esc(a.role)}</span></span>
+  <span style="margin-left:auto;color:var(--ink-3);font-size:.9rem">${fmtDate(post.date)} · ${readMins(post)} min read</span>
+</div>`;
+};
+
+const recipeCard = r => `
+<div class="rec">
+  <div class="rec-top">
+    <p class="eyebrow">Per serving</p>
+    <div class="rec-mac">${r.macros.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join("")}</div>
+    <p class="rec-serves"><span>Makes <b>${esc(r.makes)}</b></span><span>Serving size <b>${esc(r.serving)}</b></span></p>
+  </div>
+  <div class="rec-cols">
+    <div><h4>Ingredients</h4><ul class="rec-ing">${r.ingredients.map(i => `<li>${esc(i)}</li>`).join("")}</ul></div>
+    <div><h4>Instructions</h4><ol class="rec-steps">${r.steps.map(t => `<li><span>${esc(t)}</span></li>`).join("")}</ol></div>
+  </div>
+  <p class="rec-keeps"><b>Keeps:</b> ${esc(r.keeps)}</p>
+</div>`;
+
+const blogHero = ({ kick, h1, lede, cur }) => `
+<section class="bl-hero"><div class="wrap">
+  <p class="kick">${kick}</p>
+  <h1>${h1}</h1>
+  <p class="lede">${lede}</p>
+  <nav class="bl-cats" aria-label="Blog categories">
+    <a href="${u("/blog/")}"${cur === "all" ? ' aria-current="page"' : ""}>Everything</a>
+    ${CATS.map(c => `<a href="${u(`/blog/${c.slug}/`)}"${cur === c.slug ? ' aria-current="page"' : ""}>${c.name}</a>`).join("")}
+  </nav>
+</div></section>`;
+
+const medicalNote = `<p class="post-note">Written by people who work in a gym, not by doctors. Nothing
+here is medical advice — if you are pregnant, injured, or managing a condition, talk to your doctor
+or your physical therapist before you change what you are doing. Our instructors will happily
+modify any of it for you; ask before class.</p>`;
+
+/* ---- /blog/ ---------------------------------------------------------- */
+const [leadPost, ...restPosts] = posts;
+P("/blog/", `Health Tips, Workouts & Recipes | ${biz.short} Red Bluff`,
+  `Routines, workouts and food from Tehama Family Fitness Center in Red Bluff — meal-prep recipes with the macros worked out, plain training plans for the equipment we actually have, and weeks built off our real class board.`,
+  `
+${blogHero({ kick: `${posts.length} posts · routines, workouts, food`,
+  h1: "Tips from<br>the building",
+  lede: `Three shelves. How to fit training into a week that is already full, what to actually do once
+  you are in the door, and what to eat around it — including Kristi's meal prep, macros already
+  worked out.`, cur: "all" })}
+
+<section class="sec"><div class="wrap">
+  ${postCard(leadPost, { lead: true })}
+  <div class="bl-grid" style="margin-top:clamp(24px,3vw,38px)">
+    ${restPosts.map(p => postCard(p)).join("")}
+  </div>
+</div></section>
+
+${newsletterBlock({})}
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Browse by shelf</p><h2>Three kinds<br>of post</h2></div>
+    <div class="grid g3">${CATS.map(c => `<a class="card rv" href="${u(`/blog/${c.slug}/`)}">
+      <h3>${c.name}</h3><p>${c.dek}</p>
+      <span class="more">${postsIn(c.slug).length} post${postsIn(c.slug).length === 1 ? "" : "s"} →</span></a>`).join("")}</div>
+  </div>
+</div></section>
+
+${band("Reading about it is the easy part.",
+  "Every class mentioned on this blog is included with membership, and the door is open till eight.",
+  [["/schedule/", "The schedule"], ["/classes/", "All classes", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
+`);
+
+/* ---- /blog/<category>/ ------------------------------------------------ */
+for (const c of CATS) {
+  const list = postsIn(c.slug);
+  P(`/blog/${c.slug}/`, `${c.name} — Tips from ${biz.short} | Red Bluff`,
+    `${c.dek} ${list.length} post${list.length === 1 ? "" : "s"} from Tehama Family Fitness Center, Red Bluff.`,
+    `
+${blogHero({ kick: `${list.length} post${list.length === 1 ? "" : "s"}`,
+  h1: c.name, lede: c.dek, cur: c.slug })}
+
+<section class="sec"><div class="wrap">
+  ${list.length ? `${postCard(list[0], { lead: true })}
+  ${list.length > 1 ? `<div class="bl-grid" style="margin-top:clamp(24px,3vw,38px)">
+    ${list.slice(1).map(p => postCard(p)).join("")}</div>` : ""}`
+  : `<p class="lede">Nothing on this shelf yet.</p>`}
+</div></section>
+
+${newsletterBlock({})}
+
+${band("It is all included anyway.",
+  "Every class we write about is part of the membership. No class fee, nothing to book.",
+  [["/blog/", "All posts"], ["/schedule/", "The schedule", "btn-ghost"]])}
+`);
+}
+
+/* ---- /blog/<post>/ ---------------------------------------------------- */
+for (const post of posts) {
+  const cat = catOf(post.cat);
+  const a = authors[post.author];
+  const linked = classes.filter(c => (post.classes || []).includes(c.slug));
+  const more = posts.filter(p => p.slug !== post.slug)
+    .sort((x, y) => (x.cat === post.cat ? -1 : 0) - (y.cat === post.cat ? -1 : 0)).slice(0, 3);
+
+  const ld = post.recipe ? {
+    "@context": "https://schema.org", "@type": "Recipe", name: post.title,
+    description: post.dek, author: { "@type": "Person", name: a.name },
+    datePublished: post.date, recipeYield: post.recipe.makes,
+    recipeIngredient: post.recipe.ingredients,
+    recipeInstructions: post.recipe.steps.map(t => ({ "@type": "HowToStep", text: t })),
+    nutrition: { "@type": "NutritionInformation",
+      calories: `${post.recipe.macros[0][0]} calories`,
+      proteinContent: post.recipe.macros[1][0], carbohydrateContent: post.recipe.macros[2][0],
+      fatContent: post.recipe.macros[3][0], servingSize: post.recipe.serving },
+    publisher: { "@type": "Organization", name: biz.name, url: `${SITE}/` },
+  } : {
+    "@context": "https://schema.org", "@type": "Article", headline: post.title,
+    description: post.dek, author: { "@type": post.author === "kh" ? "Person" : "Organization", name: a.name },
+    datePublished: post.date, dateModified: post.date,
+    articleSection: cat.name, mainEntityOfPage: `${SITE}/blog/${post.slug}/`,
+    publisher: { "@type": "Organization", name: biz.name, url: `${SITE}/` },
+  };
+
+  P(`/blog/${post.slug}/`, `${post.title} | ${biz.short} Red Bluff`,
+    `${post.dek} From Tehama Family Fitness Center, Red Bluff.`,
+    `
+${post.hero
+  ? phero(photos[post.hero], { kick: `${cat.name} · ${fmtDate(post.date)}`, h1: esc(post.title), lede: esc(post.dek), acts: false })
+  : `<section class="bl-hero"><div class="wrap">
+      <p class="kick">${cat.name} · ${fmtDate(post.date)}</p>
+      <h1>${esc(post.title)}</h1>
+      <p class="lede">${esc(post.dek)}</p>
+    </div></section>`}
+
+<article class="post"><div class="wrap">
+  <div class="col">
+    ${byline(post)}
+    <p class="post-lede">${esc(post.lede)}</p>
+    ${post.source ? `<p class="post-src"><b>Source:</b> ${esc(post.source)}</p>` : ""}
+    ${post.recipe ? recipeCard(post.recipe) : ""}
+    ${markdown(post.body.replace(/\]\(\//g, `](${BASE}/`))}
+    ${medicalNote}
+  </div>
+</div></article>
+
+${linked.length ? `<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Mentioned above</p><h2>Classes in<br>this post</h2></div>
+    <div class="grid g2">${linked.slice(0, 4).map(c => `<a class="card rv" href="${u(`/classes/${c.slug}/`)}">
+      <h3>${esc(c.name)}</h3><p>${esc(c.blurb)}</p><span class="more">Times and what to bring →</span></a>`).join("")}</div>
+  </div>
+</div></section>` : ""}
+
+${newsletterBlock({ heading: post.cat === "food" ? "Recipes, in<br>your inbox" : "More like<br>this one",
+  lede: post.cat === "food"
+    ? `A recipe with the macros already worked out, about twice a month — plus schedule changes
+       before they hit the board.`
+    : `Schedule changes before they hit the board, a recipe with the macros already worked out, and
+       what is new in the building. About twice a month.` })}
+
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Keep reading</p><h2>More from<br>the blog</h2></div>
+    <div class="bl-grid">${more.map(p => postCard(p)).join("")}</div>
+  </div>
+  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/blog/")}">All ${posts.length} posts →</a></p>
+</div></section>
+
+${band("The classes in here are all included.",
+  "No class fee, nothing to book. Turn up a few minutes early and tell the instructor it is your first.",
+  [["/schedule/", "The schedule"], ["/classes/", "All classes", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
+`, { og: post.hero ? photos[post.hero].src : undefined, ld });
+}
+
+
 /* ============================== WRITE ================================= */
 // Wipe the output first. Without this a page that stops being generated silently
 // survives from an earlier build and looks perfectly fine — which is exactly how
@@ -3032,6 +3607,8 @@ console.log(`  pages           ${PAGES.filter(p => !p.redirect).length}  (+404, 
 console.log(`  html            ${(bytes / 1024).toFixed(0)} KB total, ${(bytes / PAGES.length / 1024).toFixed(1)} KB avg`);
 console.log(`  docs/           ${(du(OUT) / 1024 / 1024).toFixed(2)} MB with assets`);
 console.log(`  schedule        ${counts.total} sessions · ${counts.classes} classes · ${counts.basketball} basketball · ${counts.pickleball} pickleball`);
+console.log(`  classes         ${classes.length} pages · ${classes.filter(c => c.flyer).length} carry a named source conflict`);
+console.log(`  blog            ${posts.length} posts · ${CATS.map(c => `${postsIn(c.slug).length} ${c.slug}`).join(" · ")}`);
 console.log(`  base path       ${BASE || "(none — custom domain)"}`);
 console.log(`  owner names     ${NAMES ? "SHOWN (attributed)" : "hidden (NAMES=0)"}`);
 console.log(`\n  ${open_.length} facts still open — every one renders as an honest ask, not a guess:`);
@@ -3062,4 +3639,13 @@ if (offenders.length) {
   console.log("  retracted-claim scan: clean");
 }
 console.log(`  Kids Fit photo held pending a signed release.`);
+// Both forms relay through formsubmit.co, which drops everything on the floor until a
+// human clicks its one-time confirmation email. Silent data loss is the worst kind, so
+// this shouts on every build until somebody flips the flag.
+for (const [what, f] of [["rate request", leadForm], ["newsletter", newsletter]]) {
+  if (f.endpoint && !f.confirmed)
+    console.log(`  \u26a0  ${what} form: formsubmit.co is NOT confirmed for ${f.to} — submissions are being LOST.`);
+}
+if (!newsletter.endpoint) console.log(`  newsletter: no endpoint — falling back to the visitor's mail app.`);
+if (MARKER) console.log(`  \u26a0  Marker.io feedback widget is IN this build (project ${MARKER_PROJECT}). Real visitors would see the button — rebuild with MARKER=0 before going live.`);
 console.log(`  ${"─".repeat(58)}\n`);

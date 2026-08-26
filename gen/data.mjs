@@ -76,6 +76,11 @@ export const tbd = {
                       q: "Do you supply the nets, or is it BYO?", src: "Places2Play · Bounce · Pickleheads", verify: true },
   scheduleSignedOff:{ v: false, ask: null,                           q: "Front desk has confirmed the schedule" },
   trainerize:       { v: null, ask: null,                            q: "Promote the Trainerize app?" },
+  // Added with the blog + newsletter build.
+  newsletterList:   { v: null, ask: null, q: "Where should newsletter sign-ups actually land? (Mailchimp / Constant Contact / the front desk inbox)" },
+  khAffiliation:    { v: null, ask: null, q: "Kristi Havlin — is KH Macro Coach & Trainer offered THROUGH the club, or is it her own business? Recipes are credited to her; her direct contact and the $250 partner package are held back until you say." },
+  khPhotos:         { v: null, ask: null, q: "Can we use Kristi's own recipe photographs on the blog? Right now those posts run without a photo rather than borrow one." },
+  barreFlyer:       { v: null, ask: null, q: "The barre flyer, the live calendar and Facebook give three different barre schedules. Which one is real?" },
 };
 export const has = k => tbd[k] && tbd[k].v != null && tbd[k].v !== false;
 export const val = k => (has(k) ? tbd[k].v : null);
@@ -288,47 +293,120 @@ export const team = [
 
 /* ------------------------------------------------------------------ *
  * CLASSES — only classes that actually appear on the calendar.
- * `page: true` means it earns a URL (people type the name). The rest are
- * rows on /classes/, because a page nobody searches for is a thin page.
+ *
+ * Every class on the board now earns its own URL. `feature: true` marks the
+ * six people actually type into a search box; they get the cards at the top
+ * of /classes/. The rest are linked from the table underneath.
+ *
+ * `match` is the exact session name(s) on the calendar. Do NOT go back to
+ * prefix matching: "tone" pulls in Zumba & Tone and Spin/Tone, "silversneakers"
+ * pulls in both SilverSneakers classes, and "yoga" pulls in Yoga Easy Flow —
+ * so three pages quietly showed each other's times.
+ *
+ * `what` describes the class type honestly. Where the club's own graphics say
+ * something specific (the Barre flyer, the Spin flyer), that is quoted and
+ * sourced in `flyer` — and where a flyer disagrees with the live calendar the
+ * conflict is named on the page, never silently resolved.
  * ------------------------------------------------------------------ */
 export const classes = [
-  { slug: "spin", hero: "spin", hero2: "cardio", name: "Spin", page: true, room: "Spin Room",
-    blurb: "Indoor cycling in the dedicated spin room. Ten sessions a week, most of them before 9 AM.",
+  { slug: "spin", hero: "spin", hero2: "cardio", name: "Spin", feature: true, room: "Spin Room",
+    blurb: "Indoor cycling in the dedicated spin room. Eleven sessions a week, most of them before 9 AM.",
     what: "Stationary bikes, an instructor calling climbs and sprints, and a clock. You set your own resistance, so the same class works for a first-timer and a racer.",
-    bring: "Water and a towel. Shoes clip in or strap on — the desk will show you." },
-  { slug: "yoga", hero: "yoga", hero2: "reformer", name: "Yoga", page: true, room: "Yoga/Pilates/Dance Studio",
-    blurb: "Four sessions a week, including an easy-flow evening class.",
-    what: "Mat work, breathing, and held postures in the studio. Yoga Easy Flow on Thursday evening is the slower of the two.",
+    bring: "Water and a towel. Shoes clip in or strap on — the desk will show you.",
+    flyer: { src: "the club's own spin graphic (@tehamafamilyfitness)",
+      says: "Spin with Karla, Roxane & Kris — Monday 6:00 AM and 5:30 PM, Tuesday 5:30 PM, Wednesday 6:00 AM and 5:30 PM, Friday 6:00 AM.",
+      conflict: "The live calendar also lists spin at 8:30 AM Monday and Thursday and 8:30 AM Saturday, which the graphic does not mention. Confirm which is current." } },
+  { slug: "yoga", hero: "yoga", hero2: "reformer", name: "Yoga", feature: true, room: "Yoga/Pilates/Dance Studio",
+    blurb: "Three sessions a week — plus the gentler Yoga Easy Flow on Thursday evening, which has its own page.",
+    what: "Mat work, breathing, and held postures in the studio. Monday evening, Tuesday and Friday morning. Yoga Easy Flow on Thursday evening is the slower one and is listed separately.",
     bring: "A mat if you have one; the studio has them if you don't." },
-  { slug: "barre", hero: "barre", hero2: "studio", name: "Barre Above", page: true, room: "Studio",
+  { slug: "barre", hero: "barre", hero2: "studio", name: "Barre Above", feature: true, room: "Studio",
     blurb: "Small, precise movements at the barre — legs, seat, core.",
     what: "Ballet-derived positions held and pulsed, usually with light weights and a band. Low impact, high burn.",
-    bring: "Grip socks if you have them." },
-  { slug: "zumba", hero: "studio", hero2: "barre", name: "Zumba & Tone", page: true, room: "Studio",
-    blurb: "Latin-dance cardio with a toning block. Four mornings a week with Tonnie.",
+    bring: "Grip socks if you have them.",
+    benefits: [
+      ["Tone & strengthen", "Build lean muscle and improve endurance."],
+      ["Improve posture", "Strengthen your core and support better alignment."],
+      ["Increase flexibility", "Lengthen, stretch and move with greater ease."],
+      ["Low impact, high results", "Effective, joint-friendly, and sustainable."],
+      ["All levels welcome", "Modifications for every body and every goal."],
+    ],
+    benefitsSrc: "the club's own barre flyer",
+    flyer: { src: "the club's own “New Barre Class” flyer",
+      says: "Barre Basics Mon/Wed/Fri 8:45 AM, Barre Burn Mon/Wed/Fri 9:30 AM, Barre 30 Tue/Thu 12:15 PM — with Maggie. “Strength. Lengthen. Empower.” Included with your membership.",
+      conflict: "The live calendar lists one barre session, Tuesday 8:15 AM with Tami, under the name Barre Above. Facebook has advertised Mon/Wed/Fri 9:00 with Maggie. Three sources, three answers — call the desk before you plan around it." } },
+  { slug: "zumba", hero: "studio", hero2: "barre", name: "Zumba & Tone", feature: true, room: "Studio",
+    blurb: "Latin-dance cardio with a toning block. Three mornings a week with Tonnie.",
     what: "Choreographed dance cardio — follow along, nobody's watching you. The tone half adds light weights.",
     bring: "Shoes that pivot. Water." },
-  { slug: "pilates", hero: "yoga", hero2: "reformer", name: "Mat Pilates", page: true, room: "Studio",
+  { slug: "pilates", hero: "yoga", hero2: "reformer", name: "Mat Pilates", feature: true, room: "Studio",
     blurb: "Core and control on the mat, three mornings a week with Jami.",
     what: "Slow, exact movement from the centre. We also have a Pilates Reformer out on the floor.",
     bring: "A mat, or use the studio's." },
-  { slug: "tai-chi", hero: "studio", hero2: "stretch", name: "Tai Chi", page: true, room: "Studio",
+  { slug: "tai-chi", hero: "studio", hero2: "stretch", name: "Tai Chi", feature: true, room: "Studio",
     blurb: "Every weekday morning at 7:15 with Kevin. Five days a week, no exceptions.",
     what: "Slow weight-shifting forms, standing the whole time. Easy on joints, hard on balance — which is the point.",
     bring: "Flat shoes. Nothing else." },
-  { slug: null, name: "Tone Zone", room: "Studio", blurb: "Full-body toning with weights." },
-  { slug: null, name: "Body Burner", room: "Studio", blurb: "Conditioning circuit, early or late." },
-  { slug: null, name: "Lean & Mean", room: "Studio", blurb: "Mid-morning strength-and-cardio mix." },
-  { slug: null, name: "Hybrid", room: "Studio", blurb: "5:30 AM strength-and-cardio combo, Tue/Thu." },
-  { slug: null, name: "U-Jam", room: "Studio", blurb: "Dance-fitness, hip-hop and world beats." },
-  { slug: null, name: "Cardio Circuit", room: "Circuit Training Room", blurb: "Stations, rotating, on the clock." },
-  { slug: null, name: "Stretch & Mobility", room: "Studio", blurb: "Range-of-motion work with Tami." },
-  { slug: null, name: "Drums Alive", room: "Studio", blurb: "Drumsticks, stability balls, cardio. Three mornings." },
-  { slug: null, name: "Kettlebell", room: "Freeweight Room", blurb: "Swings, cleans, carries." },
-  { slug: null, name: "Spin/Tone", room: "Spin Room", blurb: "Half the class on the bike, half off it." },
-  { slug: null, name: "SilverSneakers Classic", room: "Studio", blurb: "Standing and seated strength for older adults." },
-  { slug: null, name: "SilverSneakers Cardio Circuit", room: "Circuit Room", blurb: "Low-impact circuit for older adults." },
-  { slug: null, name: "Yoga Easy Flow", room: "Studio", blurb: "The gentler evening yoga, Thursdays with Kathy." },
+
+  /* ── the rest of the board. Same treatment, one page each. ───────────── */
+  { slug: "tone-zone", hero: "dumbbells", hero2: "studio", name: "Tone Zone", room: "Studio",
+    blurb: "Full-body toning with weights.",
+    what: "Light-to-moderate dumbbells worked through timed sets, top to bottom. Higher reps than the strength floor, shorter rests, and the instructor keeps the room on the clock.",
+    bring: "Water and a towel. The weights, bands and mats are already in the studio." },
+  { slug: "body-burner", hero: "crosstrain", hero2: "circuit", name: "Body Burner", room: "Studio",
+    blurb: "Conditioning circuit, early or late.",
+    what: "A conditioning circuit — work, move, repeat. It runs at 5:30 AM Friday and 4:30 PM Monday and Wednesday, so it is built for people fitting it either side of a shift.",
+    bring: "Water, a towel, and shoes you can move sideways in." },
+  { slug: "lean-and-mean", hero: "nautilus", hero2: "gymfloor", name: "Lean & Mean", room: "Studio",
+    blurb: "Mid-morning strength-and-cardio mix.",
+    what: "Strength blocks alternated with cardio blocks, mid-morning, with Aubrie — who is also one of the owners. Weights are light enough to keep moving and heavy enough to count.",
+    bring: "Water and a towel." },
+  { slug: "hybrid", hero: "crosstrain", hero2: "dumbbells", name: "Hybrid", room: "Studio",
+    blurb: "5:30 AM strength-and-cardio combo, Tue/Thu.",
+    what: "Strength and cardio in one 5:30 AM block, Tuesday and Thursday. The earliest class on the board, and the room is unlocked before it.",
+    bring: "Water. The building opens at 5:00, so there is no rush at the door.",
+    flyer: { src: "the printed schedule sheet", says: null,
+      conflict: "The printed sheet lists Body Burner in this 5:30 AM Tuesday slot, not Hybrid. Confirm at the desk." } },
+  { slug: "u-jam", hero: "studio", hero2: "gymfloor", name: "U-Jam", room: "Studio",
+    blurb: "Dance-fitness, hip-hop and world beats.",
+    what: "Dance fitness set to hip-hop and world beats — choreographed, loud, and taught to be followed rather than learned. Tuesday and Wednesday at 5:45 PM.",
+    bring: "Shoes that pivot, and water." },
+  { slug: "cardio-circuit", hero: "circuit", hero2: "cardio", name: "Cardio Circuit", room: "Circuit Training Room",
+    blurb: "Stations, rotating, on the clock.",
+    what: "The circuit room is a ring of air-pressure machines. You rotate through the stations on a timer with cardio between them, so you are never queuing for a piece of kit.",
+    bring: "Water and a towel. Nothing to set up — the machines adjust as you sit down." },
+  { slug: "stretch-and-mobility", hero: "stretch", hero2: "studio", name: "Stretch & Mobility", room: "Studio",
+    blurb: "Range-of-motion work with Tami.",
+    what: "Range-of-motion work with Tami — held stretches, joint circles, and the hips-and-shoulders end of things. Three sessions a week, two of them at 6:00 AM.",
+    bring: "Nothing. Mats, rollers and straps are in the studio." },
+  { slug: "drums-alive", hero: "studio", hero2: "kettlebells", name: "Drums Alive", room: "Studio",
+    blurb: "Drumsticks, stability balls, cardio. Three mornings.",
+    what: "Drumsticks on a stability ball, to music, for the length of a cardio class. It looks unserious and it is not — arms and shoulders know about it the next day. Mon/Wed/Fri at 10:30 with Kevin.",
+    bring: "Water. Sticks and balls are provided." },
+  { slug: "kettlebell", hero: "kettlebells", hero2: "freeweights", name: "Kettlebell", room: "Freeweight Room",
+    blurb: "Swings, cleans, carries.",
+    what: "Swings, cleans and carries in the freeweight room. Technique first — the hinge is the whole class the first time you come, and the bells stay light until it looks right.",
+    bring: "Flat shoes. Water." },
+  { slug: "spin-tone", hero: "spin", hero2: "dumbbells", name: "Spin/Tone", room: "Spin Room",
+    blurb: "Half the class on the bike, half off it.",
+    what: "Half on the bike, half off it — intervals on the spin bike, then dumbbell and band work beside it. Tuesday at 5:30 PM with Roxane.",
+    bring: "Water and a towel. The desk will set your bike up the first time." },
+  { slug: "silversneakers-classic", hero: "studio", hero2: "stretch", name: "SilverSneakers Classic", room: "Studio",
+    blurb: "Standing and seated strength for older adults.",
+    what: "Standing and seated strength for older adults, with a chair used for support rather than as a fallback. Hand weights, bands and a ball. Noon, Monday, Wednesday and Friday, with Kevin.",
+    bring: "Nothing. If your plan covers SilverSneakers, the class is covered too — bring the card the first time.",
+    more: ["/silversneakers/", "How SilverSneakers works here"] },
+  { slug: "silversneakers-cardio-circuit", hero: "circuit", hero2: "stretch", name: "SilverSneakers Cardio Circuit", room: "Circuit Room",
+    blurb: "Low-impact circuit for older adults.",
+    what: "Low-impact cardio worked in blocks, with a chair for standing support and upper-body work between rounds. Thursday at noon and Tuesday at 1:00 PM, with Kevin.",
+    bring: "Nothing. Bring your SilverSneakers card the first time.",
+    more: ["/silversneakers/", "How SilverSneakers works here"] },
+  { slug: "yoga-easy-flow", hero: "yoga", hero2: "studio", name: "Yoga Easy Flow", room: "Studio",
+    blurb: "The gentler evening yoga, Thursdays with Kathy.",
+    what: "The slower of the two yoga classes — longer holds, more transitions explained, and no expectation that you have done it before. Thursday at 5:30 PM with Kathy.",
+    bring: "A mat if you have one; the studio has them if you don't.",
+    flyer: { src: "the printed schedule sheet", says: null,
+      conflict: "The printed sheet lists AMRAP with Derek in this Thursday 5:30 PM slot. Confirm at the desk." } },
 ];
 
 /* ------------------------------------------------------------------ *
@@ -554,3 +632,651 @@ export const joinFlow = {
   pricesShown: false,
   familySku: false,
 };
+
+/* ------------------------------------------------------------------ *
+ * NEWSLETTER
+ *
+ * Same mechanism as the rate form: a plain POST to formsubmit.co, which
+ * relays to a real inbox. IT DOES NOT WORK UNTIL SOMEBODY CLICKS THE
+ * CONFIRMATION EMAIL formsubmit sends on the first submission. Do that
+ * before launch or every sign-up is silently lost.
+ *
+ * This is a holding pattern, not a mailing list. It collects addresses to
+ * an inbox; it does not manage subscriptions, and it cannot unsubscribe
+ * anybody. `tbd.newsletterList` is the question that replaces it — the
+ * moment the club picks Mailchimp or Constant Contact, swap `endpoint`
+ * for the list's form action and delete this note.
+ *
+ * Set `endpoint: null` and it degrades to the visitor's own mail app.
+ * ------------------------------------------------------------------ */
+export const newsletter = {
+  endpoint: "https://formsubmit.co/ajax/frontdesk@clubtehama.com",
+  to: "frontdesk@clubtehama.com",
+  subject: "Newsletter sign-up — tehamafamilyfitness.com",
+  confirmed: false,   // flip once the confirmation email has been clicked
+  cadence: "About twice a month",
+  topics: [
+    "Schedule changes before they hit the board",
+    "A recipe with the macros already worked out",
+    "What is new in the building",
+  ],
+};
+
+/* ------------------------------------------------------------------ *
+ * THE BLOG
+ *
+ * Three shelves: routines (fitting training into a real week), workouts
+ * (what to actually do in this building), food (what to eat around it).
+ *
+ * SOURCING. The recipes are Kristi Havlin's — KH Macro Coach & Trainer —
+ * transcribed from her own graphics, macros and all, and credited to her
+ * on every one. Her photographs are NOT reproduced: the posts run without
+ * an image rather than borrow one (see tbd.khPhotos). Her direct contact
+ * and her $250 partner-coaching price are deliberately not published here
+ * (see tbd.khAffiliation) — a personal phone number on the club's website
+ * is the club's call to make, not this build's.
+ *
+ * Everything else is house-written and grounded in facts this repo already
+ * holds: the real hours, the real childcare windows, the real equipment
+ * list, the real Fuel Bar menu, the real calendar. No invented studies, no
+ * invented member stories, no numbers that are not in data.mjs.
+ *
+ * Nothing here is medical advice, and every post says so at the bottom.
+ * ------------------------------------------------------------------ */
+export const authors = {
+  kh:   { name: "Kristi Havlin", role: "Macro coach and trainer",
+          bio: "Coaches macros and trains in Tehama County. The recipes here are hers — macros already worked out, five servings at a time.",
+          verify: true },
+  desk: { name: "The front desk", role: `${"Tehama Family Fitness Center"}`,
+          bio: "Written in the building, about the building. If something here is wrong, tell us and we will fix it." },
+};
+
+export const CATS = [
+  { slug: "routines", name: "Routines",
+    dek: "Fitting training into a week that is already full — built around our actual hours and the actual childcare windows." },
+  { slug: "workouts", name: "Workouts",
+    dek: "What to do once you are in the door, on the equipment that is genuinely here." },
+  { slug: "food", name: "Food",
+    dek: "Meal prep and macros from Kristi Havlin, plus what is worth ordering at the Fuel Bar." },
+];
+
+const R = (o) => o;   // recipe marker, for readability below
+
+export const posts = [
+  /* ---------------------------------------------------------------- FOOD */
+  { slug: "korean-ground-turkey-bowls", cat: "food", date: "2026-08-19", author: "kh",
+    title: "Korean ground turkey bowls",
+    dek: "Five containers, 322 calories each, 30 grams of protein. The one people ask for again.",
+    kicker: "Prep once, eat well all week",
+    source: "Recipe and macros: Kristi Havlin, KH Macro Coach & Trainer. Published here with the numbers exactly as she wrote them.",
+    lede: "This is the meal prep that converts people. It takes one pan, one rice cooker and about forty minutes, and it comes out of the fridge for five days without turning into a chore.",
+    recipe: R({
+      makes: "5 servings", serving: "1 bowl",
+      macros: [["322", "calories"], ["30g", "protein"], ["28g", "carbs"], ["10g", "fat"]],
+      ingredients: [
+        "2 pounds ground turkey (93/7)",
+        "1/2 cup lightly-packed brown sugar",
+        "1/4 cup soy sauce",
+        "1 tablespoon sriracha sauce",
+        "1 cup basmati rice",
+        "2 cups water",
+        "1 tablespoon salt",
+        "2 carrots, diced (150g)",
+        "1 cucumber, diced (300g)",
+        "Small bunch of green onions, diced",
+        "8–10 ounces spinach",
+      ],
+      steps: [
+        "Rinse your rice well and put it in the rice cooker with the water and salt. If cooking over the stove, follow the directions on the back of the bag of rice.",
+        "Cook turkey in a skillet over medium heat until no longer pink.",
+        "Drain fat then return the skillet to the stove.",
+        "Over medium low heat, stir in the brown sugar, soy sauce, and sriracha. Simmer for about 10–15 minutes until the sauce thickens.",
+        "Steam your spinach and carrots separately, until soft.",
+        "Lay out 5 meal prep containers. To each container add 3 ounces of cooked rice, 1/5 of the diced cucumbers (1/2 cup), 1/5 of the cooked carrots (1/4 cup), a scoop of the spinach, and 1/5 of the ground turkey (about 3/4 cup). Top with green onions and extra sriracha if you like spicy.",
+        "Cover with lids and store in the refrigerator up to 5 days.",
+      ],
+      keeps: "Up to 5 days in the fridge.",
+    }),
+    body: `
+### Why this one works after a class
+
+Thirty grams of protein and a real carb portion, in something you can eat cold at a desk. If you
+train at 6 AM and eat this at noon, you are not making a decision about lunch on four hours of
+sleep — the decision was made on Sunday.
+
+### The two places people go wrong
+
+- **Under-cooking the sauce.** Ten to fifteen minutes is not a suggestion. It has to thicken or the
+  rice turns to soup by Wednesday.
+- **Building it hot.** Let everything cool before the lids go on, or you get condensation and,
+  by day three, sad rice.
+
+### Scaling it
+
+The macros above are per bowl, at five bowls. If you split it into four, everything goes up by a
+quarter — about 400 calories and 37 grams of protein. Weigh the turkey rather than eyeballing it;
+93/7 and 85/15 are a 90-calorie difference per serving.
+`,
+  },
+
+  { slug: "chicken-parmesan-gnocchi", cat: "food", date: "2026-08-12", author: "kh",
+    title: "Chicken parmesan gnocchi",
+    dek: "325 calories, 33 grams of protein, and it tastes like the thing you would order.",
+    kicker: "High protein, comforting, easy prep",
+    source: "Recipe and macros: Kristi Havlin, KH Macro Coach & Trainer.",
+    lede: "The reason most meal prep fails in week three is that it stops being food you want. This is the answer to that — baked, cheesy, and still 325 calories.",
+    recipe: R({
+      makes: "5 servings", serving: "1 bowl",
+      macros: [["325", "calories"], ["33.4g", "protein"], ["30g", "carbs"], ["9.3g", "fat"]],
+      ingredients: [
+        "1 & 1/2 pounds boneless, skinless chicken breasts or tenders",
+        "10 ounces package gnocchi",
+        "10 grams butter",
+        "1 cup chicken broth",
+        "1 cup marinara sauce (or stewed tomatoes + 1/2 tbsp Italian seasoning)",
+        "1/4 cup shredded parmesan (21g)",
+        "3/4 cup reduced fat mozzarella (84g)",
+        "Salt & pepper to taste",
+      ],
+      steps: [
+        "Arrange 5 oven safe containers on a cookie sheet. Lightly spray with cooking spray.",
+        "Cut chicken into 1 inch cubes. Cook over medium heat with salt and pepper until no longer pink. Remove and set aside.",
+        "In the same pan add butter. Once melted, add gnocchi and sauté a few minutes until golden brown. If they begin to stick to the bottom of the pan add the broth.",
+        "Let the gnocchi simmer in the broth for about 5 minutes, until it thickens up.",
+        "Turn off heat and add the marinara sauce and chicken.",
+        "Evenly distribute into your containers (about 1 cup each). Top with cheeses.",
+        "Broil on high or bake 3–5 minutes until the cheese melts and the top gets nice and crispy.",
+      ],
+      keeps: "Store in the fridge up to 4 days. Reheat and enjoy.",
+    }),
+    body: `
+### The trick is the gnocchi, not the chicken
+
+Gnocchi browns. That is the whole thing. Give it a few minutes in the butter before any liquid goes
+near it and you get a crisp edge that survives being reheated; skip that and you get a bowl of
+dumplings. The broth goes in after, and only if they start to stick.
+
+### Weigh the cheese
+
+Twenty-one grams of parmesan and 84 grams of mozzarella is what these macros are built on. Cheese
+is where a 325-calorie meal quietly becomes a 500-calorie one — it is the single ingredient most
+worth putting on a scale.
+
+### If you want it higher protein
+
+Push the chicken to two pounds and leave everything else alone: about 39 grams of protein a serving,
+for roughly 30 more calories. That is the cheapest trade in the recipe.
+`,
+  },
+
+  { slug: "pork-enchilada-bowls", cat: "food", date: "2026-08-05", author: "kh",
+    title: "Pork enchilada bowls",
+    dek: "455 calories and 45 grams of protein. The big one, for the days you actually trained hard.",
+    kicker: "Savory, cheesy and comforting",
+    source: "Recipe and macros: Kristi Havlin, KH Macro Coach & Trainer.",
+    lede: "Layered like a lasagna, built like an enchilada, and the Greek yogurt is doing the work that sour cream usually does — which is where the protein number comes from.",
+    recipe: R({
+      makes: "5 servings", serving: "1 bowl",
+      macros: [["455", "calories"], ["45.6g", "protein"], ["36.5g", "carbs"], ["14.1g", "fat"]],
+      ingredients: [
+        "20 ounces cooked pork loin",
+        "28 ounce can red enchilada sauce",
+        "1 cup plain non fat Greek yogurt (227g)",
+        "10 corn tortillas",
+        "5 ounces Monterey Jack cheese",
+        "5 teaspoons cotija cheese",
+      ],
+      steps: [
+        "Preheat oven to 350°F and arrange oven safe containers on a cookie sheet. Spray lightly with cooking spray.",
+        "Warm corn tortillas in the microwave for 30 seconds, or over the gas burner until crispy.",
+        "In a bowl mix Greek yogurt with about 1/2 cup of the enchilada sauce.",
+        "Begin layering in all ingredients in this order: about 1/4 cup enchilada sauce, 1 corn tortilla, 2 ounces pork, 1/8 cup Greek yogurt mixture, 1/2 ounce Monterey jack cheese. Repeat. Top with cotija and bake for 30 minutes.",
+        "Let cool before covering with lids and placing in the refrigerator up to 5 days.",
+      ],
+      keeps: "Airtight containers, up to 5 days in the fridge.",
+    }),
+    body: `
+### Yogurt instead of sour cream
+
+A cup of plain non-fat Greek yogurt carries about 22 grams of protein and almost no fat. Cut with
+half a cup of enchilada sauce it stops reading as yogurt entirely — this is the swap that turns a
+comfort meal into a 45-gram-protein one, and nobody at the table notices.
+
+### It is a layer cake, so build it in order
+
+Sauce, tortilla, pork, yogurt, cheese. Repeat. The bottom layer of sauce is what stops the first
+tortilla welding itself to the glass.
+
+### Where this one fits
+
+455 calories is the biggest of the three recipes on this blog, and deliberately so. This is the
+container for a day you did something hard — a Body Burner at 4:30, a spin class and the strength
+floor after it. On a rest day, the [turkey bowls](/blog/korean-ground-turkey-bowls/) are the
+better fit.
+`,
+  },
+
+  { slug: "what-to-order-at-the-fuel-bar", cat: "food", date: "2026-07-29", author: "desk",
+    classes: ["body-burner"],
+    title: "What to order at the Fuel Bar, and what it costs",
+    dek: "The whole menu, the actual prices, and which one is right for what you just did.",
+    kicker: "Every price on the board",
+    hero: "coffee",
+    lede: "The Fuel Bar is in the lobby and the coffee is free until 9 AM. Beyond that, here is the honest version of what to order — including when the answer is water and a banana.",
+    body: `
+### After a class
+
+**A protein shake, $7.** Vanilla, chocolate or cookies and cream, pick two. Spinach, creatine or
+almond milk are a dollar or fifty cents on top. This is the one that does a job — if you trained
+before work and lunch is three hours out, that is the gap it closes.
+
+If $7 is not the move every day, it is not meant to be. Most people do it two or three times a week
+after the harder sessions and drink water the rest of the time.
+
+### When you are hot and it is 105 outside
+
+**Recharge smoothie, $5 for 16oz or $6 for 24oz.** Or an **LMNT packet at $2** — electrolytes,
+no sugar, mixes into your own bottle. In a Red Bluff July the packet is genuinely the better buy,
+and the ready-to-drink is $3.50 if you would rather not mix it.
+
+### Before a 6 AM class
+
+**Coffee is free until 9 AM**, and $1.25 after. That is the entire recommendation. Pre-workout is
+$2 for a single serve of Bucked Up or RYSE if you want it, energy drinks are $3.50, and the
+elevated energy is $5 — but a lot of people at the 6 AM spin class are running on the free coffee
+and doing fine.
+
+### The snack shelf
+
+Protein bars are $3.50 and a banana is $1. If you came straight from work and you are about to do
+Body Burner on nothing, the banana is the correct answer and it costs a dollar.
+
+### The full board
+
+Everything above, with the rest of it, is on the [Fuel Bar page](/fuel-bar/) — pulled from the
+menu itself, so it is current.
+`,
+  },
+
+  { slug: "five-containers-one-sunday", cat: "food", date: "2026-07-22", author: "desk",
+    title: "Five containers, one Sunday",
+    dek: "A meal-prep hour that survives contact with a real week — and the three recipes to run it on.",
+    kicker: "The 60-minute version",
+    hero: "lobby",
+    lede: "Nobody keeps up a meal prep that takes a whole afternoon. The version that lasts is one hour, one protein, five containers, and no decisions left over.",
+    body: `
+### The hour
+
+1. **Rice or gnocchi on first.** Whatever needs a timer starts before anything else does.
+2. **One protein, one pan.** Two pounds of ground turkey, a pound and a half of chicken, or a pork
+   loin. One. Not three.
+3. **Vegetables while the protein cooks.** Steam, roast, or dice raw — raw cucumber holds up
+   better across five days than anything you cook.
+4. **Five containers in a row on the counter.** Build them all at once, in one pass. Building one
+   at a time is how an hour becomes three.
+5. **Cool before the lids go on.** This is the step everybody skips and it is the reason day four
+   tastes wrong.
+
+### Rotate three, not one
+
+The reason meal prep dies in week three is repetition, not effort. Three recipes on rotation is
+enough that none of them wears out:
+
+- [Korean ground turkey bowls](/blog/korean-ground-turkey-bowls/) — 322 cal, 30g protein
+- [Chicken parmesan gnocchi](/blog/chicken-parmesan-gnocchi/) — 325 cal, 33g protein
+- [Pork enchilada bowls](/blog/pork-enchilada-bowls/) — 455 cal, 46g protein
+
+All three are Kristi's, all three make five servings, and all three keep four to five days. Two of
+them at once gives you ten containers and a week where lunch is not a question.
+
+### The containers matter more than you would think
+
+Glass, oven-safe, same size, lids that actually seal. The enchilada bowls and the gnocchi both go
+under a broiler in the container they are stored in — which removes a whole washing-up step, and
+that step is where the habit usually dies.
+`,
+  },
+
+  /* ------------------------------------------------------------- WORKOUTS */
+  { slug: "your-first-spin-class", cat: "workouts", date: "2026-08-26", author: "desk",
+    classes: ["spin", "spin-tone"],
+    title: "Your first spin class",
+    dek: "Eleven sessions a week, most of them before 9 AM. Here is what actually happens in the room.",
+    kicker: "Come early, sit at the back",
+    hero: "spin",
+    lede: "Spin is the class people are most nervous about and least need to be. You control the resistance the whole time, which means the class is exactly as hard as you decide it is.",
+    body: `
+### Turn up ten minutes early
+
+Not five. Ten. The bike has to be set for your leg length, and somebody at the desk or the
+instructor will do it in about ninety seconds — seat height, seat forward-and-back, handlebar
+height. A badly set bike is the entire reason people say spin hurt their knees.
+
+Say it is your first one. Every instructor in this building would rather know.
+
+### The dial is yours
+
+The instructor calls a climb; you decide what a climb means today. Nobody can see your resistance
+and nobody is checking. The first class is about staying on the bike for the whole class, not about
+matching the person in front.
+
+### What to bring
+
+Water — more than you think. A towel. Shoes either clip in or strap onto the pedal, and the desk
+will show you which. Regular trainers are fine to start.
+
+### Sitting down is allowed
+
+You will get out of the saddle at some point and you can sit back down whenever you want. This is
+not a test.
+
+### When it runs
+
+Eleven sessions a week, most before 9 AM, in the dedicated spin room — the full list of times is on
+the [spin page](/classes/spin/), and every row there tells you whether the kids' room is open at
+that hour.
+
+### After
+
+Water first, then food within an hour or two. If you want the shortcut, the
+[Fuel Bar](/blog/what-to-order-at-the-fuel-bar/) is in the lobby and the coffee is free before 9.
+`,
+  },
+
+  { slug: "strength-floor-first-three-weeks", cat: "workouts", date: "2026-08-15", author: "desk",
+    classes: ["kettlebell", "tone-zone", "lean-and-mean"],
+    title: "The strength floor: your first three weeks",
+    dek: "A plain three-day plan on the equipment that is actually in this building.",
+    kicker: "Two sets, six movements, done",
+    hero: "nautilus",
+    lede: "Walking onto a strength floor with no plan is why most people never come back to one. This is a plan. It fits in forty minutes and it uses machines and dumbbells that are genuinely here.",
+    body: `
+### The rules for three weeks
+
+- **Two sets of everything.** Not four. You are learning movements, not chasing a number.
+- **Stop two reps short.** If you could do ten, do eight.
+- **Same weight until it is easy for both sets.** Then go up one notch.
+- **Three days a week, never two in a row.**
+
+### Day A — push
+
+1. Chest press machine — 2 × 10
+2. Shoulder press machine — 2 × 10
+3. Dumbbell bench press — 2 × 10
+4. Triceps pushdown — 2 × 12
+5. Leg press — 2 × 12
+6. Plank — 2 × 30 seconds
+
+### Day B — pull
+
+1. Lat pulldown — 2 × 10
+2. Seated row — 2 × 10
+3. Dumbbell row, one arm at a time — 2 × 10 each
+4. Dumbbell curl — 2 × 12
+5. Leg curl — 2 × 12
+6. Dead bug — 2 × 8 each side
+
+### Day C — legs and carrying things
+
+1. Goblet squat with a dumbbell — 2 × 10
+2. Leg press — 2 × 12
+3. Dumbbell Romanian deadlift — 2 × 10
+4. Step-up onto a bench — 2 × 8 each leg
+5. Farmer's carry, one length of the floor and back — 2 rounds
+6. Calf raise — 2 × 15
+
+### What is here to do it on
+
+The strength floor runs new Matrix and Nautilus machines, a full dumbbell rack light to heavy,
+benches, a freeweight room with an Olympic platform, a cross-training rig, TRX and stretching
+stations. Nothing above needs anything the building does not have.
+
+If you would rather not decide any of this yourself, that is what
+[personal training](/personal-training/) is for — and the
+[women's weight room](/womens-weight-room/) is a separate room if the main floor feels like a lot
+in week one.
+
+### Week four
+
+Add a third set to the first two movements of each day. That is the whole progression. Do not
+redesign it.
+`,
+  },
+
+  { slug: "twenty-minutes-in-the-circuit-room", cat: "workouts", date: "2026-08-08", author: "desk",
+    classes: ["cardio-circuit", "silversneakers-cardio-circuit"],
+    title: "Twenty minutes in the circuit room",
+    dek: "A ring of air-pressure machines, a timer, and no queuing. The best-value room in the building on a short day.",
+    kicker: "When you have half an hour",
+    hero: "circuit",
+    lede: "The circuit training room is the room people walk past. It is also the one that solves the specific problem of having twenty-five minutes and no plan.",
+    body: `
+### Why the room works
+
+The machines are arranged in a ring and set by air pressure, which means resistance changes with a
+dial rather than a pin and a stack. You sit down, you go, you move on. There is no setup, no
+plate-loading, and — crucially — no waiting for somebody to finish.
+
+### The twenty-minute version
+
+Two laps of the ring. Forty-five seconds on each machine, fifteen seconds to move to the next one.
+Somewhere between machines, thirty seconds of walking, marching or stepping, then carry on.
+
+That is it. Two laps is roughly twenty minutes, and it hits everything.
+
+### The half-hour version
+
+Three laps, and add sixty seconds of harder cardio between each lap — the cardio floor is next
+door and has thirty-plus pieces to pick from.
+
+### If you would rather be told what to do
+
+**Cardio Circuit** runs the same room on a timer with an instructor calling it, Thursday mornings
+with Kevin. **SilverSneakers Cardio Circuit** runs a lower-impact version at midday Tuesday and
+Thursday. Both are included — [times are here](/classes/cardio-circuit/).
+
+### What to bring
+
+Water and a towel. Everything else is in the room.
+`,
+  },
+
+  { slug: "what-barre-actually-does", cat: "workouts", date: "2026-08-01", author: "desk",
+    classes: ["barre"],
+    title: "What barre actually does",
+    dek: "Small movements, light weights, and legs that shake. Here is what is going on and why it is worth it.",
+    kicker: "Strength. Lengthen. Empower.",
+    hero: "barre",
+    source: "The five benefits below are the club's own, quoted from our barre flyer.",
+    lede: "Barre looks gentle from the doorway and is not. The movements are small on purpose: hold a position, pulse inside it, and the muscle never gets the rest it is waiting for.",
+    body: `
+### The five things it is for
+
+In the club's own words, from our barre flyer:
+
+- **Tone and strengthen** — build lean muscle and improve endurance.
+- **Improve posture** — strengthen your core and support better alignment.
+- **Increase flexibility** — lengthen, stretch and move with greater ease.
+- **Low impact, high results** — effective, joint-friendly, and sustainable.
+- **All levels welcome** — modifications for every body and every goal.
+
+### Why the shaking is the point
+
+A barre class holds a position and then pulses an inch inside it. Because the muscle never fully
+lengthens, it never gets the half-second of rest a full rep gives you. The shake is fatigue arriving
+faster than it does under a heavy bar — with a fraction of the load on the joint. That trade is
+the entire argument for the class.
+
+### Nothing here lands hard
+
+No jumping, no impact. Which is why it works for people coming back from a knee, and why it also
+works for people who lift four days a week and want the fifth day to not be another heavy one.
+
+### What to bring
+
+Grip socks if you have them. Weights, bands and mats are already in the studio.
+
+### One honest note about the schedule
+
+Barre times have moved. Our own flyer, the live calendar and Facebook currently give three different
+answers — so if you are coming for barre specifically,
+[call the desk on 530-528-8656](tel:+15305288656) first. The [barre page](/classes/barre/) lays out
+all three versions rather than picking one.
+`,
+  },
+
+  /* ------------------------------------------------------------- ROUTINES */
+  { slug: "the-five-am-hour", cat: "routines", date: "2026-08-22", author: "desk",
+    classes: ["hybrid", "body-burner", "stretch-and-mobility", "tai-chi"],
+    title: "The 5 AM hour",
+    dek: "The doors open at five. Here is how to make the early hour a habit instead of a heroic act.",
+    kicker: "Mon–Fri from 5:00 AM",
+    hero: "exteriorDay",
+    lede: "The building unlocks at 5:00 AM Monday to Friday. The first class is 5:30. If mornings are the only hour you actually control, this is how to make that hour stick.",
+    body: `
+### Decide the night before, not at 4:50
+
+Bag packed, shoes by the door, bottle filled. The decision at 4:50 AM is not a fair fight — so do
+not have it. Everything you can move to the night before, move.
+
+### Start with two days, not five
+
+The people who go from nothing to five mornings a week last about nine days. Two mornings is a
+schedule you can keep in a bad week, and a bad week is the one that decides whether a habit
+survives.
+
+### What is actually on at that hour
+
+- **5:30 AM** — Hybrid, Tuesday and Thursday. Strength and cardio in one block.
+- **5:30 AM** — Body Burner, Friday.
+- **6:00 AM** — Spin, Monday through Friday. The busiest early class in the building.
+- **6:00 AM** — Stretch & Mobility, Tuesday and Thursday.
+- **7:15 AM** — Tai Chi, every single weekday.
+
+Or nothing at all: the floor is open from five and there is nobody on it.
+
+### The 5 AM floor is a different building
+
+Between five and six the strength floor is close to empty. No waiting for a rack, no waiting for a
+bench. If group classes are not your thing, this is the hour that makes the membership worth it.
+
+### Coffee is free until 9
+
+It is in the lobby, it costs nothing before 9 AM, and on a February morning in Red Bluff that is a
+more effective motivator than anything else on this page.
+
+### Give it three weeks
+
+The first week is unpleasant, the second is tolerable, the third is when the alarm stops being an
+argument. Nearly everybody who quits, quits inside the first two.
+`,
+  },
+
+  { slug: "training-around-the-kids-room", cat: "routines", date: "2026-08-18", author: "desk",
+    title: "Training around the kids' room",
+    dek: "The childcare hours, laid against the class board, so you can see what is genuinely possible.",
+    kicker: "The window is the whole plan",
+    hero: "childcare",
+    lede: "For a lot of parents the question is not what to train. It is whether there is anybody to watch the kids while you do. So here are the windows, in plain terms.",
+    body: `
+### When the kids' room is open
+
+| Day | Morning | Evening |
+|---|---|---|
+| Monday–Thursday | 8:00 AM – 1:00 PM | 4:00 PM – 8:00 PM |
+| Friday | 8:00 AM – 1:00 PM | closed |
+| Saturday | 8:00 AM – 1:00 PM | closed |
+| Sunday | closed | closed |
+
+### What that opens up
+
+**The 8:15 and 8:30 block.** Zumba & Tone at 8:15 Monday, Wednesday and Friday. Spin at 8:30
+Monday and Thursday. Barre Above at 8:15 Tuesday. All of them start inside the morning window with
+time either side to sign in and get out.
+
+**The 10:30 block.** Mat Pilates and Drums Alive both run at 10:30 on Monday, Wednesday and Friday
+— comfortably mid-window, which makes them the least stressful classes on the board for a parent.
+
+**Monday to Thursday evenings.** The room reopens at four. Body Burner at 4:30 Monday and Wednesday,
+then the 5:30 block — Tone Zone, spin, yoga, kettlebell.
+
+### What it rules out
+
+Friday and Saturday evenings, all of Sunday, and anything before 8 AM. If mornings before eight are
+your only hour, that is a two-adult problem, not a scheduling one — and worth saying out loud when
+you plan the week.
+
+### Every schedule row tells you
+
+Every session on our [schedule](/schedule/) and on every class page shows whether the kids' room is
+open at that hour. That was the single most useful thing we could put on this website, and it is on
+every page that lists a time.
+
+### Still to confirm
+
+Ages, registration and how the first visit works are the questions we get most, and we would rather
+you got the real answer from the desk than a guess from a website:
+[call 530-528-8656](tel:+15305288656). The [childcare page](/childcare/) has what we can confirm.
+`,
+  },
+
+  { slug: "a-week-that-actually-fits", cat: "routines", date: "2026-08-11", author: "desk",
+    classes: ["zumba", "pilates", "drums-alive", "yoga-easy-flow", "u-jam", "tone-zone"],
+    title: "A week that actually fits",
+    dek: "Three real weekly templates built from the class board — for the early riser, the parent, and the after-work crowd.",
+    kicker: "Four days, not seven",
+    hero: "corridor",
+    lede: "Most training plans fail on the calendar, not in the gym. So here are three weeks built out of classes that genuinely run, at times the building is genuinely open.",
+    body: `
+### If you train before work
+
+| Day | What |
+|---|---|
+| Monday | 6:00 AM Spin |
+| Tuesday | 6:00 AM Stretch & Mobility |
+| Wednesday | 6:00 AM Spin |
+| Thursday | Strength floor, 5:00–6:00 — the floor is empty |
+| Friday | 5:30 AM Body Burner |
+| Weekend | Saturday 8:30 AM Spin, or nothing |
+
+Four hard days, one easy one, and the weekend genuinely off.
+
+### If you train inside the childcare window
+
+| Day | What |
+|---|---|
+| Monday | 8:15 AM Zumba & Tone |
+| Tuesday | 8:15 AM Barre Above |
+| Wednesday | 10:30 AM Mat Pilates |
+| Thursday | 8:30 AM Spin |
+| Friday | 10:30 AM Drums Alive |
+
+All five sit inside the 8:00 AM – 1:00 PM window, with room either side. Drop two of them in a
+bad week and it still works.
+
+### If you train after work
+
+| Day | What |
+|---|---|
+| Monday | 5:30 PM Tone Zone or Spin |
+| Tuesday | 5:30 PM Spin/Tone, or 6:30 PM pickleball |
+| Wednesday | 5:30 PM Tone Zone |
+| Thursday | 5:30 PM Yoga Easy Flow |
+| Friday | 6:00 PM basketball open gym |
+
+### The rule underneath all three
+
+**Four days is the number.** Not seven, not two. Seven collapses the first week something goes
+wrong; two never builds enough momentum to feel different. Four leaves room for a bad Tuesday.
+
+Build yours off the [full schedule](/schedule/) — every row tells you the day, the time, who is
+teaching and whether the kids' room is open.
+`,
+  },
+];
+
+/* Newest first, everywhere. */
+posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+export const postsIn = cat => posts.filter(p => p.cat === cat);
+export const catOf = slug => CATS.find(c => c.slug === slug);

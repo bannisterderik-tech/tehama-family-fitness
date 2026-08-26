@@ -275,6 +275,14 @@ text-transform:uppercase;padding-right:clamp(26px,3vw,48px);white-space:nowrap;d
    because the clamp floor never dropped below the desktop-ish 64px. */
 .sec+.sec{padding-top:clamp(28px,8.5vw,132px)}
 .sec:has(+.sec){padding-bottom:clamp(28px,8.5vw,132px)}
+/* Two dark blocks back to back read as ONE dark field with a hole punched in
+   the middle: you cannot see where one ends, so the doubled padding is not
+   breathing room, it is 260px of dead screen. Collapse the shared edge and let
+   the tonal step (--ground vs --void) do the dividing instead. Same for two
+   tinted blocks. :has() trims the first block's bottom; browsers without it
+   still get the second block's top trimmed, which is most of the fix. */
+.sec-dark+.sec-dark,.sec-dark+.sec-void,.sec-dark+.nl,.sec-dark+.band,.sec-void+.sec-dark,.sec-void+.sec-void,.sec-void+.nl,.sec-void+.band,.nl+.sec-dark,.nl+.sec-void,.nl+.nl,.nl+.band,.band+.sec-dark,.band+.sec-void,.band+.nl,.band+.band,.sec-tint+.sec-tint,.sec-tint+.sec-cool,.sec-tint+.sec-hot,.sec-cool+.sec-tint,.sec-cool+.sec-cool,.sec-cool+.sec-hot,.sec-hot+.sec-tint,.sec-hot+.sec-cool,.sec-hot+.sec-hot{padding-top:clamp(20px,3vw,46px)}
+.sec-dark:has(+.sec-dark),.sec-dark:has(+.sec-void),.sec-dark:has(+.nl),.sec-dark:has(+.band),.sec-void:has(+.sec-dark),.sec-void:has(+.sec-void),.sec-void:has(+.nl),.sec-void:has(+.band),.nl:has(+.sec-dark),.nl:has(+.sec-void),.nl:has(+.nl),.nl:has(+.band),.band:has(+.sec-dark),.band:has(+.sec-void),.band:has(+.nl),.band:has(+.band),.sec-tint:has(+.sec-tint),.sec-tint:has(+.sec-cool),.sec-tint:has(+.sec-hot),.sec-cool:has(+.sec-tint),.sec-cool:has(+.sec-cool),.sec-cool:has(+.sec-hot),.sec-hot:has(+.sec-tint),.sec-hot:has(+.sec-cool),.sec-hot:has(+.sec-hot){padding-bottom:clamp(20px,3vw,46px)}
 .sec-tint{background:var(--paper-2)}
 .sec-dark{background:var(--ground);color:#B9C3DA}
 .sec-void{background:var(--void);color:#B9C3DA}
@@ -698,8 +706,164 @@ line-height:.95;display:block;text-transform:uppercase}
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
+
+/* ── the blog ─────────────────────────────────────────────────────────
+   Reading pages, not marketing pages. The body column is capped at 68ch
+   and set at 19px — everything else on this site is built to be read from
+   six feet away, but an article is read from eighteen inches. */
+.bl-hero{background:var(--void);color:#fff;padding:clamp(56px,9vw,120px) 0 clamp(40px,6vw,72px);position:relative}
+.bl-hero h1{color:#fff}
+.bl-hero .lede{color:var(--ice);max-width:56ch;margin-top:clamp(16px,2vw,24px)}
+.bl-hero .kick{color:var(--volt-lt);font-family:var(--disp);font-weight:800;font-size:.72rem;
+letter-spacing:.22em;text-transform:uppercase;margin-bottom:clamp(14px,2vw,20px)}
+
+/* category chips */
+.bl-cats{display:flex;flex-wrap:wrap;gap:9px;margin-top:clamp(26px,4vw,40px)}
+.bl-cats a{font-family:var(--disp);font-weight:800;font-size:.82rem;padding:10px 19px;border-radius:2px;
+border:1px solid rgba(184,208,224,.32);color:var(--ice);text-decoration:none;transition:.22s var(--ease);
+letter-spacing:-.015em;text-transform:uppercase}
+.bl-cats a:hover{background:var(--volt);border-color:var(--volt);color:#fff}
+.bl-cats a[aria-current="page"]{background:#fff;border-color:#fff;color:var(--void)}
+.bl-cats.on-light a{border-color:var(--line-2);color:var(--ink-2)}
+.bl-cats.on-light a:hover{background:var(--volt);border-color:var(--volt);color:#fff}
+.bl-cats.on-light a[aria-current="page"]{background:var(--ground);border-color:var(--ground);color:#fff}
+
+/* the card grid */
+.bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(22px,2.6vw,34px)}
+.bl-card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;
+border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:.28s var(--ease)}
+.bl-card:hover{border-color:var(--volt);transform:translateY(-3px);color:inherit}
+.bl-img{aspect-ratio:16/10;background:var(--paper-3);overflow:hidden}
+.bl-img img{width:100%;height:100%;object-fit:cover}
+/* No photograph? Then say so with type rather than borrow a picture of
+   something else. Recipe posts land here on purpose — see tbd.khPhotos. */
+.bl-nib{aspect-ratio:16/10;display:grid;place-items:center;padding:20px;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%)}
+.bl-nib b{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:-.04em;
+font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:.98;color:#fff;text-align:center;max-width:16ch}
+.bl-body{padding:clamp(20px,2.2vw,28px);display:flex;flex-direction:column;gap:10px;flex:1}
+.bl-card h3,.bl-lead h2{letter-spacing:-.035em}
+.bl-card p,.bl-lead p{color:var(--ink-2);font-size:.97rem;max-width:none}
+.bl-meta{font-family:var(--disp);font-weight:800;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+color:var(--volt);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.bl-meta .dim{color:var(--ink-3)}
+.bl-card .more{margin-top:auto;padding-top:8px}
+.bl-lead .more{padding-top:4px}
+
+/* lead card — first post on the index gets the room */
+.bl-lead{display:grid;grid-template-columns:1.15fr 1fr;gap:0;border:1px solid var(--line);
+border-radius:var(--r);overflow:hidden;text-decoration:none;color:inherit;transition:.28s var(--ease);background:#fff}
+.bl-lead:hover{border-color:var(--volt);color:inherit}
+.bl-lead .bl-img,.bl-lead .bl-nib{aspect-ratio:auto;min-height:320px;height:100%}
+.bl-lead .bl-nib b{font-size:clamp(1.5rem,3vw,2.2rem);max-width:14ch}
+.bl-lead .bl-body{padding:clamp(26px,3.4vw,46px);justify-content:center;gap:14px}
+.bl-lead h2{font-size:clamp(1.6rem,3.2vw,2.6rem)}
+.bl-lead p{font-size:1.06rem}
+@media(max-width:860px){.bl-lead{grid-template-columns:1fr}.bl-lead .bl-img,.bl-lead .bl-nib{min-height:0;aspect-ratio:16/10}}
+
+/* ── the article ─────────────────────────────────────────────────────── */
+.post{padding:clamp(38px,5vw,64px) 0 clamp(48px,7vw,90px)}
+.post .col{max-width:68ch;margin:0 auto}
+.post .col p,.post .col li{font-size:1.06rem;line-height:1.68;color:var(--ink);max-width:none}
+.post .col h3{font-size:clamp(1.35rem,2.4vw,1.85rem);text-transform:none;letter-spacing:-.03em;
+margin:clamp(34px,4vw,52px) 0 14px;color:var(--ground)}
+.post .col h4{margin:28px 0 10px}
+.post .col p+p{margin-top:16px}
+.post .col .md-ul,.post .col .md-ol{margin:18px 0 18px 24px;display:grid;gap:10px}
+.post .col .md-ul li{list-style:disc}.post .col .md-ol li{list-style:decimal}
+.post .col .md-q{border-left:3px solid var(--volt);padding:6px 0 6px 22px;margin:26px 0;
+font-family:var(--ser);font-style:italic;font-size:1.2rem;color:var(--ink-2)}
+.post .col .tw{margin:26px 0}
+.post .col hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+.post-lede{font-size:clamp(1.15rem,2vw,1.4rem);line-height:1.45;color:var(--ink-2);
+font-family:var(--ser);font-style:italic;letter-spacing:-.01em;max-width:none;margin-bottom:clamp(24px,3vw,38px)}
+.post-by{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:18px 0;
+border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:clamp(28px,3.5vw,44px)}
+.post-by .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%);color:#fff;
+font-family:var(--disp);font-weight:800;font-size:1.05rem;letter-spacing:-.04em}
+.post-by b{display:block;font-family:var(--disp);letter-spacing:-.03em;font-size:1.02rem;color:var(--ground)}
+.post-by span{color:var(--ink-3);font-size:.9rem}
+.post-src{background:var(--paper-2);border-left:3px solid var(--steel);padding:16px 20px;margin:0 0 clamp(26px,3vw,38px);
+font-size:.94rem;color:var(--ink-2)}
+.post-src b{color:var(--ground)}
+.post-note{margin-top:clamp(40px,5vw,64px);padding-top:22px;border-top:1px solid var(--line);
+font-size:.88rem;color:var(--ink-3)}
+
+/* ── recipe card ─────────────────────────────────────────────────────── */
+.rec{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:clamp(28px,3.5vw,44px) 0}
+.rec-top{background:var(--void);color:#fff;padding:clamp(22px,3vw,34px)}
+.rec-top .eyebrow{color:var(--volt-lt)}
+.rec-mac{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+.rec-mac div{text-align:center;padding:14px 6px;background:rgba(184,208,224,.08);border-radius:2px}
+.rec-mac b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(1.2rem,2.4vw,1.65rem);
+letter-spacing:-.045em;color:#fff;line-height:1}
+.rec-mac span{display:block;margin-top:5px;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
+.rec-serves{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-size:.9rem;color:var(--ice)}
+.rec-serves b{color:#fff}
+.rec-cols{display:grid;grid-template-columns:.85fr 1.15fr;gap:0}
+.rec-cols>div{padding:clamp(22px,3vw,34px)}
+.rec-cols>div+div{border-left:1px solid var(--line)}
+.rec-cols h4{font-family:var(--disp);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+color:var(--volt);margin-bottom:16px}
+.rec-ing{list-style:none;display:grid;gap:9px}
+.rec-ing li{padding-left:18px;position:relative;font-size:.99rem;line-height:1.5}
+.rec-ing li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;background:var(--volt);border-radius:50%}
+.rec-steps{list-style:none;display:grid;gap:16px;counter-reset:rs}
+.rec-steps li{counter-increment:rs;display:grid;grid-template-columns:30px 1fr;gap:12px;font-size:.99rem;line-height:1.55}
+.rec-steps li::before{content:counter(rs);font-family:var(--disp);font-weight:800;font-size:.85rem;
+width:26px;height:26px;border-radius:50%;background:var(--paper-3);color:var(--ground);display:grid;place-items:center}
+.rec-keeps{background:var(--paper-2);border-top:1px solid var(--line);padding:16px clamp(22px,3vw,34px);
+font-size:.93rem;color:var(--ink-2)}
+.rec-keeps b{color:var(--ground)}
+@media(max-width:760px){.rec-cols{grid-template-columns:1fr}
+.rec-cols>div+div{border-left:0;border-top:1px solid var(--line)}
+.rec-mac{grid-template-columns:repeat(2,1fr)}}
+
+/* ── newsletter ──────────────────────────────────────────────────────── */
+.nl{background:var(--ground);color:#fff}
+.nl h2{color:#fff}
+.nl .lede{color:var(--ice)}
+.nl-topics{list-style:none;display:grid;gap:11px;margin-top:22px}
+.nl-topics li{padding-left:26px;position:relative;color:var(--ice);font-size:1rem}
+.nl-topics li::before{content:"";position:absolute;left:0;top:.55em;width:9px;height:9px;
+background:var(--volt-lt);border-radius:50%}
+.nl-form{display:grid;gap:14px;align-content:start}
+.nl-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.nl-row{grid-template-columns:1fr}}
+.nl-form label{display:block;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.16em;
+text-transform:uppercase;color:var(--ice)}
+.nl-form input[type=text],.nl-form input[type=email]{width:100%;margin-top:8px;padding:14px 16px;font:inherit;
+font-size:1rem;background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.28);border-radius:2px;color:#fff}
+.nl-form input::placeholder{color:#8794B8}
+.nl-form input:focus{outline:3px solid var(--volt-lt);outline-offset:2px;background:rgba(255,255,255,.1)}
+.nl-form input.is-bad{border-color:#FF8C7A;background:rgba(255,140,122,.09)}
+.nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
+letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer}
+.nl-check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
+.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* Stretched edge to edge the button read as a banner, not a control. Sized to
+   its own label on desktop; full width on a phone, where a wide tap target wins. */
+.nl-form button{justify-self:start}
+@media(max-width:640px){.nl-form button{justify-self:stretch}}
+.nl-note{font-size:.86rem;color:#9AA7C6;max-width:46ch}
+.nl-note a{color:var(--ice)}
+.nl-msg{font-size:.97rem;padding:13px 16px;border-radius:2px;max-width:none}
+.nl-msg.is-ok{background:rgba(123,147,244,.16);color:#fff;border:1px solid var(--volt-lt)}
+.nl-msg.is-err{background:rgba(255,140,122,.12);color:#FFD9D2;border:1px solid #FF8C7A}
+/* footer variant — one line, no headline */
+.ftr-nl{margin-top:clamp(30px,5vw,52px);padding-top:26px;border-top:1px solid rgba(180,204,216,.14)}
+.ftr-nl h4{margin-bottom:12px}
+.ftr-nl .nl-form{max-width:560px}
+.ftr-nl .nl-form label{color:var(--steel)}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","name":"Tehama Family Fitness Center","url":"https://www.tehamafamilyfitness.com/","telephone":"530-528-8656","email":"frontdesk@clubtehama.com","foundingDate":"2001","address":{"@type":"PostalAddress","streetAddress":"2498 S Main St","addressLocality":"Red Bluff","addressRegion":"CA","postalCode":"96080","addressCountry":"US"},"geo":{"@type":"GeoCoordinates","latitude":40.152,"longitude":-122.236},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Monday","opens":"05:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Tuesday","opens":"05:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Wednesday","opens":"05:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Thursday","opens":"05:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Friday","opens":"05:00","closes":"20:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Saturday","opens":"08:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"https://schema.org/Sunday","opens":"08:00","closes":"18:00"}],"amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Full Court Basketball Gymnasium","value":true},{"@type":"LocationFeatureSpecification","name":"Racquetball","value":true},{"@type":"LocationFeatureSpecification","name":"Spin Room","value":true},{"@type":"LocationFeatureSpecification","name":"Yoga/Pilates/Dance Studio","value":true},{"@type":"LocationFeatureSpecification","name":"Circuit Training Room","value":true},{"@type":"LocationFeatureSpecification","name":"Women's Weight Room","value":true},{"@type":"LocationFeatureSpecification","name":"Freeweight Room with Olympic Platform","value":true},{"@type":"LocationFeatureSpecification","name":"30+ Pieces of Cardio Equipment","value":true},{"@type":"LocationFeatureSpecification","name":"Cardio Theater","value":true},{"@type":"LocationFeatureSpecification","name":"TRX Training Station","value":true},{"@type":"LocationFeatureSpecification","name":"Stretching Stations","value":true},{"@type":"LocationFeatureSpecification","name":"Cross Training Box","value":true},{"@type":"LocationFeatureSpecification","name":"Pilates Reformer","value":true},{"@type":"LocationFeatureSpecification","name":"Full Service Locker Rooms with Sauna","value":true},{"@type":"LocationFeatureSpecification","name":"Childcare","value":true},{"@type":"LocationFeatureSpecification","name":"Complementary Group Classes","value":true},{"@type":"LocationFeatureSpecification","name":"Tehama Nutrition Center/Café","value":true},{"@type":"LocationFeatureSpecification","name":"Personal Training","value":true},{"@type":"LocationFeatureSpecification","name":"Bootcamps","value":true},{"@type":"LocationFeatureSpecification","name":"On-Site Esthetician","value":true},{"@type":"LocationFeatureSpecification","name":"Tanning","value":true},{"@type":"LocationFeatureSpecification","name":"SilverSneakers","value":true},{"@type":"LocationFeatureSpecification","name":"Kids Fit","value":true},{"@type":"LocationFeatureSpecification","name":"Corporate Wellness","value":true}],"sameAs":["https://www.facebook.com/tehamafamilyfitness","https://www.instagram.com/tehamafamilyfitness"],"mainEntity":[{"@type":"Question","name":"What does a membership cost?","acceptedAnswer":{"@type":"Answer","text":"Rates aren't published online yet. Call 530-528-8656 and the desk will tell you today's rate — it takes under a minute, and there's no sales process attached to it."}},{"@type":"Question","name":"Are classes included?","acceptedAnswer":{"@type":"Answer","text":"Yes. All 54 of them, every week. There is no class fee, nothing to book and no app to download. Turn up a few minutes early the first time and tell the instructor it's your first one."}},{"@type":"Question","name":"Do you have childcare?","acceptedAnswer":{"@type":"Answer","text":"Yes, in the building. Mornings 8 to 1 Monday through Saturday, and evenings 4 to 8 Monday through Thursday. Sunday it's closed. Every session on our schedule shows whether the kids' room is open at that hour."}},{"@type":"Question","name":"Can I try it before I join?","acceptedAnswer":{"@type":"Answer","text":"Walk in any day we're open and ask for a look around. It takes about ten minutes and nobody is going to chase you afterwards."}},{"@type":"Question","name":"Do you have pickleball?","acceptedAnswer":{"@type":"Answer","text":"Three indoor courts with permanent lines on concrete. Non-member drop-in is $5. Organised play runs Tuesday evenings and Saturday mornings — call to confirm the week you're coming."}},{"@type":"Question","name":"What time do you close?","acceptedAnswer":{"@type":"Answer","text":"Eight on weeknights, six on weekends. We're a family gym, not a 24-hour box. If you train after eight, we're honestly not the right gym for you."}},{"@type":"Question","name":"Do you take SilverSneakers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Bring your card to the front desk. There's SilverSneakers Classic on Monday, Wednesday and Friday, Cardio Circuit on Tuesday and Thursday, and tai chi every weekday morning at 7:15."}},{"@type":"Question","name":"Is there anything on Sunday?","acceptedAnswer":{"@type":"Answer","text":"The building is open 8 to 6 — court, weights, cardio, all of it — but there are no classes on the board Sunday."}},{"@type":"Question","name":"How do I join?","acceptedAnswer":{"@type":"Answer","text":"Call 530-528-8656, or walk in. You can also start a single membership through our online sign-up. For a family, couple, student or senior rate, call — it's faster and you'll get a person."}},{"@type":"Question","name":"Where are you exactly?","acceptedAnswer":{"@type":"Answer","text":"2498 S Main St, Red Bluff, CA 96080, on the south end of town with parking out front."}}]}</script>
+
+
+<script>
+  window.markerConfig = { project: '6a8f2210f6df292d9ca1da9d', source: 'snippet' };
+  !function(e,r,a){if(!e.__Marker){e.__Marker={};var t=[],n={__cs:t};["show","hide","isVisible","capture","cancelCapture","unload","reload","isExtensionInstalled","setReporter","clearReporter","setCustomData","on","off"].forEach(function(e){n[e]=function(){var r=Array.prototype.slice.call(arguments);r.unshift(e),t.push(r)}}),e.Marker=n;var s=r.createElement("script");s.async=1,s.src="https://edge.marker.io/latest/shim.js";var i=r.getElementsByTagName("script")[0];i.parentNode.insertBefore(s,i)}}(window,document);
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -718,7 +882,7 @@ the front desk. Not the live site.</span></div>
     <span><b>Tehama Family Fitness</b><span>Red&nbsp;Bluff · since 2001</span></span>
   </a>
   <nav class="nav" id="nav" aria-label="Main">
-    <a href="/tehama-family-fitness/schedule/">Schedule</a><a href="/tehama-family-fitness/classes/">Classes</a><a href="/tehama-family-fitness/amenities/">The Building</a><a href="/tehama-family-fitness/pickleball/">Pickleball</a><a href="/tehama-family-fitness/childcare/">Childcare</a><a href="/tehama-family-fitness/fuel-bar/">Fuel Bar</a><a href="/tehama-family-fitness/membership/">Membership</a><a href="/tehama-family-fitness/about/">About</a><a href="/tehama-family-fitness/contact/">Contact</a>
+    <a href="/tehama-family-fitness/schedule/">Schedule</a><a href="/tehama-family-fitness/classes/">Classes</a><a href="/tehama-family-fitness/amenities/">The Building</a><a href="/tehama-family-fitness/pickleball/">Pickleball</a><a href="/tehama-family-fitness/childcare/">Childcare</a><a href="/tehama-family-fitness/fuel-bar/">Fuel Bar</a><a href="/tehama-family-fitness/blog/">Blog</a><a href="/tehama-family-fitness/membership/">Membership</a><a href="/tehama-family-fitness/team/">Our Team</a><a href="/tehama-family-fitness/about/">About</a><a href="/tehama-family-fitness/contact/">Contact</a>
     <div class="m-cta">
       <a class="btn btn-volt" href="tel:+15305288656">Call 530-528-8656</a>
       <a class="btn btn-out" href="/tehama-family-fitness/day-pass/">Come see the building</a>
@@ -789,6 +953,7 @@ the front desk. Not the live site.</span></div>
       <li><a href="/tehama-family-fitness/silversneakers/">SilverSneakers</a></li>
       <li><a href="/tehama-family-fitness/personal-training/">Personal training</a></li>
       <li><a href="/tehama-family-fitness/corporate-wellness/">Corporate wellness</a></li>
+      <li><a href="/tehama-family-fitness/blog/">Tips, workouts &amp; recipes</a></li>
     </ul></div>
     <div><h4>The building</h4><ul>
       <li><a href="/tehama-family-fitness/basketball/">Basketball &amp; racquetball</a></li>
@@ -808,6 +973,76 @@ the front desk. Not the live site.</span></div>
       <li><a href="/tehama-family-fitness/about/">About us</a></li>
     </ul></div>
   </div>
+  <div class="ftr-nl">
+  <h4>The newsletter</h4>
+  <p style="margin-bottom:16px;max-width:52ch">About twice a month &mdash; schedule changes, a recipe,
+  and what is new in the building.</p>
+  
+<form class="nl-form" id="nl73x" novalidate
+      action="https://formsubmit.co/ajax/frontdesk@clubtehama.com" method="post">
+  <div class="nl-row">
+    <label for="nl73xe">Email <span aria-hidden="true">*</span>
+      <input id="nl73xe" type="email" name="email" autocomplete="email" required
+             inputmode="email" placeholder="you@example.com"></label>
+    <label for="nl73xn">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
+      <input id="nl73xn" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
+  </div>
+  <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
+    Send me the recipes too &mdash; macros already worked out</label>
+
+  <!-- spam trap: real people never fill this in -->
+  <div class="nl-hp" aria-hidden="true"><label>Leave this empty
+    <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+  <input type="hidden" name="_subject" value="Newsletter sign-up — tehamafamilyfitness.com">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
+
+  <button type="submit" class="btn btn-volt" id="nl73xb">Sign me up &rarr;</button>
+  <p class="nl-note" id="nl73xt">About twice a month. Unsubscribe by replying to any of them, or
+  just <a href="tel:+15305288656">tell the desk</a>. We do not sell or share your address, ever.</p>
+  <p class="nl-msg" id="nl73xm" role="status" aria-live="polite" hidden></p>
+</form>
+<script>
+(function(){
+  var f=document.getElementById('nl73x'); if(!f) return;
+  var btn=document.getElementById('nl73xb'), msg=document.getElementById('nl73xm'),
+      note=document.getElementById('nl73xt'), em=document.getElementById('nl73xe');
+  var ENDPOINT='https://formsubmit.co/ajax/frontdesk@clubtehama.com';
+  function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='nl-msg '+(ok?'is-ok':'is-err'); }
+  em.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); });
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.querySelector('[name=_honey]').value) return;                 // bot
+    var v=em.value.trim();
+    // Deliberately loose. A regex that rejects real addresses is worse than
+    // one that lets a typo through — the confirmation email catches those.
+    if(!v || v.indexOf('@')<1 || v.indexOf('.',v.indexOf('@'))<0){
+      em.classList.add('is-bad'); em.setAttribute('aria-invalid','true'); em.focus();
+      say('That does not look like an email address yet.',false); return;
+    }
+    var d=new FormData(f); d.delete('_honey');
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up\u2026';
+    if(!ENDPOINT){
+      location.href='mailto:frontdesk@clubtehama.com?subject='+encodeURIComponent('Newsletter sign-up — tehamafamilyfitness.com')+
+        '&body='+encodeURIComponent('Please add '+v+' to the newsletter list.');
+      btn.disabled=false; btn.textContent=label; return;
+    }
+    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return{};}) : Promise.reject(r.status); })
+      .then(function(){
+        f.querySelectorAll('input,button').forEach(function(el){ el.disabled=true; });
+        if(note) note.hidden=true;
+        say((d.get('first_name')?'Thanks '+d.get('first_name')+'. ':'')+
+            'You are on the list \u2014 next one goes out within a couple of weeks.',true);
+      })
+      .catch(function(){
+        btn.disabled=false; btn.textContent=label;
+        say('That did not send. Give the desk your email on 530-528-8656 and we will add you.',false);
+      });
+  });
+})();
+</script>
+</div>
   <p class="honest">Mon&ndash;Fri 5a&ndash;8p &middot; Sat&ndash;Sun 8a&ndash;6p &middot; Childcare from 8.</p>
   <div class="bot">
     <span>© 2026 Tehama Family Fitness Center · Locally owned in Red Bluff since 2001</span>
