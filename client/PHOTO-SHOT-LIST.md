@@ -38,10 +38,3 @@ Landscape, lights on, rooms tidy. Twenty shots.
   one mid-laugh.
 - **One class actually running**, shot from the back of the room.
 - **The early crowd**, first thing in the morning.
-
----
-
-## 3. Two rules
-
-- **No child in a photo without a parent's written OK.** Adults sign a one-liner too.
-- **Send the original files.** No filters, no crops, no edits.
