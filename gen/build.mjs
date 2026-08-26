@@ -945,7 +945,8 @@ ${doc || PREVIEW ? '<meta name="robots" content="noindex,nofollow">' : ""}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
-<meta property="og:image" content="${SITE}${u(og || "/assets/exterior-pano.jpg")}">
+<meta property="og:image" content="${SITE}${og || "/assets/exterior-pano.jpg"}">
+<meta property="og:image:alt" content="${esc(title)}">
 <meta name="theme-color" content="#0A0D1E">
 <link rel="icon" href="${u("/assets/logo.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2821,7 +2822,7 @@ ${related.length ? `<section class="sec"><div class="wrap">
 ${band("It's included. Just turn up.",
   `${c.name} is part of the membership — no class fee and nothing to book.`,
   [["/schedule/", "Full schedule"], ["/membership/", "Membership", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
-`);
+`, { og: photos[c.hero].src });
 }
 
 
