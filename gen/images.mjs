@@ -13,8 +13,12 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SRC = join(ROOT, "gen-img");
 const DST = join(ROOT, "assets", "hero");
-const WIDTH = 2000;          // matches the existing heroes
-const QUALITY = 62;          // sips 0-100; the 21:9 heroes land ~150-300 KB here
+/* Two widths, not one. Everything used to ship at 2000px even in the tour grid,
+   where it renders about 335px wide on a phone — so a single page could pull
+   ~10 MB and every lazy image arrived late, which reads as blank space while
+   you scroll. The 800px variant is what almost every non-hero slot actually
+   needs; srcset in build.mjs picks between them. */
+const SIZES = [[2000, 62], [800, 66]];   // [width, jpeg quality]
 const force = process.argv.includes("--force");
 
 mkdirSync(DST, { recursive: true });
@@ -24,18 +28,20 @@ let made = 0, kept = 0;
 
 for (const f of src) {
   const name = basename(f, extname(f));
-  const out = join(DST, `${name}.jpg`);
-  if (existsSync(out) && !force) { kept++; continue; }
 
-  const tmp = join(DST, `.tmp-${name}.jpg`);
-  execFileSync("sips", ["-s", "format", "jpeg",
-                        "-s", "formatOptions", String(QUALITY),
-                        "--resampleWidth", String(WIDTH),
-                        join(SRC, f), "--out", tmp], { stdio: "ignore" });
-  execFileSync("mv", [tmp, out]);
-  const kb = Math.round(statSync(out).size / 1024);
-  console.log(`  + ${name}.jpg  ${kb} KB`);
-  made++;
+  for (const [w, q] of SIZES) {
+    const out = join(DST, w === 2000 ? `${name}.jpg` : `${name}-${w}.jpg`);
+    if (existsSync(out) && !force) { kept++; continue; }
+
+    const tmp = join(DST, `.tmp-${name}-${w}.jpg`);
+    execFileSync("sips", ["-s", "format", "jpeg",
+                          "-s", "formatOptions", String(q),
+                          "--resampleWidth", String(w),
+                          join(SRC, f), "--out", tmp], { stdio: "ignore" });
+    execFileSync("mv", [tmp, out]);
+    console.log(`  + ${basename(out)}  ${Math.round(statSync(out).size / 1024)} KB`);
+    made++;
+  }
 }
 
 // Anything in assets/hero with no source left behind is stale.

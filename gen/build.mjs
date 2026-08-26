@@ -235,6 +235,11 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .sec-cool .lede,.sec-hot .lede{color:var(--ink)}
 .grid{display:grid;gap:clamp(16px,2.2vw,28px)}
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+/* The room gallery: two-up on a phone. One-up stacked 25 full-width images
+   into a column so tall it read as mostly blank space between captions. */
+@media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
+.gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
+.gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
 .g3{grid-template-columns:repeat(auto-fit,minmax(285px,1fr))}
 .g4{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
 .split{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:clamp(28px,5.5vw,90px);align-items:start}
@@ -807,6 +812,30 @@ function maybeAuto(){ if(!reduce&&!small&&!slowNow()){ play(); } }
 if(document.readyState==='complete'){setTimeout(maybeAuto,120);}
 else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
 })();
+/* Scroll reveals. The CSS has always had ".js .rv{opacity:0}" and
+   ".js .rv.in{opacity:1}" — but nothing ever added .in, so every .rv block on
+   every page rendered as a blank space exactly its own height. That was the
+   "lots of blank space on mobile". Failsafe first, cleverness second: if
+   anything at all goes wrong here, the content must end up visible. */
+(function(){
+  var rv=[].slice.call(document.querySelectorAll('.rv'));
+  if(!rv.length) return;
+  var show=function(e){e.classList.add('in');};
+  var revealAll=function(){rv.forEach(show);};
+
+  if(!('IntersectionObserver' in window)){revealAll();return;}
+
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){show(e.target);io.unobserve(e.target);} });
+  },{rootMargin:'200px 0px',threshold:0.01});
+  try{ rv.forEach(function(e){io.observe(e);}); }catch(err){ revealAll(); return; }
+
+  // Belt and braces: nothing stays invisible for more than a few seconds,
+  // whatever the observer does. Cheap, and it makes the failure mode "no
+  // animation" rather than "no content".
+  setTimeout(revealAll,4000);
+  addEventListener('pageshow',function(ev){ if(ev.persisted) revealAll(); });
+})();
 (function(){var b=document.getElementById('burger'),n=document.getElementById('nav');
 b.addEventListener('click',function(){var o=n.classList.toggle('open');
 document.body.classList.toggle('menu-open',o);b.setAttribute('aria-expanded',o);});})();
@@ -828,9 +857,29 @@ const acts = (primary = true) => `<div class="acts">
 
 // Photographic page hero. Duotoned into the mark's navy so every page reads as
 // one brand regardless of what the underlying photograph is doing.
+/* ── responsive images ─────────────────────────────────────────────────
+   Every generated still exists at 2000px and 800px (see gen/images.mjs).
+   Before this, the 2000px file was served everywhere — including the tour
+   grid, where it paints about 335px wide on a phone. That made a single
+   page worth ~10 MB and every lazy image land late, which reads to a
+   visitor as a screen full of blank space. `sizes` is what the browser
+   actually needs; only the real photographs (which have no 800px twin)
+   fall back to a plain src. */
+const srcset = photo => {
+  const small = photo.src.replace(/\.jpg$/, "-800.jpg");
+  return photo.src.startsWith("/assets/hero/")
+    ? ` srcset="${u(small)} 800w, ${u(photo.src)} 2000w"` : "";
+};
+const pimg = (photo, { sizes, alt = null, cls = "", eager = false, style = "" } = {}) =>
+  `<img src="${u(photo.src)}"${srcset(photo)} sizes="${sizes}"` +
+  ` alt="${alt === null ? esc(photo.alt) : alt}" width="${photo.w}" height="${photo.h}"` +
+  (cls ? ` class="${cls}"` : "") +
+  (eager ? ` fetchpriority="high"` : ` loading="lazy" decoding="async"`) +
+  (style ? ` style="${style}"` : "") + `>`;
+
 const phero = (photo, { kick, h1, lede, acts: a = true, sm = true } = {}) => `
 <section class="hero${sm ? " hero-sm" : ""}">
-  <div class="hero-media"><img src="${u(photo.src)}" alt="" width="${photo.w}" height="${photo.h}" fetchpriority="high"></div>
+  <div class="hero-media">${pimg(photo, { sizes: "100vw", alt: "", eager: true })}</div>
   <div class="wrap">
     ${kick ? `<p class="kick">${kick}</p>` : ""}
     <h1>${String(h1).replace(/<\/?em>/g, "")}</h1>
@@ -847,7 +896,7 @@ const phero = (photo, { kick, h1, lede, acts: a = true, sm = true } = {}) => `
 const spread = (photo, { eyebrow, h2, body, list, cta, flip = false, dark = false, tone = "" } = {}) => `
 <section class="sec ${dark ? "sec-dark" : tone ? "sec-" + tone : ""} sp${flip ? " sp-flip" : ""}"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="${u(photo.src)}" alt="${esc(photo.alt)}" width="${photo.w}" height="${photo.h}" loading="lazy"></figure>
+    <figure class="sp-img rv">${pimg(photo, { sizes: "(max-width:880px) 92vw, min(50vw, 680px)" })}</figure>
     <div class="sp-txt">
       ${eyebrow ? `<p class="eyebrow">${eyebrow}</p>` : ""}
       ${h2 ? `<h2>${h2}</h2>` : ""}
@@ -860,7 +909,7 @@ const spread = (photo, { eyebrow, h2, body, list, cta, flip = false, dark = fals
 
 // Edge-to-edge photographic rule between sections. Gives a page air.
 const fullBleed = (photo, caption) => `
-<figure class="fb"><img src="${u(photo.src)}" alt="${esc(photo.alt)}" width="${photo.w}" height="${photo.h}" loading="lazy">
+<figure class="fb">${pimg(photo, { sizes: "100vw" })}
 ${caption ? `<figcaption class="fb-cap"><span class="wrap">${caption}</span></figcaption>` : ""}</figure>`;
 
 // A single sentence, given the room a single sentence deserves.
@@ -1258,7 +1307,7 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
   `
 <section class="hero">
   <div class="hero-media" id="hm">
-    <img src="${u(photos.exterior.src)}" alt="" width="${photos.exterior.w}" height="${photos.exterior.h}" fetchpriority="high">
+    ${pimg(photos.exterior, { sizes: "100vw", alt: "", eager: true })}
     <video id="hv" playsinline muted preload="none" aria-hidden="true" width="1470" height="630"></video>
   </div>
 
@@ -1457,6 +1506,8 @@ ${phero(photos.studio, { kick: "Straight from our live calendar",
 ${statement("Sixty-four ways into this building every week.",
   "Spin before dawn, tai chi at 7:15, Zumba mid-morning, open gym at one and again at six, pickleball on Tuesday nights. All of it included, none of it booked.")}
 
+${fullBleed(photos.gymfloor, "Sixty-four sessions a week, and every one of them is already paid for.")}
+
 ${band("Every one of these is included.",
   "No class fee, no booking, no app. Show up a few minutes early the first time and tell the instructor it's your first one.",
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/membership/", "Membership", "btn-ghost"], ["/instructors/", "Meet the instructors", "btn-ghost"]])}
@@ -1558,6 +1609,8 @@ ${phero(photos.gymfloor, { kick: "Membership",
 
 ${statement("Everything in this building is included. All of it.",
   "The full court, racquetball, the sauna, the three pickleball courts, the new strength floor, the women's weight room, the cardio deck and every class on the schedule. There is no tier system here and nothing behind a second paywall.")}
+
+${fullBleed(photos.tanning, "Tanning, the esthetician room and the saunas are in the membership too.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -1721,6 +1774,8 @@ ${phero(photos.cardioTheater, { kick: "For employers",
 ${statement("Four minutes from St. Elizabeth Community Hospital.",
   "About six from downtown. Nobody on your team has to drive to Redding, and there is only one location to administer.")}
 
+${fullBleed(photos.stretch, "Somewhere for a shift to decompress that is not the break room.")}
+
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Why it works here</p><h2>Benefits people<br>actually use</h2>
@@ -1798,6 +1853,8 @@ ${phero(photos.pickleball, { sm: false, kick: "2498 S Main St · Red Bluff",
 ${statement("Three indoor courts, and half the town still does not know.",
   "Pickleheads, Places2Play, Bounce and Pickleballify all list our courts. Most people in Red Bluff still have no idea they are here.")}
 
+${fullBleed(photos.racquetball, "The same high-bay floor carries the racquetball court \u2014 the only one in town.")}
+
 ${spread(photos.paddles, { eyebrow: "Why indoors matters here", flip: true,
   h2: "A twelve-month season",
   body: "Red Bluff hits 110\u00b0F in the summer. Outdoor courts are unplayable from about eleven in the morning until evening for a good stretch of the year, and in winter you are waiting out the rain. Three courts under a roof means the season never stops.",
@@ -1812,7 +1869,7 @@ ${band("Bring a paddle.",
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/membership/", "Membership", "btn-ghost"]])}
 `, { schema: { "@type": ["HealthClub", "SportsActivityLocation"] } });
 
-/* ============================== POOL ================================== */
+/* =========================== BASKETBALL =============================== */
 P("/basketball/", `Full Court Basketball &amp; Racquetball, Red Bluff | ${biz.short}`,
   `A full-court basketball gymnasium with open gym twice a day Monday–Friday, plus racquetball, at Tehama Family Fitness Center in Red Bluff.`,
   `
@@ -1851,6 +1908,8 @@ ${spread(photos.racquetball, { eyebrow: "Racquetball",
 ${statement("Nobody else in this county has a full court, and nobody else has racquetball.",
   "Planet Fitness has neither. Red Bluff Health & Fitness has neither. That is not marketing \u2014 it is just what is in the buildings.")}
 
+${fullBleed(photos.courtLines, "Full size, properly lined, and the lights are on twice a day.")}
+
 <section class="sec"><div class="wrap narrow">
   <h2>The floor works hard</h2>
   <p class="lede">Between open gym twice a day, pickleball league nights and everything else that gets
@@ -1875,7 +1934,7 @@ ${statement("We call it the Wolf Cave. It is lettered on the wall.",
   "It stuck hard enough that we painted it on the wall.")}
 
 <section class="sec"><div class="wrap">
-  <figure><img src="${u(photos.strength.src)}" alt="${esc(photos.strength.alt)}" width="${photos.strength.w}" height="${photos.strength.h}" loading="lazy" style="width:100%">
+  <figure>${pimg(photos.strength, { sizes: "(max-width:880px) 92vw, min(50vw, 680px)", style: "width:100%" })}
   <figcaption>The new Matrix floor, the week it went in.</figcaption></figure>
 </div></section>
 
@@ -1921,6 +1980,8 @@ ${phero(photos.womens, { kick: "Its own room",
 ${statement("A room, not a corner.",
   "That distinction sounds small and is not. If the reason you do not lift is that you do not want to do it in front of the whole gym, a separate room with its own door is the difference between a membership you use and one you cancel.")}
 
+${fullBleed(photos.dumbbells, "Its own dumbbells, its own benches, its own door.")}
+
 ${spread(photos.kettlebells, { eyebrow: "What's in it", flip: true,
   h2: "Its own equipment",
   body: "Selectorised strength machines, a full run of dumbbells, benches and a mirrored wall. You are not sharing a rack with the main floor and you are not waiting on it either.",
@@ -1951,6 +2012,8 @@ ${phero(photos.childcare, { kick: "In the building",
 
 ${statement("Nowhere else in Red Bluff will take your kids while you train.",
   "Planet Fitness has no childcare. Red Bluff Health & Fitness has no childcare. For most parents in this town that is the whole decision, and it is why a lot of our members are here.")}
+
+${fullBleed(photos.corridor, "The kids\u2019 room is off the main corridor \u2014 a short walk from wherever you are training.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -2151,6 +2214,8 @@ ${phero(photos.studio, { kick: "All included with membership",
 ${statement("Fifty-four classes a week, and not one of them costs extra.",
   "Spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and the rest \u2014 turn up to any of them on the membership you already have.")}
 
+${fullBleed(photos.reformer, "Reformers, barre and mats live in the studio \u2014 you do not bring any of it.")}
+
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">The ones people search for</p><h2>Classes people<br>ask about most</h2></div>
@@ -2226,6 +2291,8 @@ ${spread(photos[c.hero === "studio" ? "barre" : "studio"], { eyebrow: "What actu
          "Mats, blocks, bands and weights are already in the studio",
          "Included with membership \u2014 there is nothing to pay"] })}
 
+${fullBleed(photos[c.hero2] || photos.studio, `${c.room} \u2014 where ${c.name} runs.`)}
+
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">More on the board</p><h2>Other classes<br>you might like</h2></div>
@@ -2276,6 +2343,8 @@ ${spread(photos.frontdesk, { eyebrow: "And at the desk", flip: true,
   h2: "You'll also meet<br>Courtney and Alma",
   body: `<b>${staff.frontDesk}</b> is on the front desk and <b>${staff.childcare}</b> runs the childcare room. In a town of fourteen thousand, knowing who is going to be there when you walk in is most of the reason people pick one gym over another.`,
   cta: ["/schedule/", "Find their class \u2192"] })}
+
+${fullBleed(photos.studio, "Most of them teach in this room, most weeks of the year.")}
 
 <section class="sec sec-tint"><div class="wrap narrow">
   <div class="hold"><b>Photos coming</b>
@@ -2471,6 +2540,12 @@ ${phero(photos.frontdesk, { kick: "2498 S Main St \u00b7 Red Bluff",
   </div>
 </div></section>
 
+${spread(photos.exteriorDusk, { eyebrow: "Finding us", flip: true,
+  h2: "South end of<br>South Main",
+  body: "Set back off the road behind the parking lot, on the south end of town. The arched windows are lit from the inside, so it is easy to spot after dark.",
+  list: ["Parking out front, no charge", "Level entry through the front doors",
+         "About four minutes from St. Elizabeth"] })}
+
 ${fullBleed(photos.exterior, "South Main Street, on the south end of town. Parking out front.")}
 
 <section class="sec"><div class="wrap">
@@ -2550,7 +2625,7 @@ ${phero(photos.exterior, { sm: false, kick: "Room by room",
 
 <section class="sec"><div class="wrap">
   <figure>
-  <div class="grid g2">
+  <div class="grid g2 gal">
     ${[
        [photos.basketball, "The court", "Full size, with open gym twice a day."],
        [photos.pickleball, "Pickleball", "Three courts, permanent lines, nets up for league nights."],
@@ -2563,7 +2638,19 @@ ${phero(photos.exterior, { sm: false, kick: "Room by room",
        [photos.locker, "Locker rooms", "Full service both sides, sauna in each."],
        [photos.childcare, "The kids' room", "Open most of the hours you would actually use it."],
        [photos.fuelbar, "The Fuel Bar", "Coffee is free until nine."],
-      ].map(([ph, t, d]) => `<figure class="rv"><img src="${u(ph.src)}" alt="${esc(ph.alt)}" width="${ph.w}" height="${ph.h}" loading="lazy">
+       [photos.nautilus, "The Wolf Cave", "The new Nautilus and Matrix line, in this year."],
+       [photos.platform, "The platform", "You can put a loaded bar on the floor and drop it."],
+       [photos.dumbbells, "Dumbbells", "Light to heavy, with benches enough to go round."],
+       [photos.circuit, "The circuit room", "Air-pressure machines in a ring — where the SilverSneakers circuit runs."],
+       [photos.cardioTheater, "The cardio theater", "Lights down, screens up, treadmills facing them."],
+       [photos.crosstrain, "Cross-training", "Rig, boxes, rope and a turf lane for the sled."],
+       [photos.stretch, "Stretching", "Mats, rollers and the TRX straps."],
+       [photos.reformer, "Reformers", "Racked in the mind-body studio."],
+       [photos.kettlebells, "Class kit", "Kettlebells, medicine balls and bands — all provided."],
+       [photos.saunaDoor, "The sauna", "One in each locker room."],
+       [photos.tanning, "Tanning", "Off the service corridor, included."],
+       [photos.lobby, "The lobby", "Where a ten-minute tour starts."],
+      ].map(([ph, t, d], gi) => `<figure class="rv">${pimg(ph, { sizes: "(max-width:700px) 46vw, min(46vw, 620px)", eager: gi < 4 })}
       <figcaption><b style="font-family:var(--disp);font-style:normal;color:var(--ink);display:block;font-size:1.05rem;letter-spacing:-.02em">${t}</b>${d}</figcaption></figure>`).join("")}
   </div>
   <figcaption>Three photographs of this building. The rest show rooms like ours \u2014 come stand in the real one.</figcaption>
