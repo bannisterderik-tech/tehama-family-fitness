@@ -208,7 +208,11 @@ text-transform:uppercase;padding-right:clamp(26px,3vw,48px);white-space:nowrap;d
 .mq-dark{background:var(--ground);color:#fff}
 
 /* ── sections ── */
-.sec{padding:clamp(64px,8.5vw,132px) 0;position:relative}
+.sec{padding:clamp(40px,8.5vw,132px) 0;position:relative}
+/* Two stacked sections used to put 128px of dead band between them on a phone,
+   because the clamp floor never dropped below the desktop-ish 64px. */
+.sec+.sec{padding-top:clamp(28px,8.5vw,132px)}
+.sec:has(+.sec){padding-bottom:clamp(28px,8.5vw,132px)}
 .sec-tint{background:var(--paper-2)}
 .sec-dark{background:var(--ground);color:#B9C3DA}
 .sec-void{background:var(--void);color:#B9C3DA}
@@ -418,6 +422,17 @@ font-size:clamp(1.15rem,2.1vw,1.6rem);color:var(--ground);letter-spacing:-.015em
 display:inline-block;margin-left:10px;vertical-align:middle}
 .ask-acts{display:flex;flex-wrap:wrap;gap:10px;position:relative}
 
+/* hero film — decorative only; every claim it illustrates is also in the copy */
+.hero-media video{width:100%;height:100%;object-fit:cover;object-position:center 60%;
+filter:saturate(1.02) contrast(1.04);position:absolute;inset:0;opacity:0;transition:opacity 1.1s var(--ease)}
+.hero-media video.up{opacity:1}
+.vtoggle{position:absolute;right:clamp(16px,3vw,34px);bottom:clamp(16px,3vw,30px);z-index:5;
+display:inline-flex;align-items:center;gap:9px;background:rgba(8,14,32,.55);backdrop-filter:blur(10px);
+border:1px solid rgba(184,208,224,.32);color:#fff;border-radius:99px;padding:9px 16px;cursor:pointer;
+font-family:var(--disp);font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;transition:.22s var(--ease)}
+.vtoggle:hover{background:rgba(8,14,32,.85);border-color:var(--volt)}
+.vtoggle .d{width:7px;height:7px;border-radius:50%;background:var(--volt-lt);flex:0 0 auto}
+
 /* ── atmosphere ── */
 /* A very fine grain over dark grounds. Stops large navy fields reading as dead
    flat fill, the way ink sits on uncoated stock. */
@@ -455,7 +470,7 @@ padding:0 clamp(20px,4.5vw,52px)}
 .st{text-align:left}
 .st-q{font-family:var(--disp);font-style:normal;font-weight:800;color:#fff;
 font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.12;letter-spacing:-.035em;max-width:22ch}
-.st-sub{margin-top:28px;color:var(--steel);font-size:1.06rem;max-width:52ch}
+.st-sub{margin-top:clamp(16px,2.2vw,28px);color:var(--steel);font-size:1.06rem;max-width:52ch}
 .sec-cool .st-q,.sec-hot .st-q{color:var(--ground)}
 .sec-cool .st-sub,.sec-hot .st-sub{color:var(--ink)}
 h2.said,.said{font-family:var(--ser);font-style:italic;font-weight:400;
@@ -568,7 +583,7 @@ text-align:center;color:var(--ink-3);font-size:.9rem;display:flex;flex-direction
 font-size:1rem;letter-spacing:-.025em;text-transform:uppercase}
 
 /* cta band */
-.band{background:var(--void);color:#fff;padding:clamp(58px,8vw,110px) 0;position:relative;overflow:hidden}
+.band{background:var(--void);color:#fff;padding:clamp(38px,8vw,110px) 0;position:relative;overflow:hidden}
 .band::after{content:"";position:absolute;inset:0;background:
 radial-gradient(ellipse at 8% 6%,rgba(61,90,254,.34),transparent 52%),
 radial-gradient(ellipse at 92% 96%,rgba(24,36,120,.6),transparent 56%)}
@@ -595,7 +610,7 @@ padding-left:16px;border-left:2px solid var(--line-2)}
 .sec-cool .list li,.sec-hot .list li{color:var(--ink)}
 
 /* filters */
-.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:30px}
+.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:clamp(18px,3vw,30px)}
 .filters button{font-family:var(--disp);font-weight:800;font-size:.85rem;padding:11px 20px;border-radius:2px;
 border:1px solid var(--line-2);background:#fff;color:var(--ink-2);cursor:pointer;transition:.22s var(--ease);
 letter-spacing:-.015em;text-transform:uppercase}
@@ -604,7 +619,7 @@ letter-spacing:-.015em;text-transform:uppercase}
 .filters button[aria-pressed="true"]:hover{color:#fff}
 
 /* footer */
-.ftr{background:var(--void);color:var(--steel);padding:clamp(64px,7vw,104px) 0 32px;font-size:.95rem}
+.ftr{background:var(--void);color:var(--steel);padding:clamp(44px,7vw,104px) 0 32px;font-size:.95rem}
 .ftr h4{color:#fff;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;margin-bottom:20px;font-weight:700}
 .ftr a{color:var(--ice);text-decoration:none;transition:color .2s}
 .ftr a:hover{color:var(--volt-lt)}
@@ -612,9 +627,9 @@ letter-spacing:-.015em;text-transform:uppercase}
 .ftr ul{list-style:none;display:grid;gap:11px}
 .ftr .big{font-family:var(--disp);font-weight:800;font-size:1.7rem;color:#fff;letter-spacing:-.055em;
 line-height:.95;display:block;text-transform:uppercase}
-.ftr .bot{margin-top:52px;padding-top:26px;border-top:1px solid rgba(180,204,216,.14);display:flex;
+.ftr .bot{margin-top:clamp(30px,5vw,52px);padding-top:26px;border-top:1px solid rgba(180,204,216,.14);display:flex;
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
-.ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:52px;color:#C9D3E4;
+.ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
 `;
 
@@ -762,6 +777,35 @@ ${body}
       t.textContent=f+'\u00b0'; el.hidden=false;
       try{ sessionStorage.setItem('tffc_wx',JSON.stringify({f:f,at:Date.now()})); }catch(e){}
     }).catch(function(){});
+})();
+/* Hero film. Decorative, muted, never autoplays on a data-saver, reduced-motion
+   or small screen. The poster is the frame the film opens on, so the swap is invisible. */
+(function(){
+var v=document.getElementById('hv'),t=document.getElementById('vt'),l=document.getElementById('vtl');
+if(!v||!t)return;
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,
+    small=matchMedia('(max-width:700px)').matches,
+    src=small?'${u("/assets/video/tour-720.mp4")}':'${u("/assets/video/tour-1280.mp4")}',
+    loaded=false,playing=false;
+function load(cb){ if(loaded){cb&&cb();return;} loaded=true;
+  v.src=src; v.loop=true; v.load();
+  v.addEventListener('canplay',function(){cb&&cb()},{once:true}); }
+function play(){ load(function(){ v.play().then(function(){
+    v.classList.add('up');playing=true;l.textContent='Pause the film';
+  }).catch(function(){ l.textContent='Play the film'; }); }); }
+function pause(){ v.pause();v.classList.remove('up');playing=false;l.textContent='Play the film'; }
+t.hidden=false;
+t.addEventListener('click',function(){ playing?pause():play(); });
+if('IntersectionObserver' in window){
+  new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting&&playing){v.pause();} else if(e.isIntersecting&&playing){v.play().catch(function(){});}
+  })},{threshold:0.15}).observe(v);
+}
+function slowNow(){var k=navigator.connection||{};
+  return k.saveData===true||/^(slow-)?2g$/.test(k.effectiveType||'');}
+function maybeAuto(){ if(!reduce&&!small&&!slowNow()){ play(); } }
+if(document.readyState==='complete'){setTimeout(maybeAuto,120);}
+else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
 })();
 (function(){var b=document.getElementById('burger'),n=document.getElementById('nav');
 b.addEventListener('click',function(){var o=n.classList.toggle('open');
@@ -1215,11 +1259,10 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
 <section class="hero">
   <div class="hero-media" id="hm">
     <img src="${u(photos.exterior.src)}" alt="" width="${photos.exterior.w}" height="${photos.exterior.h}" fetchpriority="high">
-    <!-- Hero film removed: the generated loop was chained exterior to pool to court,
-         and there is no pool at this address. Regenerate it from rooms that exist
-         before putting a film back on the first screen. -->
+    <video id="hv" playsinline muted preload="none" aria-hidden="true" width="1470" height="630"></video>
   </div>
 
+  <button class="vtoggle" id="vt" hidden><span class="d"></span><span id="vtl">Play the film</span></button>
   <div class="wrap">
     <p class="kick">The only courts in Red Bluff \u00b7 Childcare in the building</p>
     <h1>Courts. Classes.<br>Kids' room.<br>All <em>included.</em></h1>
@@ -1624,7 +1667,7 @@ ${spread(photos.corridor, { eyebrow: "Your first visit", flip: true,
          "If a class is running, you are welcome in it \u2014 tell the instructor it is your first",
          "Coffee at the Fuel Bar is free until 9 a.m."] })}
 
-${fullBleed(photos.gymfloor, "Thirty thousand square feet. A list does not convey it \u2014 standing in it does.")}
+${fullBleed(photos.lobby, "Walk in, and this is the room you stand in. Somebody will be at the desk.")}
 
 ${proof()}
 
@@ -1656,12 +1699,12 @@ ${statement("Most of the staff came up through the local high school programme."
     "Tell the desk what you are trying to do and they will match you with the right trainer and give you the rate.")}</div>
 </div></section>
 
-${spread(photos.gymfloor, { eyebrow: "Where you'll be working", flip: true,
+${spread(photos.platform, { eyebrow: "Where you'll be working", flip: true,
   h2: "A full replacement<br>of the strength floor",
   body: "Commercial Nautilus and Matrix, a freeweight room with an Olympic platform, a Pilates reformer, a TRX station and a cross-training box. There is enough equipment here to run almost any programme without queuing for it.",
   cta: ["/strength-floor/", "See the strength floor \u2192"] })}
 
-${fullBleed(photos.freeweights, "Racks, benches and a platform \u2014 you can actually put a loaded bar on the floor here.")}
+${fullBleed(photos.crosstrain, "The cross-training end — rig, boxes, rope and a turf lane to push a sled down.")}
 
 ${band("Start with a conversation.", "Call the desk and tell them what you are trying to do. They will point you at the right trainer.",
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/contact/", "Contact", "btn-ghost"]])}
@@ -1671,7 +1714,7 @@ ${band("Start with a conversation.", "Call the desk and tell them what you are t
 P("/corporate-wellness/", `Corporate Wellness for Red Bluff Employers | ${biz.short}`,
   `Corporate wellness memberships at Tehama Family Fitness Center — a 30,000 sq ft facility on South Main, minutes from St. Elizabeth Community Hospital and downtown Red Bluff.`,
   `
-${phero(photos.gymfloor, { kick: "For employers",
+${phero(photos.cardioTheater, { kick: "For employers",
   h1: "Corporate <em>wellness</em>",
   lede: `If you employ people in Red Bluff, there is exactly one facility in this county with a full basketball court, racquetball, three indoor pickleball courts, childcare and ${counts.classes} classes a week.` })}
 
@@ -1693,7 +1736,7 @@ ${statement("Four minutes from St. Elizabeth Community Hospital.",
   </div>
 </div></section>
 
-${spread(photos.gymfloor, { eyebrow: "The differentiator", flip: true, tone: "hot",
+${spread(photos.circuit, { eyebrow: "The differentiator", flip: true, tone: "hot",
   h2: "One building,<br>every option",
   body: "Low-impact and high-impact under one roof \u2014 tai chi and stretch classes at one end, an Olympic platform at the other. It works for a whole workforce rather than just the gym-fit end of it.",
   cta: ["/amenities/", "What is in the building \u2192"] })}
@@ -1755,7 +1798,7 @@ ${phero(photos.pickleball, { sm: false, kick: "2498 S Main St · Red Bluff",
 ${statement("Three indoor courts, and half the town still does not know.",
   "Pickleheads, Places2Play, Bounce and Pickleballify all list our courts. Most people in Red Bluff still have no idea they are here.")}
 
-${spread(photos.racquetball, { eyebrow: "Why indoors matters here", flip: true,
+${spread(photos.paddles, { eyebrow: "Why indoors matters here", flip: true,
   h2: "A twelve-month season",
   body: "Red Bluff hits 110\u00b0F in the summer. Outdoor courts are unplayable from about eleven in the morning until evening for a good stretch of the year, and in winter you are waiting out the rain. Three courts under a roof means the season never stops.",
   list: ["Climate controlled, all year",
@@ -1824,7 +1867,7 @@ ${band("Run it at one, or run it at six.", "Open gym twice a day, five days a we
 P("/strength-floor/", `The Strength Floor — New Nautilus &amp; Matrix | ${biz.short}`,
   `A brand-new commercial-grade Nautilus and Matrix strength floor at Tehama Family Fitness Center in Red Bluff, plus a freeweight room with an Olympic platform.`,
   `
-${phero(photos.cardio, { kick: "Members named it the Wolf Cave",
+${phero(photos.nautilus, { kick: "Members named it the Wolf Cave",
   h1: "The <em>strength</em> floor",
   lede: "A full replacement with brand-new, commercial-grade Nautilus and Matrix. Not refurbished, not hand-me-down club equipment \u2014 new." })}
 
@@ -1861,7 +1904,7 @@ ${spread(photos.freeweights, { eyebrow: "Freeweights", flip: true,
   <p style="margin-top:30px"><a class="btn btn-out" href="${u("/womens-weight-room/")}">The women's weight room \u2192</a></p>
 </div></section>
 
-${fullBleed(photos.gymfloor, "The main floor \u2014 thirty thousand square feet gives the strength side room to spread out.")}
+${fullBleed(photos.dumbbells, "Dumbbells light to heavy, and benches enough that you are not waiting for one.")}
 
 ${band("Put your hands on it.", "Walk in and try the new equipment before you decide anything.",
   [["/day-pass/", "Day pass"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
@@ -1878,7 +1921,7 @@ ${phero(photos.womens, { kick: "Its own room",
 ${statement("A room, not a corner.",
   "That distinction sounds small and is not. If the reason you do not lift is that you do not want to do it in front of the whole gym, a separate room with its own door is the difference between a membership you use and one you cancel.")}
 
-${spread(photos.freeweights, { eyebrow: "What's in it", flip: true,
+${spread(photos.kettlebells, { eyebrow: "What's in it", flip: true,
   h2: "Its own equipment",
   body: "Selectorised strength machines, a full run of dumbbells, benches and a mirrored wall. You are not sharing a rack with the main floor and you are not waiting on it either.",
   list: ["A separate room off the main strength floor",
@@ -1921,7 +1964,7 @@ ${statement("Nowhere else in Red Bluff will take your kids while you train.",
   </div>
 </div></section>
 
-${spread(photos.studio, { eyebrow: "Which classes you can actually make", dark: true,
+${spread(photos.kidsroom, { eyebrow: "Which classes you can actually make", dark: true,
   h2: "Every session on our<br>schedule says so",
   body: `We mark all ${counts.total} sessions with whether the kids' room is open at that hour. It is the only question that decides whether you get here, so it is on every single row.`,
   cta: ["/schedule/?cc=1", "Classes you can make \u2192"] })}
@@ -1991,7 +2034,7 @@ ${statement("Coffee is free until nine.",
   </div>
 </div></section>
 
-${spread(photos.frontdesk, { eyebrow: "Where it is", flip: true,
+${spread(photos.coffee, { eyebrow: "Where it is", flip: true,
   h2: "A few steps<br>off the floor",
   body: "The counter sits by the lobby, which means it doubles as the place people stand around talking after a class. In a building this size that matters more than the menu does.",
   list: ["Open whenever the building is",
@@ -2011,7 +2054,7 @@ ${spread(photos.frontdesk, { eyebrow: "Where it is", flip: true,
   </div>
 </div></section>
 
-${fullBleed(photos.gymfloor, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
+${fullBleed(photos.frontdesk, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
 
 <section class="sec"><div class="wrap narrow">
   <h2>Nutrition coaching</h2>
@@ -2056,14 +2099,14 @@ ${statement("Twenty-five amenities. One membership. No tiers.",
   </div>
 </div></section>
 
-${spread(photos.sauna, { eyebrow: "The recovery end", flip: true,
+${spread(photos.saunaDoor, { eyebrow: "The recovery end", flip: true,
   h2: "Sauna in both<br>locker rooms",
   body: "Full-service locker rooms on each side, each with its own cedar sauna. For a community gym in a town of fourteen thousand, that is an unusually good recovery setup.",
   list: ["Cedar sauna on both sides",
          "Full-service lockers, showers and benches",
          "Tanning and an on-site esthetician"] })}
 
-${fullBleed(photos.cardio, "Thirty-plus pieces of cardio, plus the cardio theater, TRX and a cross-training box.")}
+${fullBleed(photos.cardioTheater, "Thirty-plus pieces of cardio, plus the cardio theater, TRX and a cross-training box.")}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
@@ -2247,7 +2290,7 @@ ${band("Find their class on the board.", "Every instructor, every session, one p
 P("/silversneakers/", `SilverSneakers in Red Bluff | ${biz.short}`,
   `SilverSneakers at Tehama Family Fitness Center, Red Bluff: Classic Monday/Wednesday/Friday, Cardio Circuit Tuesday/Thursday, and tai chi every weekday morning.`,
   `
-${phero(photos.studio, { kick: "SilverSneakers",
+${phero(photos.circuit, { kick: "SilverSneakers",
   h1: "Programming, not just a <em>card reader</em>",
   lede: "Plenty of places accept the card. The question is what is actually on when you get there." })}
 
@@ -2264,7 +2307,7 @@ ${phero(photos.studio, { kick: "SilverSneakers",
 ${statement("Tai chi at 7:15. Five mornings a week. Every week.",
   "Standing the whole time, slow weight-shifting forms, easy on the joints and genuinely hard on your balance \u2014 which is the point. It is the most consistently scheduled thing in this building.")}
 
-${spread(photos.corridor, { eyebrow: "Low impact", flip: true,
+${spread(photos.stretch, { eyebrow: "Low impact", flip: true,
   h2: "Easy on the joints,<br>hard on your balance",
   body: "Tai chi is standing work, slow weight shifts, no impact at all. Stretch & Mobility, Mat Pilates and Yoga Easy Flow are the same idea. If a treadmill is out of the question, this is the corner of the building to start in.",
   cta: ["/classes/tai-chi/", "About tai chi \u2192"] })}
@@ -2379,7 +2422,7 @@ ${spread(photos.frontdesk, { eyebrow: "What we're for", flip: true,
          `<b>${staff.childcare}</b> runs the childcare room`,
          "Most of the instructors have been here for years"] })}
 
-${fullBleed(photos.gymfloor, "Thirty thousand square feet, single storey, on the south end of town.")}
+${fullBleed(photos.exteriorDusk, "Thirty thousand square feet, single storey, on the south end of town.")}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
@@ -2485,7 +2528,7 @@ ${phero(photos.corridor, { kick: "Straight answers",
   ${FAQ.map(([q, a]) => `<div class="card rv" style="margin-bottom:16px"><h3>${q}</h3><p style="margin-top:10px">${a}</p></div>`).join("")}
 </div></section>
 
-${fullBleed(photos.corridor, "The corridor from the lobby to the studios \u2014 most of the building is off it.")}
+${fullBleed(photos.lobby, "The lobby. Most of the building runs off the corridor behind it.")}
 
 ${band("Didn't answer it?", "Call the desk. Somebody there knows.",
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], [`mailto:${biz.email}`, "Email us", "btn-ghost"]])}
