@@ -232,6 +232,61 @@ export const instructors = (() => {
 export const staff = { frontDesk: "Courtney", childcare: "Alma" };
 
 /* ------------------------------------------------------------------ *
+ * THE TEAM — one page each.
+ *
+ * The only thing here that is invented is nothing: names and what they
+ * teach come straight off the live calendar, roles from the published
+ * ownership sources. `bio` and `portrait` stay null until the front desk
+ * gives us words and the shoot gives us faces — see
+ * client/PHOTO-SHOT-LIST.md. A missing portrait renders as a monogram,
+ * never as a stock face and never as a generated one: these are real
+ * people in a town of fourteen thousand and their neighbours would know.
+ * ------------------------------------------------------------------ */
+const ROLES = {
+  Karla:    { full: "Karla Stroman",  role: "Owner",            desk: false },
+  Aubrie:   { full: "Aubrie Thomas",  role: "Co-owner",         desk: false },
+  Kyle:     { full: "Kyle Tingley",   role: "Co-owner",         desk: false },
+  Kevin:    { full: "Kevin",          role: "Instructor",       desk: false },
+  Tonnie:   { full: "Tonnie",         role: "Instructor",       desk: false },
+  Jami:     { full: "Jami",           role: "Instructor",       desk: false },
+  Roxane:   { full: "Roxane",         role: "Instructor",       desk: false },
+  Tami:     { full: "Tami",           role: "Instructor",       desk: false },
+  Kris:     { full: "Kris",           role: "Instructor",       desk: false },
+  Amie:     { full: "Amie",           role: "Instructor",       desk: false },
+  Sally:    { full: "Sally",          role: "Instructor",       desk: false },
+  Debbie:   { full: "Debbie",         role: "Instructor",       desk: false },
+  Leslie:   { full: "Leslie",         role: "Instructor",       desk: false },
+  Kathy:    { full: "Kathy",          role: "Instructor",       desk: false },
+  Ty:       { full: "Ty",             role: "Instructor",       desk: false },
+};
+
+export const slugify = n => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export const team = [
+  ...instructors.map(i => {
+    const meta = ROLES[i.name] || { full: i.name, role: "Instructor" };
+    return {
+      slug: slugify(i.name),
+      first: i.name,
+      name: meta.full,
+      role: meta.role,
+      teaches: i.teaches,
+      sessions: sessions.filter(s => s.who === i.name),
+      portrait: null,          // set once the shoot lands
+      bio: null,               // ask the front desk
+      desk: false,
+    };
+  }),
+  { slug: "courtney", first: staff.frontDesk, name: staff.frontDesk, role: "Front desk",
+    teaches: [], sessions: [], portrait: null, bio: null, desk: true,
+    blurb: "The first person you meet, and the one who answers when you call." },
+  { slug: "alma", first: staff.childcare, name: staff.childcare, role: "Childcare",
+    teaches: [], sessions: [], portrait: null, bio: null, desk: true,
+    blurb: "Runs the kids\u2019 room, and the reason a lot of parents can train at all." },
+];
+
+
+/* ------------------------------------------------------------------ *
  * CLASSES — only classes that actually appear on the calendar.
  * `page: true` means it earns a URL (people type the name). The rest are
  * rows on /classes/, because a page nobody searches for is a thin page.

@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meet the Instructors | TFFC Red Bluff</title>
-<meta name="description" content="The 15 instructors teaching 54 classes a week at Tehama Family Fitness Center in Red Bluff, and what each of them teaches.">
-<link rel="canonical" href="https://bannisterderik-tech.github.io/tehama-family-fitness/instructors/">
+<title>Ty — Instructor | TFFC Red Bluff</title>
+<meta name="description" content="Ty teaches Kettlebell at Tehama Family Fitness Center in Red Bluff — 1 session a week, included with membership.">
+<link rel="canonical" href="https://bannisterderik-tech.github.io/tehama-family-fitness/team/ty/">
 <meta name="robots" content="noindex,nofollow">
-<meta property="og:title" content="Meet the Instructors | TFFC Red Bluff">
-<meta property="og:description" content="The 15 instructors teaching 54 classes a week at Tehama Family Fitness Center in Red Bluff, and what each of them teaches.">
+<meta property="og:title" content="Ty — Instructor | TFFC Red Bluff">
+<meta property="og:description" content="Ty teaches Kettlebell at Tehama Family Fitness Center in Red Bluff — 1 session a week, included with membership.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://bannisterderik-tech.github.io/tehama-family-fitness/tehama-family-fitness/assets/exterior-pano.jpg">
 <meta name="theme-color" content="#0A0D1E">
@@ -85,6 +85,34 @@ opacity:0;transform:translateY(20px);animation:heroIn .9s var(--ease) forwards}
 .js .hero .acts,.js .hero .under{opacity:1;transform:none;animation:none}}
 .js .rv.in{opacity:1;transform:none}
 .ser{font-family:var(--ser);font-style:italic;font-weight:400;letter-spacing:-.01em}
+
+/* ── the team ─────────────────────────────────────────────────────────
+   Portraits are real photographs or they are a monogram. Never a stock
+   face, and never a generated one — these are named people in a town of
+   fourteen thousand, and their neighbours would know. */
+.por{position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;
+background:var(--paper-3);display:block}
+.por img{width:100%;height:100%;object-fit:cover;display:block}
+.por-mono{display:grid;place-items:center;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%)}
+.por-mono b{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,6vw,3rem);
+color:#fff;opacity:.92;letter-spacing:-.05em;line-height:1}
+.por-mono::after{content:"";position:absolute;inset:0;
+box-shadow:inset 0 0 0 1px rgba(184,208,224,.16)}
+.tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+gap:clamp(18px,2.4vw,30px)}
+@media(max-width:520px){.tm-grid{grid-template-columns:1fr 1fr;gap:16px 14px}}
+.tm{display:block;text-decoration:none;color:inherit}
+.tm .por{transition:transform .5s var(--ease)}
+.tm:hover .por{transform:translateY(-4px)}
+.tm h3{font-size:1.06rem;margin-top:14px;letter-spacing:-.025em}
+.tm .r{display:block;font-family:var(--body);font-weight:600;font-size:.7rem;
+letter-spacing:.14em;text-transform:uppercase;color:var(--volt);margin-top:5px}
+.tm .t{display:block;color:var(--ink-3);font-size:.88rem;margin-top:7px;line-height:1.4}
+.tm-hero{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);
+gap:clamp(26px,4vw,56px);align-items:start}
+@media(max-width:760px){.tm-hero{grid-template-columns:1fr;gap:24px}
+.tm-hero .por{max-width:230px}}
 
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
@@ -650,11 +678,11 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="hero hero-sm">
-  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/barre.jpg" srcset="/tehama-family-fitness/assets/hero/barre-800.jpg 800w, /tehama-family-fitness/assets/hero/barre.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
+  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/studio.jpg" srcset="/tehama-family-fitness/assets/hero/studio-800.jpg 800w, /tehama-family-fitness/assets/hero/studio.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
   <div class="wrap">
-    <p class="kick">Fifteen people</p>
-    <h1>The instructors</h1>
-    <p class="lede">Between them they teach 54 classes a week. Some of them own the place.</p>
+    <p class="kick">Instructor</p>
+    <h1>Ty</h1>
+    <p class="lede">Kettlebell. 1 session a week, included with membership.</p>
     <div class="acts">
   <a class="btn btn-volt" href="tel:+15305288656">Call 530-528-8656</a>
   <a class="btn btn-ghost" href="/tehama-family-fitness/day-pass/">Walk in — open till 8</a>
@@ -662,79 +690,71 @@ the front desk. Not the live site.</span></div>
   </div>
 </section>
 
-
-<section class="sec sec-void st"><div class="wrap">
-  <p class="st-q rv">Three of the people on this list own the building.</p>
-  <p class="st-sub">Karla teaches the six o'clock spin class. Aubrie has Lean & Mean most weekday mornings. Kyle is in the studio on Wednesday evenings. You will not find that at a franchise.</p>
-</div></section>
-
 <section class="sec"><div class="wrap">
-  <div class="split">
-    <div><p class="eyebrow">Who's on the board</p><h2>Fifteen names,<br>and what they teach</h2></div>
-    <div><p class="lede">Most have been here for years. If you are nervous about walking into a class,
-    pick a name, turn up a few minutes early and say it is your first one — that is all it takes.</p></div>
-  </div>
-  <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
-    <div class="card rv"><h3>Kevin</h3>
-      <p>Cardio Circuit · Drums Alive · SilverSneakers Cardio Circuit · SilverSneakers Classic · Tai Chi</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">14 sessions a week</p></div><div class="card rv"><h3>Roxane</h3>
-      <p>Body Burner · Spin · Spin/Tone</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">6 sessions a week</p></div><div class="card rv"><h3>Aubrie <span class="tag tag-cc">Co-owner</span></h3>
-      <p>Lean &amp; Mean · Tone Zone</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">4 sessions a week</p></div><div class="card rv"><h3>Jami</h3>
-      <p>Mat Pilates · Yoga</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">4 sessions a week</p></div><div class="card rv"><h3>Tami</h3>
-      <p>Barre Above · Stretch &amp; Mobility</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">4 sessions a week</p></div><div class="card rv"><h3>Amie</h3>
-      <p>Spin</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Debbie</h3>
-      <p>Spin</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Karla <span class="tag tag-cc">Owner</span></h3>
-      <p>Spin</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">2 sessions a week</p></div><div class="card rv"><h3>Kathy</h3>
-      <p>Yoga Easy Flow</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Kris</h3>
-      <p>Spin</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">2 sessions a week</p></div><div class="card rv"><h3>Kyle <span class="tag tag-cc">Co-owner</span></h3>
-      <p>Tone Zone</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Leslie</h3>
-      <p>Spin</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Sally</h3>
-      <p>Yoga</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div><div class="card rv"><h3>Tonnie</h3>
-      <p>Zumba &amp; Tone</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">3 sessions a week</p></div><div class="card rv"><h3>Ty</h3>
-      <p>Kettlebell</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">1 session a week</p></div>
-  </div>
-</div></section>
-
-
-<section class="sec  sp sp-flip"><div class="wrap">
-  <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/frontdesk.jpg" srcset="/tehama-family-fitness/assets/hero/frontdesk-800.jpg 800w, /tehama-family-fitness/assets/hero/frontdesk.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The front desk and entry lobby" width="2000" height="848" loading="lazy" decoding="async"></figure>
-    <div class="sp-txt">
-      <p class="eyebrow">And at the desk</p>
-      <h2>You'll also meet<br>Courtney and Alma</h2>
-      <p class="lede"><b>Courtney</b> is on the front desk and <b>Alma</b> runs the childcare room. In a town of fourteen thousand, knowing who is going to be there when you walk in is most of the reason people pick one gym over another.</p>
-      
-      <p style="margin-top:28px"><a class="btn btn-volt" href="/tehama-family-fitness/schedule/">Find their class →</a></p>
+  <div class="tm-hero">
+    <span class="por por-mono" role="img" aria-label="Portrait of Ty coming soon"><b>T</b></span>
+    <div>
+      <p class="eyebrow">Instructor</p>
+      <h2>Ty</h2>
+      <p class="lede">Ty teaches Kettlebell in the Freeweight Room. You will find Ty on the board on Thursday.</p>
+      <div class="hold" style="margin-top:24px"><b>A few words from Ty</b>
+      We are collecting these from the desk. Sessions and times below are live.</div>
+      <p style="margin-top:26px"><a class="btn btn-volt" href="/tehama-family-fitness/schedule/">See the whole board →</a></p>
     </div>
   </div>
 </div></section>
 
 
-<figure class="fb"><img src="/tehama-family-fitness/assets/hero/studio.jpg" srcset="/tehama-family-fitness/assets/hero/studio-800.jpg 800w, /tehama-family-fitness/assets/hero/studio.jpg 2000w" sizes="100vw" alt="A group fitness studio with a mirrored wall and barre" width="2000" height="848" loading="lazy" decoding="async">
-<figcaption class="fb-cap"><span class="wrap">Most of them teach in this room, most weeks of the year.</span></figcaption></figure>
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">On the board</p>
+      <h2>1 session<br>a week</h2>
+      <p class="lede">Every row shows whether childcare is open at that hour — usually the
+      thing that decides whether you make it.</p>
+      <p style="margin-top:18px;color:var(--ink-3);font-size:.92rem">
+      Earliest on the week: Kettlebell, Thursday at 5:30 PM.</p></div>
+    <div><div class="tw"><table>
+  <thead><tr><th scope="col">Day</th><th scope="col">Time</th><th scope="col">Class</th><th scope="col">Instructor</th><th scope="col">Kids</th></tr></thead>
+  <tbody><tr><td class="t-time">Thursday</td><td class="t-time">5:30 PM</td>
+    <td><b>Kettlebell</b></td><td class="who">Ty</td><td><span class="tag tag-ph">Parent hours</span></td></tr></tbody>
+</table></div></div>
+  </div>
+</div></section>
 
-<section class="sec sec-tint"><div class="wrap narrow">
-  <div class="hold"><b>Photos coming</b>
-  Fifteen real faces, not fifteen stock portraits. They go up as we take them.</div>
+
+<section class="sec"><div class="wrap">
+  <p class="eyebrow">What Ty teaches</p>
+  <div class="grid g3" style="margin-top:26px">
+    <div class="card rv">
+        <h3>Kettlebell</h3>
+        <p>2 a week across the timetable.</p>
+      </div>
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <p class="eyebrow">The rest of the team</p>
+  <div class="tm-grid" style="margin-top:26px">
+    <a class="tm" href="/tehama-family-fitness/team/kevin/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Kevin coming soon"><b>K</b></span>
+      <h3>Kevin</h3><span class="r">Instructor</span></a><a class="tm" href="/tehama-family-fitness/team/roxane/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Roxane coming soon"><b>R</b></span>
+      <h3>Roxane</h3><span class="r">Instructor</span></a><a class="tm" href="/tehama-family-fitness/team/aubrie/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Aubrie Thomas coming soon"><b>A</b></span>
+      <h3>Aubrie Thomas</h3><span class="r">Co-owner</span></a><a class="tm" href="/tehama-family-fitness/team/jami/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Jami coming soon"><b>J</b></span>
+      <h3>Jami</h3><span class="r">Instructor</span></a><a class="tm" href="/tehama-family-fitness/team/tami/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Tami coming soon"><b>T</b></span>
+      <h3>Tami</h3><span class="r">Instructor</span></a><a class="tm" href="/tehama-family-fitness/team/amie/">
+      <span class="por por-mono" role="img" aria-label="Portrait of Amie coming soon"><b>A</b></span>
+      <h3>Amie</h3><span class="r">Instructor</span></a>
+  </div>
+  <p style="margin-top:30px"><a class="btn btn-out" href="/tehama-family-fitness/team/">All 17 of us →</a></p>
 </div></section>
 
 <section class="band"><div class="wrap">
-  <h2>Find their class on the board.</h2><p>Every instructor, every session, one page.</p>
-  <div class="acts"><a class="btn btn-volt" href="/tehama-family-fitness/schedule/">The schedule</a><a class="btn btn-ghost" href="/tehama-family-fitness/classes/">All classes</a></div>
+  <h2>Come and meet Ty.</h2><p>Turn up a few minutes early and say it is your first one. That is the whole process.</p>
+  <div class="acts"><a class="btn btn-volt" href="tel:+15305288656">Call 530-528-8656</a><a class="btn btn-ghost" href="/tehama-family-fitness/schedule/">The schedule</a></div>
 </div></section>
 
 </main>
@@ -755,7 +775,7 @@ the front desk. Not the live site.</span></div>
     <div><h4>Get moving</h4><ul>
       <li><a href="/tehama-family-fitness/schedule/">Class schedule</a></li>
       <li><a href="/tehama-family-fitness/classes/">All classes</a></li>
-      <li><a href="/tehama-family-fitness/instructors/">Instructors</a></li>
+      <li><a href="/tehama-family-fitness/team/">Instructors</a></li>
       <li><a href="/tehama-family-fitness/silversneakers/">SilverSneakers</a></li>
       <li><a href="/tehama-family-fitness/personal-training/">Personal training</a></li>
       <li><a href="/tehama-family-fitness/corporate-wellness/">Corporate wellness</a></li>

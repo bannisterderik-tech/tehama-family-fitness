@@ -86,6 +86,34 @@ opacity:0;transform:translateY(20px);animation:heroIn .9s var(--ease) forwards}
 .js .rv.in{opacity:1;transform:none}
 .ser{font-family:var(--ser);font-style:italic;font-weight:400;letter-spacing:-.01em}
 
+/* ── the team ─────────────────────────────────────────────────────────
+   Portraits are real photographs or they are a monogram. Never a stock
+   face, and never a generated one — these are named people in a town of
+   fourteen thousand, and their neighbours would know. */
+.por{position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;
+background:var(--paper-3);display:block}
+.por img{width:100%;height:100%;object-fit:cover;display:block}
+.por-mono{display:grid;place-items:center;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%)}
+.por-mono b{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,6vw,3rem);
+color:#fff;opacity:.92;letter-spacing:-.05em;line-height:1}
+.por-mono::after{content:"";position:absolute;inset:0;
+box-shadow:inset 0 0 0 1px rgba(184,208,224,.16)}
+.tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+gap:clamp(18px,2.4vw,30px)}
+@media(max-width:520px){.tm-grid{grid-template-columns:1fr 1fr;gap:16px 14px}}
+.tm{display:block;text-decoration:none;color:inherit}
+.tm .por{transition:transform .5s var(--ease)}
+.tm:hover .por{transform:translateY(-4px)}
+.tm h3{font-size:1.06rem;margin-top:14px;letter-spacing:-.025em}
+.tm .r{display:block;font-family:var(--body);font-weight:600;font-size:.7rem;
+letter-spacing:.14em;text-transform:uppercase;color:var(--volt);margin-top:5px}
+.tm .t{display:block;color:var(--ink-3);font-size:.88rem;margin-top:7px;line-height:1.4}
+.tm-hero{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);
+gap:clamp(26px,4vw,56px);align-items:start}
+@media(max-width:760px){.tm-hero{grid-template-columns:1fr;gap:24px}
+.tm-hero .por{max-width:230px}}
+
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
 .top .wrap{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:center;padding:9px 0;text-align:center}
@@ -738,7 +766,7 @@ the front desk. Not the live site.</span></div>
     <div><h4>Get moving</h4><ul>
       <li><a href="/tehama-family-fitness/schedule/">Class schedule</a></li>
       <li><a href="/tehama-family-fitness/classes/">All classes</a></li>
-      <li><a href="/tehama-family-fitness/instructors/">Instructors</a></li>
+      <li><a href="/tehama-family-fitness/team/">Instructors</a></li>
       <li><a href="/tehama-family-fitness/silversneakers/">SilverSneakers</a></li>
       <li><a href="/tehama-family-fitness/personal-training/">Personal training</a></li>
       <li><a href="/tehama-family-fitness/corporate-wellness/">Corporate wellness</a></li>

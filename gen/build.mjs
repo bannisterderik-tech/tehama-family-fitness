@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import {
   biz, tbd, has, val, askFor, sessions, DAYS, DAYNAME, mins, counts, childcareOpenAt,
-  instructors, staff, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
+  instructors, staff, team, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
   CHILDCARE_WINDOWS, lengthOf, leadForm,
   joinFlow, retracted,
 } from "./data.mjs";
@@ -104,6 +104,34 @@ opacity:0;transform:translateY(20px);animation:heroIn .9s var(--ease) forwards}
 .js .hero .acts,.js .hero .under{opacity:1;transform:none;animation:none}}
 .js .rv.in{opacity:1;transform:none}
 .ser{font-family:var(--ser);font-style:italic;font-weight:400;letter-spacing:-.01em}
+
+/* ── the team ─────────────────────────────────────────────────────────
+   Portraits are real photographs or they are a monogram. Never a stock
+   face, and never a generated one — these are named people in a town of
+   fourteen thousand, and their neighbours would know. */
+.por{position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;
+background:var(--paper-3);display:block}
+.por img{width:100%;height:100%;object-fit:cover;display:block}
+.por-mono{display:grid;place-items:center;
+background:linear-gradient(158deg,var(--ground-2) 0%,var(--void) 100%)}
+.por-mono b{font-family:var(--disp);font-weight:800;font-size:clamp(2rem,6vw,3rem);
+color:#fff;opacity:.92;letter-spacing:-.05em;line-height:1}
+.por-mono::after{content:"";position:absolute;inset:0;
+box-shadow:inset 0 0 0 1px rgba(184,208,224,.16)}
+.tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+gap:clamp(18px,2.4vw,30px)}
+@media(max-width:520px){.tm-grid{grid-template-columns:1fr 1fr;gap:16px 14px}}
+.tm{display:block;text-decoration:none;color:inherit}
+.tm .por{transition:transform .5s var(--ease)}
+.tm:hover .por{transform:translateY(-4px)}
+.tm h3{font-size:1.06rem;margin-top:14px;letter-spacing:-.025em}
+.tm .r{display:block;font-family:var(--body);font-weight:600;font-size:.7rem;
+letter-spacing:.14em;text-transform:uppercase;color:var(--volt);margin-top:5px}
+.tm .t{display:block;color:var(--ink-3);font-size:.88rem;margin-top:7px;line-height:1.4}
+.tm-hero{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);
+gap:clamp(26px,4vw,56px);align-items:start}
+@media(max-width:760px){.tm-hero{grid-template-columns:1fr;gap:24px}
+.tm-hero .por{max-width:230px}}
 
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
@@ -734,7 +762,7 @@ ${body}
     <div><h4>Get moving</h4><ul>
       <li><a href="${u("/schedule/")}">Class schedule</a></li>
       <li><a href="${u("/classes/")}">All classes</a></li>
-      <li><a href="${u("/instructors/")}">Instructors</a></li>
+      <li><a href="${u("/team/")}">Instructors</a></li>
       <li><a href="${u("/silversneakers/")}">SilverSneakers</a></li>
       <li><a href="${u("/personal-training/")}">Personal training</a></li>
       <li><a href="${u("/corporate-wellness/")}">Corporate wellness</a></li>
@@ -891,6 +919,14 @@ const phero = (photo, { kick, h1, lede, acts: a = true, sm = true } = {}) => `
 /* ── body components ───────────────────────────────────────────────
    Built because the pages were leaning on one card grid for everything.
    These give a page an actual rhythm: image, statement, numbers, steps. */
+
+// "a", "a and b", "a, b and c" — join(" and ") reads badly past two.
+const list = a => a.length < 3 ? a.join(" and ") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+/* A portrait, or an honest monogram standing in for one. */
+const portrait = (person, { sizes = "(max-width:520px) 46vw, 230px" } = {}) =>
+  person.portrait
+    ? `<span class="por">${pimg(person.portrait, { sizes, alt: `${person.name}, ${person.role} at ${biz.short}` })}</span>`
+    : `<span class="por por-mono" role="img" aria-label="Portrait of ${esc(person.name)} coming soon"><b>${esc(person.first.slice(0, 1))}</b></span>`;
 
 // Alternating image / text spread. The workhorse for a page body.
 const spread = (photo, { eyebrow, h2, body, list, cta, flip = false, dark = false, tone = "" } = {}) => `
@@ -1510,7 +1546,7 @@ ${fullBleed(photos.gymfloor, "Sixty-four sessions a week, and every one of them 
 
 ${band("Every one of these is included.",
   "No class fee, no booking, no app. Show up a few minutes early the first time and tell the instructor it's your first one.",
-  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/membership/", "Membership", "btn-ghost"], ["/instructors/", "Meet the instructors", "btn-ghost"]])}
+  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/membership/", "Membership", "btn-ghost"], ["/team/", "Meet the instructors", "btn-ghost"]])}
 
 <script>
 (function(){
@@ -2312,48 +2348,138 @@ ${band("It's included. Just turn up.",
 }
 
 /* =========================== INSTRUCTORS ============================== */
-P("/instructors/", `Meet the Instructors | ${biz.short} Red Bluff`,
-  `The 15 instructors teaching ${counts.classes} classes a week at Tehama Family Fitness Center in Red Bluff, and what each of them teaches.`,
+P("/team/", `Our Team — ${team.length} People | ${biz.short} Red Bluff`,
+  `Meet the team at Tehama Family Fitness Center in Red Bluff: ${instructors.length} instructors teaching ${counts.classes} classes a week, plus the front desk and the childcare room.`,
   `
-${phero(photos.barre, { kick: "Fifteen people",
-  h1: "The <em>instructors</em>",
-  lede: `Between them they teach ${counts.classes} classes a week. Some of them own the place.` })}
+${phero(photos.barre, { kick: `${team.length} people`,
+  h1: "Our <em>team</em>",
+  lede: `${instructors.length} instructors between them teach ${counts.classes} classes a week. Three of them own the building. And you will meet ${staff.frontDesk} before you meet any of them.` })}
 
 ${NAMES ? statement("Three of the people on this list own the building.",
   "Karla teaches the six o'clock spin class. Aubrie has Lean & Mean most weekday mornings. Kyle is in the studio on Wednesday evenings. You will not find that at a franchise.") : ""}
 
 <section class="sec"><div class="wrap">
   <div class="split">
-    <div><p class="eyebrow">Who's on the board</p><h2>Fifteen names,<br>and what they teach</h2></div>
-    <div><p class="lede">Most have been here for years. If you are nervous about walking into a class,
-    pick a name, turn up a few minutes early and say it is your first one \u2014 that is all it takes.</p></div>
+    <div><p class="eyebrow">Who you'll meet</p><h2>Pick a name,<br>find their class</h2></div>
+    <div><p class="lede">If you are nervous about walking into a class for the first time, that is
+    normal and it is also the easiest thing in the world to fix. Pick somebody, turn up a few
+    minutes early, and tell them it is your first one. Every one of them has heard it before.</p></div>
   </div>
-  <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
-    ${instructors.map(i2 => {
-      const n = sessions.filter(x => x.who === i2.name).length;
-      const own = owners.people.find(o => o.name.split(" ")[0] === i2.name);
-      return `<div class="card rv"><h3>${esc(i2.name)}${own && NAMES ? ` <span class="tag tag-cc">${own.role}</span>` : ""}</h3>
-      <p>${i2.teaches.length ? esc(i2.teaches.join(" \u00b7 ")) : "On the schedule."}</p>
-      <p style="margin-top:12px;color:var(--ink-3);font-size:.9rem">${n} session${n === 1 ? "" : "s"} a week</p></div>`;
-    }).join("")}
+
+  <div class="tm-grid" style="margin-top:clamp(34px,4vw,52px)">
+    ${team.map(m => `<a class="tm rv" href="${u(`/team/${m.slug}/`)}">
+      ${portrait(m, { sizes: "(max-width:520px) 44vw, 200px" })}
+      <h3>${esc(m.name)}</h3>
+      <span class="r">${esc(m.role)}</span>
+      <span class="t">${m.teaches.length ? esc(m.teaches.slice(0, 3).join(" · "))
+        : esc(m.blurb || "")}</span>
+      ${m.sessions.length ? `<span class="t">${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week</span>` : ""}
+    </a>`).join("")}
   </div>
 </div></section>
-
-${spread(photos.frontdesk, { eyebrow: "And at the desk", flip: true,
-  h2: "You'll also meet<br>Courtney and Alma",
-  body: `<b>${staff.frontDesk}</b> is on the front desk and <b>${staff.childcare}</b> runs the childcare room. In a town of fourteen thousand, knowing who is going to be there when you walk in is most of the reason people pick one gym over another.`,
-  cta: ["/schedule/", "Find their class \u2192"] })}
 
 ${fullBleed(photos.studio, "Most of them teach in this room, most weeks of the year.")}
 
 <section class="sec sec-tint"><div class="wrap narrow">
-  <div class="hold"><b>Photos coming</b>
-  Fifteen real faces, not fifteen stock portraits. They go up as we take them.</div>
+  <div class="hold"><b>Portraits coming</b>
+  Real faces, photographed here. Until then everybody gets an initial — we would rather
+  show you nothing than show you somebody who does not work here.</div>
 </div></section>
 
 ${band("Find their class on the board.", "Every instructor, every session, one page.",
   [["/schedule/", "The schedule"], ["/classes/", "All classes", "btn-ghost"]])}
 `);
+
+/* ---- one page per person -------------------------------------------
+   Not a template with the name swapped: each carries that person's own
+   sessions, rooms and days, pulled from the live calendar. */
+for (const m of team) {
+  const rooms = [...new Set(m.sessions.map(x => {
+    const c = classes.find(c2 => c2.name === x.name);
+    return c ? c.room : null;
+  }).filter(Boolean))];
+  const days = [...new Set(m.sessions.map(x => x.day))];
+  const dayList = DAYS.filter(d => days.includes(d)).map(d => DAYNAME[d]);
+  const earliest = m.sessions.length
+    ? m.sessions.slice().sort((a, b) => mins(a.time) - mins(b.time))[0] : null;
+
+  const desc = m.desk
+    ? `${m.name} — ${m.role.toLowerCase()} at Tehama Family Fitness Center, Red Bluff.`
+    : `${m.name} teaches ${m.teaches.length ? m.teaches.join(", ") + " at" : "at"} Tehama Family Fitness Center in Red Bluff — ${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week, included with membership.`;
+
+  P(`/team/${m.slug}/`, `${m.name} — ${m.role} | ${biz.short} Red Bluff`, desc, `
+${phero(photos.studio, { kick: m.role, h1: esc(m.name),
+  lede: m.desk ? esc(m.blurb)
+    : `${m.teaches.length ? esc(m.teaches.join(" · ")) : "On the schedule"}. ${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week, included with membership.`,
+  sm: true })}
+
+<section class="sec"><div class="wrap">
+  <div class="tm-hero">
+    ${portrait(m, { sizes: "(max-width:760px) 60vw, 320px" })}
+    <div>
+      <p class="eyebrow">${esc(m.role)}</p>
+      <h2>${esc(m.name)}</h2>
+      ${m.bio ? `<p class="lede">${esc(m.bio)}</p>` : `<p class="lede">${m.desk
+        ? esc(m.blurb)
+        : `${esc(m.first)} teaches ${esc(list(m.teaches))}${rooms.length ? ` in the ${esc(list(rooms))}` : ""}. ${dayList.length ? `You will find ${esc(m.first)} on the board ${dayList.length === 1 ? "on " + dayList[0] : list(dayList)}.` : ""}`}</p>`}
+      ${!m.bio ? `<div class="hold" style="margin-top:24px"><b>A few words from ${esc(m.first)}</b>
+      We are collecting these from the desk. Sessions and times below are live.</div>` : ""}
+      ${m.sessions.length ? `<p style="margin-top:26px"><a class="btn btn-volt" href="${u("/schedule/")}">See the whole board →</a></p>` : ""}
+    </div>
+  </div>
+</div></section>
+
+${m.sessions.length ? `
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">On the board</p>
+      <h2>${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"}<br>a week</h2>
+      <p class="lede">Every row shows whether childcare is open at that hour — usually the
+      thing that decides whether you make it.</p>
+      ${earliest ? `<p style="margin-top:18px;color:var(--ink-3);font-size:.92rem">
+      Earliest on the week: ${esc(earliest.name)}, ${esc(DAYNAME[earliest.day])} at ${esc(earliest.time)}.</p>` : ""}</div>
+    <div>${miniTable(m.sessions)}</div>
+  </div>
+</div></section>` : `
+<section class="sec sec-tint"><div class="wrap narrow">
+  <h2>Where you'll find ${esc(m.first)}</h2>
+  <p class="lede">${m.slug === "alma"
+    ? `In the kids’ room, ${biz.childcareHours[0][1].replace("&", "and")} most weekdays. Full hours are on the childcare page.`
+    : `At the front desk, most of the hours we are open. ${biz.hoursShort}.`}</p>
+  <p style="margin-top:26px"><a class="btn btn-out" href="${u(m.slug === "alma" ? "/childcare/" : "/contact/")}">${m.slug === "alma" ? "Childcare hours →" : "Hours and directions →"}</a></p>
+</div></section>`}
+
+${m.teaches.length ? `
+<section class="sec"><div class="wrap">
+  <p class="eyebrow">What ${esc(m.first)} teaches</p>
+  <div class="grid g3" style="margin-top:26px">
+    ${m.teaches.map(t => {
+      const c = classes.find(c2 => c2.name === t && c2.page);
+      const n = sessions.filter(x => x.name === t).length;
+      return `<${c ? "a" : "div"} class="card rv"${c ? ` href="${u(`/classes/${c.slug}/`)}" style="text-decoration:none;color:inherit"` : ""}>
+        <h3>${esc(t)}</h3>
+        <p>${n} a week across the timetable${c ? `. <span style="color:var(--volt)">Read about ${esc(t)} →</span>` : "."}</p>
+      </${c ? "a" : "div"}>`;
+    }).join("")}
+  </div>
+</div></section>` : ""}
+
+<section class="sec"><div class="wrap">
+  <p class="eyebrow">The rest of the team</p>
+  <div class="tm-grid" style="margin-top:26px">
+    ${team.filter(o => o.slug !== m.slug).slice(0, 6).map(o => `<a class="tm" href="${u(`/team/${o.slug}/`)}">
+      ${portrait(o, { sizes: "(max-width:520px) 44vw, 200px" })}
+      <h3>${esc(o.name)}</h3><span class="r">${esc(o.role)}</span></a>`).join("")}
+  </div>
+  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/team/")}">All ${team.length} of us →</a></p>
+</div></section>
+
+${band(`Come and meet ${esc(m.first)}.`,
+  m.sessions.length ? "Turn up a few minutes early and say it is your first one. That is the whole process."
+                    : "Walk in any day we are open. No appointment, no sales process.",
+  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/schedule/", "The schedule", "btn-ghost"]])}
+`);
+}
 
 /* ========================== SILVERSNEAKERS =========================== */
 P("/silversneakers/", `SilverSneakers in Red Bluff | ${biz.short}`,
