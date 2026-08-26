@@ -2836,7 +2836,7 @@ for (const p of PAGES) {
 const HOST = SITE;
 writeFileSync(join(OUT, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  PAGES.map(p => `  <url><loc>${HOST}${p.path}</loc><changefreq>${p.path === "/schedule/" ? "weekly" : "monthly"}</changefreq><priority>${p.path === "/" ? "1.0" : "0.7"}</priority></url>`).join("\n") +
+  PAGES.filter(p => !p.redirect).map(p => `  <url><loc>${HOST}${p.path}</loc><changefreq>${p.path === "/schedule/" ? "weekly" : "monthly"}</changefreq><priority>${p.path === "/" ? "1.0" : "0.7"}</priority></url>`).join("\n") +
   `\n</urlset>\n`);
 writeFileSync(join(OUT, "robots.txt"), PREVIEW
   ? "User-agent: *\nDisallow: /\n"
@@ -2859,7 +2859,7 @@ const needConfirm = Object.entries(tbd).filter(([, t]) => t.verify);
 
 console.log(`\n  Tehama Family Fitness — build complete`);
 console.log(`  ${"─".repeat(58)}`);
-console.log(`  pages           ${PAGES.length}  (+404, sitemap, robots)`);
+console.log(`  pages           ${PAGES.filter(p => !p.redirect).length}  (+404, sitemap, robots, ${PAGES.filter(p => p.redirect).length} redirect)`);
 console.log(`  html            ${(bytes / 1024).toFixed(0)} KB total, ${(bytes / PAGES.length / 1024).toFixed(1)} KB avg`);
 console.log(`  docs/           ${(du(OUT) / 1024 / 1024).toFixed(2)} MB with assets`);
 console.log(`  schedule        ${counts.total} sessions · ${counts.classes} classes · ${counts.basketball} basketball · ${counts.pickleball} pickleball`);
