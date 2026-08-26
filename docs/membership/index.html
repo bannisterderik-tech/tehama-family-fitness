@@ -387,6 +387,7 @@ font-size:clamp(1.15rem,2.2vw,1.6rem);color:var(--ground);padding:11px 0;border-
 .pvw b{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 
 /* ── proof band ── */
+.pf-h{max-width:14ch}
 .pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(22px,3vw,44px)}
 .pf-grid div{border-top:2px solid var(--volt);padding-top:20px}
 .pf-grid b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(2.6rem,5.5vw,4.2rem);
@@ -438,7 +439,7 @@ font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.12;letter-spacing:-.035em;max
 .st-sub{margin-top:28px;color:var(--steel);font-size:1.06rem;max-width:52ch}
 .sec-cool .st-q,.sec-hot .st-q{color:var(--ground)}
 .sec-cool .st-sub,.sec-hot .st-sub{color:var(--ink)}
-.said{font-family:var(--ser);font-style:italic;font-weight:400;
+h2.said,.said{font-family:var(--ser);font-style:italic;font-weight:400;
 font-size:clamp(1.8rem,4.4vw,3.4rem);line-height:1.15;letter-spacing:-.02em;color:#fff;max-width:16ch}
 
 .steps{list-style:none;counter-reset:st;display:grid;gap:0;margin-top:34px;border-top:1px solid var(--line)}
@@ -830,7 +831,9 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="sec sec-tint pf"><div class="wrap">
-  <div class="pf-grid">
+  <p class="eyebrow">What the town says</p>
+  <h2 class="pf-h">Ask anyone<br>on South Main</h2>
+  <div class="pf-grid" style="margin-top:clamp(30px,3.5vw,46px)">
     <div><b>96%</b><span>of 405 people on Facebook recommend this place</span></div>
     <div><b>3.1K</b><span>followers in a town of about 14,000</span></div>
     <div><b>25</b><span>years in the same building on South Main</span></div>

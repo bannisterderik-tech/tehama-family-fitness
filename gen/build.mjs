@@ -406,6 +406,7 @@ font-size:clamp(1.15rem,2.2vw,1.6rem);color:var(--ground);padding:11px 0;border-
 .pvw b{font-family:var(--disp);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 
 /* ── proof band ── */
+.pf-h{max-width:14ch}
 .pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(22px,3vw,44px)}
 .pf-grid div{border-top:2px solid var(--volt);padding-top:20px}
 .pf-grid b{display:block;font-family:var(--disp);font-weight:800;font-size:clamp(2.6rem,5.5vw,4.2rem);
@@ -457,7 +458,7 @@ font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.12;letter-spacing:-.035em;max
 .st-sub{margin-top:28px;color:var(--steel);font-size:1.06rem;max-width:52ch}
 .sec-cool .st-q,.sec-hot .st-q{color:var(--ground)}
 .sec-cool .st-sub,.sec-hot .st-sub{color:var(--ink)}
-.said{font-family:var(--ser);font-style:italic;font-weight:400;
+h2.said,.said{font-family:var(--ser);font-style:italic;font-weight:400;
 font-size:clamp(1.8rem,4.4vw,3.4rem);line-height:1.15;letter-spacing:-.02em;color:#fff;max-width:16ch}
 
 .steps{list-style:none;counter-reset:st;display:grid;gap:0;margin-top:34px;border-top:1px solid var(--line)}
@@ -841,7 +842,9 @@ const steps = (items) => `
 // The strongest number this business owns, and it was on one page out of 28.
 const proof = () => `
 <section class="sec sec-tint pf"><div class="wrap">
-  <div class="pf-grid">
+  <p class="eyebrow">What the town says</p>
+  <h2 class="pf-h">Ask anyone<br>on South Main</h2>
+  <div class="pf-grid" style="margin-top:clamp(30px,3.5vw,46px)">
     <div><b>${biz.social.fbRecommend}%</b><span>of ${biz.social.fbReviews} people on Facebook recommend this place</span></div>
     <div><b>${biz.social.fbFollowers}</b><span>followers in a town of about 14,000</span></div>
     <div><b>${new Date().getFullYear() - biz.founded}</b><span>years in the same building on South Main</span></div>
@@ -1276,7 +1279,7 @@ ${NAMES ? `
 <section class="sec sec-void"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Who runs it</p>
-      <p class="said rv">Karla Stroman owns this gym. She teaches the 6:00 AM spin.</p></div>
+      <h2 class="said rv">Karla Stroman owns this gym. She teaches the 6:00 AM spin.</h2></div>
     <div><p class="lede">Her daughter <b style="color:#fff">Aubrie</b> teaches Lean &amp; Mean most weekday
     mornings. <b style="color:#fff">Kyle Tingley</b>, co-owner, is in the studio on Wednesday evenings.
     You will not find that at a franchise, and you cannot buy it.</p>
@@ -1358,6 +1361,13 @@ ${spread(photos.studio, { eyebrow: "SilverSneakers", flip: true,
 </div></section>
 
 ${proof()}
+
+${fullBleed(photos.basketball, "The only full court in Red Bluff \u2014 open gym at one and again at six, Monday to Friday.")}
+
+${spread(photos.childcare, { eyebrow: "While you train", flip: true,
+  h2: "Alma has<br>the kids",
+  body: `Open 8 to 1 every day but Sunday, plus 4 to 8 Monday through Thursday. Every session on our schedule says whether the kids' room is open at that hour \u2014 which is usually the thing that decides whether you get here at all.`,
+  cta: ["/schedule/?cc=1", "Classes you can actually make \u2192"] })}
 
 ${band("Come and look at it.",
   `Walk in any day we're open. Nobody's going to put you through a sales process — the front desk will hand you a towel and walk you round.`,
