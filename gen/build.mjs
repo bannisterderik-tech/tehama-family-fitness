@@ -999,23 +999,23 @@ function markdown(src) {
       continue;
     }
 
-    if (/^\s*[-*]\s+/.test(l)) {
+    // Lists. A soft-wrapped bullet continues on an indented line — fold those
+    // back into the item, or the tail of a long bullet escapes into its own
+    // paragraph underneath the list.
+    const listy = (re, tag, cls) => {
       const buf = [];
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
-        buf.push(lines[i].replace(/^\s*[-*]\s+/, "")); i++;
+      while (i < lines.length) {
+        if (re.test(lines[i])) { buf.push(lines[i].replace(re, "")); i++; continue; }
+        const cont = /^\s+\S/.test(lines[i] || "") && buf.length
+          && !/^\s*[-*]\s+/.test(lines[i]) && !/^\s*\d+\.\s+/.test(lines[i]);
+        if (!cont) break;
+        buf[buf.length - 1] += " " + lines[i].trim(); i++;
       }
-      out.push(`<ul class="md-ul">${buf.map(b => `<li>${mdInline(b)}</li>`).join("")}</ul>`);
-      continue;
-    }
+      out.push(`<${tag} class="${cls}">${buf.map(b => `<li>${mdInline(b)}</li>`).join("")}</${tag}>`);
+    };
 
-    if (/^\s*\d+\.\s+/.test(l)) {
-      const buf = [];
-      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
-        buf.push(lines[i].replace(/^\s*\d+\.\s+/, "")); i++;
-      }
-      out.push(`<ol class="md-ol">${buf.map(b => `<li>${mdInline(b)}</li>`).join("")}</ol>`);
-      continue;
-    }
+    if (/^\s*[-*]\s+/.test(l)) { listy(/^\s*[-*]\s+/, "ul", "md-ul"); continue; }
+    if (/^\s*\d+\.\s+/.test(l)) { listy(/^\s*\d+\.\s+/, "ol", "md-ol"); continue; }
 
     // paragraph — soft-wrapped source lines join into one
     const buf = [];
@@ -2957,7 +2957,7 @@ PAGES.push({ path: "/instructors/", redirect: u("/team/") });
   const rest = lines.slice(3).join("\n");
 
   P("/shot-list/", `${title} | ${biz.short}`,
-    `Photography brief for ${biz.name}, Red Bluff — 82 shots, five sessions, scheduled against the live class calendar.`,
+    `Photography brief for ${biz.name}, Red Bluff — the twenty shots the website needs.`,
     `
 <article class="doc"><div class="wrap">
   <p class="eyebrow">Photography brief · ${biz.name}</p>
