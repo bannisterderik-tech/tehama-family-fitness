@@ -133,6 +133,59 @@ gap:clamp(26px,4vw,56px);align-items:start}
 @media(max-width:760px){.tm-hero{grid-template-columns:1fr;gap:24px}
 .tm-hero .por{max-width:230px}}
 
+/* ── working documents ────────────────────────────────────────────────
+   Deliberately not the marketing site: slim chrome, no nav, a measure you
+   can actually read a 250-line document in, and tables that survive a
+   phone. Shared by link only, noindex, absent from the sitemap. */
+.dhdr{background:var(--void);color:#fff;padding:16px 0}
+.dhdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.dbrand{display:flex;align-items:center;gap:13px;text-decoration:none}
+.dbrand img{border-radius:50%;background:#fff;flex:0 0 auto}
+.dbrand b{display:block;font-family:var(--disp);font-weight:800;font-size:1.02rem;
+letter-spacing:-.03em;color:#fff;line-height:1.1}
+.dbrand i{display:block;font-style:normal;font-size:.74rem;color:var(--steel);
+margin-top:3px;letter-spacing:0;text-transform:none}
+.dhdr-x{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--volt-lt);font-weight:700}
+.dftr{background:var(--paper-2);border-top:1px solid var(--line);padding:34px 0 46px;
+color:var(--ink-3);font-size:.86rem}
+.dftr p{max-width:62ch;margin-bottom:8px}
+.dftr a{color:var(--ink-2)}
+
+.doc{padding:clamp(30px,5vw,60px) 0 clamp(50px,7vw,90px)}
+.doc .wrap{max-width:900px}
+.doc h1{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,5vw,3rem);
+line-height:1.02;letter-spacing:-.04em;color:var(--ink);margin-bottom:6px;text-wrap:balance}
+.doc h2.md-h2{font-family:var(--disp);font-weight:800;font-size:clamp(1.25rem,3vw,1.8rem);
+letter-spacing:-.03em;color:var(--ink);margin:clamp(38px,5vw,60px) 0 14px;
+padding-top:clamp(18px,2.4vw,26px);border-top:2px solid var(--volt);text-wrap:balance}
+.doc h3{font-family:var(--disp);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;
+color:var(--ink);margin:30px 0 10px}
+.doc h4{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--ink-2);margin:22px 0 8px}
+.doc p{max-width:66ch;margin-bottom:13px;color:var(--ink-2);line-height:1.62}
+.doc p strong,.doc li strong,.doc td strong{color:var(--ink);font-weight:700}
+.doc hr{border:0;border-top:1px solid var(--line);margin:clamp(26px,3.5vw,40px) 0}
+.doc .md-ul,.doc .md-ol{max-width:66ch;margin:0 0 15px;padding-left:1.25rem;color:var(--ink-2)}
+.doc .md-ul li,.doc .md-ol li{margin-bottom:7px;line-height:1.55}
+.doc .md-q{margin:20px 0;padding:15px 20px;background:var(--paper-2);
+border-left:3px solid var(--volt);color:var(--ink);max-width:66ch;font-size:.96rem}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em;
+background:var(--paper-3);padding:.12em .4em;border-radius:2px;color:var(--ink-2);
+overflow-wrap:anywhere}
+.doc .tw{margin:16px 0 22px}
+.doc table{font-size:.88rem;min-width:520px}
+.doc th{background:var(--void);color:#fff;font-family:var(--disp);font-weight:700;
+font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:10px 13px;
+text-align:left;white-space:nowrap}
+.doc td{padding:10px 13px;border-top:1px solid var(--line);vertical-align:top;
+color:var(--ink-2);line-height:1.5}
+.doc td.md-k{color:var(--ink);font-weight:600;white-space:nowrap}
+.doc tbody tr:nth-child(even) td{background:var(--paper-2)}
+.doc .lede{font-size:1.06rem;color:var(--ink-2);max-width:64ch;margin-bottom:22px}
+@media(max-width:620px){.doc td.md-k{white-space:normal}}
+@media print{.dhdr,.dftr,.pvw{display:none}.doc{padding:0}
+.doc .tw{overflow:visible;border:0}.doc table{min-width:0}
+.doc h2.md-h2{break-after:avoid}.doc .tw,.doc .md-q{break-inside:avoid}}
+
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
 .top .wrap{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:center;padding:9px 0;text-align:center}
@@ -694,7 +747,7 @@ const jsonld = page => {
 function to24(t) { const m = mins(t); return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; }
 
 /* ------------------------------ layout --------------------------------- */
-const layout = ({ path, title, desc, body, og, schema }) => `<!doctype html>
+const layout = ({ path, title, desc, body, og, schema, doc }) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -702,7 +755,7 @@ const layout = ({ path, title, desc, body, og, schema }) => `<!doctype html>
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${SITE}${path}">
-${PREVIEW ? '<meta name="robots" content="noindex,nofollow">' : ""}
+${doc || PREVIEW ? '<meta name="robots" content="noindex,nofollow">' : ""}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:type" content="website">
@@ -721,13 +774,17 @@ ${jsonld(schema)}
 ${PREVIEW ? `<div class="pvw"><span class="wrap"><b>Preview</b> \u2014 work in progress for
 Tehama Family Fitness Center. Rates, schedule and some photography are still being confirmed with
 the front desk. Not the live site.</span></div>` : ""}
-<div class="top"><div class="wrap">
+${doc ? "" : `<div class="top"><div class="wrap">
   <a class="wx" id="wx" href="${u("/amenities/")}" hidden><b id="wxT"></b><span>in Red&nbsp;Bluff. It is climate controlled in here.</span></a>
   <span>Open today ${todayHours()}</span><span class="dot">·</span>
   <a href="tel:${biz.tel}">${biz.phone}</a><span class="dot">·</span>
   <span>${biz.street}, ${biz.city}</span>
-</div></div>
-<header class="hdr"><div class="wrap">
+</div></div>`}
+${doc ? `<header class="dhdr"><div class="wrap">
+  <a class="dbrand" href="${u("/")}"><img src="${u("/assets/logo.png")}" alt="" width="46" height="45">
+  <span><b>${biz.name}</b><i>Working document \u2014 not part of the website</i></span></a>
+  <span class="dhdr-x">Internal \u00b7 not linked, not indexed</span>
+</div></header>` : `<header class="hdr"><div class="wrap">
   <a class="brand" href="${u("/")}">
     <img src="${u("/assets/logo.png")}" alt="" width="46" height="45">
     <span><b>Tehama Family Fitness</b><span>Red&nbsp;Bluff · since 2001</span></span>
@@ -741,11 +798,15 @@ the front desk. Not the live site.</span></div>` : ""}
   </nav>
   <a class="btn btn-volt btn-sm d-only" href="tel:${biz.tel}">Call ${biz.phone}</a>
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i></button>
-</div></header>
+</div></header>`}
 <main id="main">
 ${body}
 </main>
-<footer class="ftr"><div class="wrap">
+${doc ? `<footer class="dftr"><div class="wrap">
+  <p><b>${biz.name}</b> \u00b7 ${biz.street}, ${biz.city} \u00b7 <a href="tel:${biz.tel}">${biz.phone}</a></p>
+  <p>Prepared for the front desk. This page is not linked from the website and is set to
+  noindex \u2014 it will not turn up in a search. Share the link directly.</p>
+</div></footer>` : `<footer class="ftr"><div class="wrap">
   <div class="cols">
     <div>
       <span class="big">Tehama Family&nbsp;Fitness</span>
@@ -790,7 +851,7 @@ ${body}
     <span>© ${new Date().getFullYear()} ${biz.name} · Locally owned in Red Bluff since 2001</span>
     <span>${biz.sqft} sq ft · Tehama County</span>
   </div>
-</div></footer>
+</div></footer>`}
 <script>
 
 /* The valley is the argument. Pull the real reading; if it fails, show nothing —
@@ -885,6 +946,88 @@ const acts = (primary = true) => `<div class="acts">
 
 // Photographic page hero. Duotoned into the mark's navy so every page reads as
 // one brand regardless of what the underlying photograph is doing.
+/* ── markdown → html ───────────────────────────────────────────────────
+   Just enough to render the working documents in client/ as pages: the
+   shot list is a live file the photographer works from, so the page has
+   to be generated from it rather than hand-copied, or the two drift and
+   the printed one wins. Handles headings, tables, lists, blockquotes,
+   rules, and inline bold / italic / code / links. Nothing else. */
+const mdInline = t => esc(t)
+  .replace(/`([^`]+)`/g, "<code>$1</code>")
+  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+  .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+  .replace(/(^|[\s(])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+  .replace(/(^|\s)_([^_\n]+)_/g, "$1<em>$2</em>");
+
+function markdown(src) {
+  const lines = src.replace(/\r/g, "").split("\n");
+  const out = []; let i = 0;
+  const isRow = l => /^\s*\|.*\|\s*$/.test(l);
+  const cells = l => l.trim().replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+
+  while (i < lines.length) {
+    const l = lines[i];
+
+    if (/^\s*$/.test(l)) { i++; continue; }
+    if (/^---+\s*$/.test(l)) { out.push("<hr>"); i++; continue; }
+
+    const h = l.match(/^(#{1,4})\s+(.*)$/);
+    if (h) { const n = h[1].length;
+      out.push(`<h${n}${n === 2 ? ' class="md-h2"' : ""}>${mdInline(h[2])}</h${n}>`); i++; continue; }
+
+    // table: header row, separator, body
+    if (isRow(l) && isRow(lines[i + 1] || "") && /^[\s|:-]+$/.test(lines[i + 1])) {
+      const head = cells(l); i += 2;
+      const body = [];
+      while (i < lines.length && isRow(lines[i])) { body.push(cells(lines[i])); i++; }
+      // "| | |" is a valid markdown header — it means "no header". Rendering it
+      // anyway leaves a bar of empty black cells across the top of the table.
+      const headed = head.some(c => c !== "");
+      out.push(`<div class="tw"><table>${headed ? `<thead><tr>${
+        head.map(c => `<th scope="col">${mdInline(c)}</th>`).join("")
+      }</tr></thead>` : ""}<tbody>${
+        body.map(r => `<tr>${r.map((c, ci) =>
+          `<td${ci === 0 ? ' class="md-k"' : ""}>${mdInline(c)}</td>`).join("")}</tr>`).join("")
+      }</tbody></table></div>`);
+      continue;
+    }
+
+    if (/^>\s?/.test(l)) {
+      const buf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
+      out.push(`<blockquote class="md-q">${mdInline(buf.join(" "))}</blockquote>`);
+      continue;
+    }
+
+    if (/^\s*[-*]\s+/.test(l)) {
+      const buf = [];
+      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
+        buf.push(lines[i].replace(/^\s*[-*]\s+/, "")); i++;
+      }
+      out.push(`<ul class="md-ul">${buf.map(b => `<li>${mdInline(b)}</li>`).join("")}</ul>`);
+      continue;
+    }
+
+    if (/^\s*\d+\.\s+/.test(l)) {
+      const buf = [];
+      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+        buf.push(lines[i].replace(/^\s*\d+\.\s+/, "")); i++;
+      }
+      out.push(`<ol class="md-ol">${buf.map(b => `<li>${mdInline(b)}</li>`).join("")}</ol>`);
+      continue;
+    }
+
+    // paragraph — soft-wrapped source lines join into one
+    const buf = [];
+    while (i < lines.length && !/^\s*$/.test(lines[i]) && !/^(#{1,4}\s|>|---+\s*$)/.test(lines[i])
+           && !/^\s*[-*]\s+/.test(lines[i]) && !/^\s*\d+\.\s+/.test(lines[i]) && !isRow(lines[i])) {
+      buf.push(lines[i]); i++;
+    }
+    out.push(`<p>${mdInline(buf.join(" "))}</p>`);
+  }
+  return out.join("\n");
+}
+
 /* ── responsive images ─────────────────────────────────────────────────
    Every generated still exists at 2000px and 800px (see gen/images.mjs).
    Before this, the 2000px file was served everywhere — including the tour
@@ -2799,6 +2942,32 @@ ${band("Come and stand in it.", "Walk in any day. Open till eight weeknights, ei
    404. GitHub Pages can't issue a 301, so this is the honest static version. */
 PAGES.push({ path: "/instructors/", redirect: u("/team/") });
 
+/* ---- /shot-list/ ----------------------------------------------------
+   The photographer's brief, rendered from client/PHOTO-SHOT-LIST.md so the
+   page and the file can never disagree. Unlinked, noindex, and kept out of
+   the sitemap: it exists so Derik can send one URL to the front desk. */
+{
+  const src = readFileSync(join(ROOT, "client", "PHOTO-SHOT-LIST.md"), "utf8");
+  // The file leads with "# Title / ### subtitle / address"; promote that into
+  // a proper masthead and render everything after it as the document body.
+  const lines = src.split("\n");
+  const title = (lines[0] || "").replace(/^#\s*/, "").trim();
+  const sub = (lines[1] || "").replace(/^#+\s*/, "").trim();
+  const addr = (lines[2] || "").trim();
+  const rest = lines.slice(3).join("\n");
+
+  P("/shot-list/", `${title} | ${biz.short}`,
+    `Photography brief for ${biz.name}, Red Bluff — 82 shots, five sessions, scheduled against the live class calendar.`,
+    `
+<article class="doc"><div class="wrap">
+  <p class="eyebrow">Photography brief · ${biz.name}</p>
+  <h1>${esc(sub)}</h1>
+  <p class="lede">${mdInline(addr)}</p>
+  ${markdown(rest)}
+</div></article>`,
+    { doc: true, unlisted: true });
+}
+
 /* ============================== WRITE ================================= */
 // Wipe the output first. Without this a page that stops being generated silently
 // survives from an earlier build and looks perfectly fine — which is exactly how
@@ -2836,7 +3005,7 @@ for (const p of PAGES) {
 const HOST = SITE;
 writeFileSync(join(OUT, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  PAGES.filter(p => !p.redirect).map(p => `  <url><loc>${HOST}${p.path}</loc><changefreq>${p.path === "/schedule/" ? "weekly" : "monthly"}</changefreq><priority>${p.path === "/" ? "1.0" : "0.7"}</priority></url>`).join("\n") +
+  PAGES.filter(p => !p.redirect && !p.unlisted).map(p => `  <url><loc>${HOST}${p.path}</loc><changefreq>${p.path === "/schedule/" ? "weekly" : "monthly"}</changefreq><priority>${p.path === "/" ? "1.0" : "0.7"}</priority></url>`).join("\n") +
   `\n</urlset>\n`);
 writeFileSync(join(OUT, "robots.txt"), PREVIEW
   ? "User-agent: *\nDisallow: /\n"

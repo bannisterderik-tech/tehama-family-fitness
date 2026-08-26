@@ -114,6 +114,59 @@ gap:clamp(26px,4vw,56px);align-items:start}
 @media(max-width:760px){.tm-hero{grid-template-columns:1fr;gap:24px}
 .tm-hero .por{max-width:230px}}
 
+/* ── working documents ────────────────────────────────────────────────
+   Deliberately not the marketing site: slim chrome, no nav, a measure you
+   can actually read a 250-line document in, and tables that survive a
+   phone. Shared by link only, noindex, absent from the sitemap. */
+.dhdr{background:var(--void);color:#fff;padding:16px 0}
+.dhdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.dbrand{display:flex;align-items:center;gap:13px;text-decoration:none}
+.dbrand img{border-radius:50%;background:#fff;flex:0 0 auto}
+.dbrand b{display:block;font-family:var(--disp);font-weight:800;font-size:1.02rem;
+letter-spacing:-.03em;color:#fff;line-height:1.1}
+.dbrand i{display:block;font-style:normal;font-size:.74rem;color:var(--steel);
+margin-top:3px;letter-spacing:0;text-transform:none}
+.dhdr-x{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--volt-lt);font-weight:700}
+.dftr{background:var(--paper-2);border-top:1px solid var(--line);padding:34px 0 46px;
+color:var(--ink-3);font-size:.86rem}
+.dftr p{max-width:62ch;margin-bottom:8px}
+.dftr a{color:var(--ink-2)}
+
+.doc{padding:clamp(30px,5vw,60px) 0 clamp(50px,7vw,90px)}
+.doc .wrap{max-width:900px}
+.doc h1{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,5vw,3rem);
+line-height:1.02;letter-spacing:-.04em;color:var(--ink);margin-bottom:6px;text-wrap:balance}
+.doc h2.md-h2{font-family:var(--disp);font-weight:800;font-size:clamp(1.25rem,3vw,1.8rem);
+letter-spacing:-.03em;color:var(--ink);margin:clamp(38px,5vw,60px) 0 14px;
+padding-top:clamp(18px,2.4vw,26px);border-top:2px solid var(--volt);text-wrap:balance}
+.doc h3{font-family:var(--disp);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;
+color:var(--ink);margin:30px 0 10px}
+.doc h4{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--ink-2);margin:22px 0 8px}
+.doc p{max-width:66ch;margin-bottom:13px;color:var(--ink-2);line-height:1.62}
+.doc p strong,.doc li strong,.doc td strong{color:var(--ink);font-weight:700}
+.doc hr{border:0;border-top:1px solid var(--line);margin:clamp(26px,3.5vw,40px) 0}
+.doc .md-ul,.doc .md-ol{max-width:66ch;margin:0 0 15px;padding-left:1.25rem;color:var(--ink-2)}
+.doc .md-ul li,.doc .md-ol li{margin-bottom:7px;line-height:1.55}
+.doc .md-q{margin:20px 0;padding:15px 20px;background:var(--paper-2);
+border-left:3px solid var(--volt);color:var(--ink);max-width:66ch;font-size:.96rem}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em;
+background:var(--paper-3);padding:.12em .4em;border-radius:2px;color:var(--ink-2);
+overflow-wrap:anywhere}
+.doc .tw{margin:16px 0 22px}
+.doc table{font-size:.88rem;min-width:520px}
+.doc th{background:var(--void);color:#fff;font-family:var(--disp);font-weight:700;
+font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;padding:10px 13px;
+text-align:left;white-space:nowrap}
+.doc td{padding:10px 13px;border-top:1px solid var(--line);vertical-align:top;
+color:var(--ink-2);line-height:1.5}
+.doc td.md-k{color:var(--ink);font-weight:600;white-space:nowrap}
+.doc tbody tr:nth-child(even) td{background:var(--paper-2)}
+.doc .lede{font-size:1.06rem;color:var(--ink-2);max-width:64ch;margin-bottom:22px}
+@media(max-width:620px){.doc td.md-k{white-space:normal}}
+@media print{.dhdr,.dftr,.pvw{display:none}.doc{padding:0}
+.doc .tw{overflow:visible;border:0}.doc table{min-width:0}
+.doc h2.md-h2{break-after:avoid}.doc .tw,.doc .md-q{break-inside:avoid}}
+
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
 .top .wrap{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:center;padding:9px 0;text-align:center}
