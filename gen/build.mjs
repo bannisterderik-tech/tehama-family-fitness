@@ -2794,6 +2794,11 @@ ${band("Come and stand in it.", "Walk in any day. Open till eight weeknights, ei
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/day-pass/", "First visit", "btn-ghost"], ["/contact/", "Directions", "btn-ghost"]])}
 `);
 
+/* /instructors/ was the old URL for what is now /team/. Nothing links to it
+   any more, but bookmarks and anyone we sent the preview link to would hit a
+   404. GitHub Pages can't issue a 301, so this is the honest static version. */
+PAGES.push({ path: "/instructors/", redirect: u("/team/") });
+
 /* ============================== WRITE ================================= */
 // Wipe the output first. Without this a page that stops being generated silently
 // survives from an earlier build and looks perfectly fine — which is exactly how
@@ -2810,6 +2815,17 @@ cpSync(join(ROOT, "assets"), join(OUT, "assets"), { recursive: true });
 let bytes = 0;
 for (const p of PAGES) {
   const dir = p.path === "/" ? OUT : join(OUT, p.path);
+  if (p.redirect) {
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "index.html"),
+`<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Moved to Our Team</title><link rel="canonical" href="${p.redirect}">
+<meta name="robots" content="noindex,follow">
+<meta http-equiv="refresh" content="0;url=${p.redirect}">
+<script>location.replace(${JSON.stringify(p.redirect)});</script>
+</head><body><p>This page is now <a href="${p.redirect}">Our Team</a>.</p></body></html>`);
+    continue;
+  }
   mkdirSync(dir, { recursive: true });
   const html = layout(p);
   writeFileSync(join(dir, "index.html"), html);
