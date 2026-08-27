@@ -1201,35 +1201,66 @@ the front desk. Not the live site.</span></div>
       try{ sessionStorage.setItem('tffc_wx',JSON.stringify({f:f,at:Date.now()})); }catch(e){}
     }).catch(function(){});
 })();
-/* Hero film. Decorative, muted, and with no on-screen control — it plays or it
-   does not. It still refuses to start on a data-saver, a metered/2G connection,
-   a small screen, or for anyone who has asked for reduced motion, and it pauses
-   itself whenever it scrolls out of view. The poster is the frame it opens on,
-   so the swap is invisible. */
+/* Hero film. Decorative, muted, looping, no on-screen control.
+   The autoplay itself is done by the attributes on the element, which is far
+   more reliable than driving it from JS — the previous version refused to start
+   on any screen under 700px and on anything the browser called slow, which is
+   why it looked dead on plenty of perfectly ordinary machines.
+   Browsers also suspend a decorative video for their own reasons (power saving,
+   a backgrounded tab, a first-frame stall) and never resume it, which reads as
+   "the video is broken". So this keeps one bit of state — do we WANT it playing
+   — and restarts it whenever something stops it against our wishes. */
 (function(){
-var v=document.getElementById('hv');
-if(!v)return;
-var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,
-    small=matchMedia('(max-width:700px)').matches,
-    src=small?'/tehama-family-fitness/assets/video/tour-720.mp4':'/tehama-family-fitness/assets/video/tour-1280.mp4',
-    playing=false;
-function slowNow(){var k=navigator.connection||{};
-  return k.saveData===true||/^(slow-)?2g$/.test(k.effectiveType||'');}
-function start(){
-  if(reduce||small||slowNow())return;
-  v.src=src; v.loop=true; v.load();
-  v.addEventListener('canplay',function(){
-    v.play().then(function(){ v.classList.add('up'); playing=true; })
-     .catch(function(){ v.classList.remove('up'); });
-  },{once:true});
+var v=document.getElementById('hv'); if(!v) return;
+// An OS-level accessibility request is the one reason to leave it stopped.
+if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+  v.autoplay=false; v.removeAttribute('autoplay'); v.pause(); return; }
+// Pick the file before anything is fetched: a phone on cellular should not pull
+// the 1.7 MB desktop cut for a background that is 375px wide. The element ships
+// with no src and preload=metadata precisely so this choice happens first.
+// NB: no v.load() here. Setting .src already starts the fetch, and load()
+// additionally RESETS the element, which cancels the autoplay the attributes
+// just asked for — the film would reach ~0.3s and sit there.
+v.preload = 'auto';
+v.src = matchMedia('(max-width:700px)').matches ? v.dataset.sm : v.dataset.lg;
+function up(){ v.classList.add('up'); }
+function nudge(){
+  if(document.hidden || !v.paused) return;
+  var p=v.play(); if(p&&p.catch) p.catch(function(){});
 }
-if('IntersectionObserver' in window){
-  new IntersectionObserver(function(es){es.forEach(function(e){
-    if(!e.isIntersecting&&playing){v.pause();} else if(e.isIntersecting&&playing){v.play().catch(function(){});}
-  })},{threshold:0.15}).observe(v);
-}
-if(document.readyState==='complete'){setTimeout(start,120);}
-else{addEventListener('load',function(){setTimeout(start,120)});}
+if(!v.paused) up();
+v.addEventListener('playing', up);
+v.addEventListener('canplay', nudge);
+v.addEventListener('loadeddata', nudge);
+/* Something stopped it and we did not ask for that — start it again, but a
+   bounded number of times. An unbounded pause->play retry turns into a churn
+   loop against a browser that is deliberately throttling media (an occluded
+   window, a power-saving mode), and loses that argument anyway. */
+var retries=0;
+v.addEventListener('pause', function(){
+  if(retries++ > 8) return;
+  setTimeout(nudge, 200);
+});
+v.addEventListener('stalled', nudge);
+v.addEventListener('suspend', function(){ setTimeout(nudge, 400); });
+addEventListener('load', function(){ setTimeout(nudge, 200); });
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) nudge(); });
+// Belt and braces: ask a few times over the first few seconds, then stop.
+var tries=0, poll=setInterval(function(){
+  if(++tries>10 || (!v.paused && v.currentTime>0.5)) { clearInterval(poll); return; }
+  nudge();
+}, 500);
+// A real interaction resets the budget: if the browser was withholding
+// playback until the page was touched, that touch should get a fresh attempt.
+['pointerdown','touchstart','keydown'].forEach(function(ev){
+  addEventListener(ev, function(){ retries=0; nudge(); }, {once:true, passive:true}); });
+/* There WAS an IntersectionObserver here pausing the film once it scrolled off.
+   It could fire its first callback against a not-yet-laid-out rect, latch
+   "off screen", pause — and then never fire again, because the real
+   intersection state had not actually changed. Result: the film played for a
+   third of a second and stopped, on exactly the small screens people complained
+   about. Browsers already throttle off-screen video; a hidden tab is the case
+   that genuinely matters, and that is handled above. Not worth re-adding. */
 })();
 /* Scroll reveals. The CSS has always had ".js .rv{opacity:0}" and
    ".js .rv.in{opacity:1}" — but nothing ever added .in, so every .rv block on
