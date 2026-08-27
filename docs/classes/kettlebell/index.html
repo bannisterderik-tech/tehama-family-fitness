@@ -47,7 +47,7 @@
 --disp:'Bricolage Grotesque','Archivo',system-ui,-apple-system,sans-serif;
 --ser:'Instrument Serif',Georgia,serif;
 --body:'Source Sans 3',system-ui,-apple-system,sans-serif;
---wrap:1560px; --wrap-hdr:1720px; --r:2px;
+--wrap:1560px; --r:2px;
 --ease:cubic-bezier(.16,.84,.44,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -68,9 +68,9 @@ h3{font-size:clamp(1.15rem,1.8vw,1.45rem);font-weight:800;letter-spacing:-.025em
 h4{font-size:1rem;font-weight:700}
 p{max-width:64ch}
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,4vw,60px)}
-/* The header carries the most in one row, so it gets its own wider track —
-   the nav stops crowding the call button on a laptop. */
-.hdr>.wrap,.top>.wrap,.ftr>.wrap{max-width:var(--wrap-hdr)}
+/* Every row on the page shares ONE track. The header briefly had a wider one
+   of its own, which meant the logo, the specials pill and the hero headline
+   each started at a different x — the thing a grid exists to prevent. */
 /* Reading measure does NOT scale with the container: a 1560px-wide paragraph
    is unreadable no matter how much room there is. */
 .narrow{max-width:860px}
@@ -1241,35 +1241,10 @@ the front desk. Not the live site.</span></div>
       try{ sessionStorage.setItem('tffc_wx',JSON.stringify({f:f,at:Date.now()})); }catch(e){}
     }).catch(function(){});
 })();
-/* Hero film. Decorative, muted, never autoplays on a data-saver, reduced-motion
-   or small screen. The poster is the frame the film opens on, so the swap is invisible. */
-(function(){
-var v=document.getElementById('hv'),t=document.getElementById('vt'),l=document.getElementById('vtl');
-if(!v||!t)return;
-var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,
-    small=matchMedia('(max-width:700px)').matches,
-    src=small?'/tehama-family-fitness/assets/video/tour-720.mp4':'/tehama-family-fitness/assets/video/tour-1280.mp4',
-    loaded=false,playing=false;
-function load(cb){ if(loaded){cb&&cb();return;} loaded=true;
-  v.src=src; v.loop=true; v.load();
-  v.addEventListener('canplay',function(){cb&&cb()},{once:true}); }
-function play(){ load(function(){ v.play().then(function(){
-    v.classList.add('up');playing=true;l.textContent='Pause the film';
-  }).catch(function(){ l.textContent='Play the film'; }); }); }
-function pause(){ v.pause();v.classList.remove('up');playing=false;l.textContent='Play the film'; }
-t.hidden=false;
-t.addEventListener('click',function(){ playing?pause():play(); });
-if('IntersectionObserver' in window){
-  new IntersectionObserver(function(es){es.forEach(function(e){
-    if(!e.isIntersecting&&playing){v.pause();} else if(e.isIntersecting&&playing){v.play().catch(function(){});}
-  })},{threshold:0.15}).observe(v);
-}
-function slowNow(){var k=navigator.connection||{};
-  return k.saveData===true||/^(slow-)?2g$/.test(k.effectiveType||'');}
-function maybeAuto(){ if(!reduce&&!small&&!slowNow()){ play(); } }
-if(document.readyState==='complete'){setTimeout(maybeAuto,120);}
-else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
-})();
+/* The hero film and its "Pause the film" chip are gone. The chip was the only
+   pause affordance, and an auto-playing loop with no way to stop it is not
+   something to ship — so the film went with the button. The hero is the still
+   photograph now, which was already the poster frame. */
 /* Scroll reveals. The CSS has always had ".js .rv{opacity:0}" and
    ".js .rv.in{opacity:1}" — but nothing ever added .in, so every .rv block on
    every page rendered as a blank space exactly its own height. That was the
