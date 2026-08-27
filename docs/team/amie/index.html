@@ -175,7 +175,14 @@ color:var(--ink-2);line-height:1.5}
 
 /* ── header ── */
 .top{background:var(--void);color:var(--steel);font-size:.78rem;letter-spacing:.04em}
-.top .wrap{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:center;padding:9px 0;text-align:center}
+/* padding:9px 0 was overriding .wrap's horizontal padding (0,2,0 beats 0,1,0),
+   so the bar ran to the edges while the header sat 60px in — the two tracks
+   never lined up. Same inset now, and the row aligns to the header's own
+   left and right edges rather than floating in the middle. */
+.top .wrap{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;
+justify-content:space-between;padding:9px clamp(20px,4vw,60px)}
+.top .wrap>.tspill{margin-right:auto}
+@media(max-width:900px){.top .wrap{justify-content:center;text-align:center}}
 .top a{color:#fff;font-weight:700;text-decoration:none}
 .top a:hover{color:var(--volt-lt)}
 .top .dot{color:var(--ground-3)}
