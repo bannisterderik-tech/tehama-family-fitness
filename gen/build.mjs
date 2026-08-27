@@ -13,6 +13,7 @@ import {
   CHILDCARE_WINDOWS, lengthOf, leadForm,
   joinFlow, retracted,
   newsletter, posts, postsIn, CATS, catOf, authors,
+  specials, liveSpecials, manage, app, donations,
 } from "./data.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -30,6 +31,11 @@ const SITE = PREVIEW
 // attributed inline and can be switched off in one place with NAMES=0 until the family
 // signs off on how they want to be named.
 const NAMES = process.env.NAMES !== "0";
+const TODAY = new Date().toISOString().slice(0, 10);
+// A live promotion owns the top bar. Nothing running? Then the strongest thing
+// that is permanently true, which beats a weather reading either way.
+const LIVE = liveSpecials(TODAY);
+const BAR_SPECIAL = LIVE[0] || null;
 // Marker.io — the visual feedback widget, so review comments land on the page
 // they are about instead of in a text message. It is a REVIEW tool: it renders a
 // floating button for every visitor and pulls a third-party script from
@@ -92,7 +98,7 @@ const CSS = `
 --disp:'Bricolage Grotesque','Archivo',system-ui,-apple-system,sans-serif;
 --ser:'Instrument Serif',Georgia,serif;
 --body:'Source Sans 3',system-ui,-apple-system,sans-serif;
---wrap:1320px; --r:2px;
+--wrap:1560px; --wrap-hdr:1720px; --r:2px;
 --ease:cubic-bezier(.16,.84,.44,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -112,8 +118,13 @@ h2{font-size:clamp(1.85rem,4.4vw,3.4rem);font-weight:800;text-transform:uppercas
 h3{font-size:clamp(1.15rem,1.8vw,1.45rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 h4{font-size:1rem;font-weight:700}
 p{max-width:64ch}
-.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,4.5vw,52px)}
-.narrow{max-width:820px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,4vw,60px)}
+/* The header carries the most in one row, so it gets its own wider track —
+   the nav stops crowding the call button on a laptop. */
+.hdr>.wrap,.top>.wrap,.ftr>.wrap{max-width:var(--wrap-hdr)}
+/* Reading measure does NOT scale with the container: a 1560px-wide paragraph
+   is unreadable no matter how much room there is. */
+.narrow{max-width:860px}
 :focus-visible{outline:3px solid var(--volt);outline-offset:3px}
 .skip{position:absolute;left:-9999px;top:0;background:var(--volt);color:#fff;padding:12px 18px;z-index:200}
 .skip:focus{left:0}
@@ -500,6 +511,15 @@ font-size:.95rem;min-width:3.6em}
 .rf-form{display:grid;gap:18px;align-content:start}
 .rf-form label{display:grid;gap:9px;align-content:start;font-family:var(--disp);font-weight:700;font-size:.76rem;
 letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+.rf-form textarea{width:100%;margin-top:9px;padding:14px 16px;font:inherit;font-size:1rem;
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);border-radius:var(--r);
+color:#fff;resize:vertical;min-height:110px;line-height:1.55}
+.rf-form textarea::placeholder{color:#8794B8}
+.rf-form textarea:focus{outline:2px solid var(--volt-lt);outline-offset:1px;background:rgba(255,255,255,.1)}
+.rf-form textarea.is-bad{border-color:#F0A428;background:rgba(240,164,40,.1)}
+.rf-form input[type=date]{width:100%;margin-top:9px;padding:13px 16px;font:inherit;font-size:1rem;
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);border-radius:var(--r);color:#fff}
+.rf-form input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.6;cursor:pointer}
 .rf-form input[type=text],.rf-form input[type=tel],.rf-form input[type=email],.rf-form select{
 font-family:var(--body);font-size:1.05rem;line-height:1.2;height:54px;padding:0 16px;
 border-radius:var(--r);border:1px solid rgba(184,208,224,.28);background:rgba(255,255,255,.06);
@@ -753,6 +773,144 @@ flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;colo
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
 
+/* ── oversized numerals: stop long values colliding ───────────────────
+   "30,000" at 7.5vw is wider than a quarter of the wrap, so it ran out
+   of its grid cell and straight through the numeral beside it. Grid
+   children default to min-width:auto, which refuses to shrink below
+   content width — that is the actual bug. */
+.figs>div{min-width:0}
+.figs b{max-width:100%}
+.figs b.long{font-size:clamp(2.3rem,5vw,4rem)}
+.figs b.xlong{font-size:clamp(1.9rem,4vw,3.1rem)}
+
+/* ── kicker / eyebrow: pill, no leading rule ──────────────────────────
+   The dash-then-caps treatment was 11px of wide-tracked type at low
+   contrast over a photograph — legible in a mockup, not on a phone in
+   a car park. A solid pill gives it its own ground to sit on. */
+.kick{display:inline-flex;align-items:center;gap:0;background:rgba(8,14,32,.72);
+backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+border:1px solid rgba(184,208,224,.28);border-radius:100px;
+padding:9px 18px;color:#DCE5F5;letter-spacing:.18em;font-size:.7rem;line-height:1.35;
+max-width:min(100%,52ch);text-wrap:balance}
+.kick::before{display:none}
+.hero .kick{margin-bottom:24px}
+.eyebrow{display:inline-flex;align-items:center;gap:0;letter-spacing:.2em;
+padding:7px 15px;border-radius:100px;background:rgba(42,68,204,.09);
+border:1px solid rgba(42,68,204,.22);color:var(--volt);font-size:.68rem}
+.eyebrow::before{display:none}
+.sec-dark .eyebrow,.sec-void .eyebrow,.nl .eyebrow,.bl-hero .kick{
+background:rgba(184,208,224,.1);border-color:rgba(184,208,224,.26);color:var(--volt-lt)}
+.sec-cool .eyebrow{background:rgba(24,40,128,.1);border-color:rgba(24,40,128,.24);color:var(--navy)}
+.sec-hot .eyebrow{background:rgba(115,78,33,.1);border-color:rgba(115,78,33,.24);color:var(--grass-ink)}
+@media(max-width:520px){.kick{letter-spacing:.12em;padding:8px 14px}
+.eyebrow{letter-spacing:.14em}}
+
+/* ── top bar: a live special owns this slot, weather is the fallback ── */
+.sp-bar{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+background:linear-gradient(96deg,var(--volt) 0%,var(--volt-dk) 100%);
+color:#fff;padding:5px 15px 5px 11px;border-radius:100px;font-weight:700;
+font-size:.78rem;letter-spacing:-.005em;transition:.22s var(--ease);white-space:nowrap}
+.sp-bar:hover{color:#fff;filter:brightness(1.14)}
+.sp-bar .tagd{background:rgba(255,255,255,.22);border-radius:100px;padding:2px 9px;
+font-family:var(--disp);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase}
+.sp-bar .arw{opacity:.8}
+@media(max-width:900px){.sp-bar{font-size:.72rem;padding:4px 12px 4px 9px}
+.sp-bar .tagd{display:none}}
+
+/* ── nav dropdown ────────────────────────────────────────────────────── */
+/* The dropdown trigger is a <button> sitting among <a>s. Left to itself it
+   picked up button metrics and rode 4px lower than every link beside it, so
+   it mirrors .nav a exactly. */
+.nav-h{position:relative;display:inline-flex;align-items:center}
+.nav-t{display:inline-flex;align-items:center;gap:5px;background:none;border:0;
+font-family:inherit;font-size:.85rem;font-weight:600;line-height:inherit;
+color:var(--ink-2);cursor:pointer;padding:8px 2px;white-space:nowrap}
+.nav-t:hover,.nav-t.on{color:var(--ground)}
+.nav-t .cv{width:9px;height:9px;transition:transform .24s var(--ease)}
+.nav-h[data-open="1"] .cv{transform:rotate(180deg)}
+.nav-d{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(-6px);
+min-width:250px;background:#fff;border:1px solid var(--line);border-radius:var(--r);
+box-shadow:0 18px 50px rgba(8,14,32,.17);padding:10px;z-index:120;
+opacity:0;visibility:hidden;transition:.24s var(--ease)}
+.nav-h[data-open="1"] .nav-d{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.nav-d a{display:block;padding:11px 14px;border-radius:var(--r);text-decoration:none;
+color:var(--ink);font-weight:600;font-size:.94rem;transition:.18s var(--ease)}
+.nav-d a b{display:block;font-family:var(--disp);letter-spacing:-.02em;font-size:.98rem}
+.nav-d a span{display:block;color:var(--ink-3);font-size:.82rem;font-weight:400;margin-top:2px;line-height:1.35}
+.nav-d a:hover{background:var(--paper-2);color:var(--volt)}
+.nav-d a:hover b{color:var(--volt)}
+.nav-d::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
+
+/* ── the call button + its mega menu ─────────────────────────────────── */
+.callwrap{position:relative;display:inline-flex}
+.callbtn{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--volt);
+background:none;color:var(--volt);display:grid;place-items:center;cursor:pointer;
+transition:.22s var(--ease);flex:0 0 auto}
+.callbtn:hover,.callwrap[data-open="1"] .callbtn{background:var(--volt);color:#fff}
+.callbtn svg{width:20px;height:20px}
+.callmenu{position:absolute;top:calc(100% + 14px);right:0;width:min(92vw,340px);
+background:var(--void);border:1px solid rgba(184,208,224,.2);border-top:3px solid var(--volt);
+border-radius:var(--r);box-shadow:0 24px 60px rgba(8,14,32,.4);padding:24px;z-index:130;
+opacity:0;visibility:hidden;transform:translateY(-6px);transition:.24s var(--ease)}
+.callwrap[data-open="1"] .callmenu{opacity:1;visibility:visible;transform:translateY(0)}
+.callmenu::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
+.callmenu .lbl{font-family:var(--disp);font-weight:700;font-size:.66rem;letter-spacing:.24em;
+text-transform:uppercase;color:var(--steel)}
+.callmenu .num{display:block;margin-top:8px;font-family:var(--disp);font-weight:800;
+font-size:clamp(1.7rem,4vw,2.15rem);letter-spacing:-.045em;color:#fff;text-decoration:none;line-height:1}
+.callmenu .num:hover{color:var(--volt-lt)}
+.callmenu .meta{margin-top:14px;color:var(--ice);font-size:.9rem;line-height:1.5;max-width:none}
+.callmenu .meta b{color:#fff}
+.callmenu hr{border:0;border-top:1px solid rgba(184,208,224,.18);margin:18px 0}
+.callmenu .go{display:flex;align-items:center;justify-content:space-between;gap:14px;
+text-decoration:none;font-family:var(--disp);font-weight:800;text-transform:uppercase;
+letter-spacing:-.02em;color:#fff;font-size:.95rem}
+.callmenu .go:hover{color:var(--volt-lt)}
+.callmenu .go+.go{margin-top:14px}
+
+/* ── newsletter: bottom-left tab + modal ─────────────────────────────── */
+/* rotate() about a corner threw this 35px off the left edge of the screen.
+   writing-mode gives a genuinely vertical box with no origin arithmetic, and
+   the 180deg turn is only there to make the text read bottom-to-top. */
+.nl-tab{position:fixed;left:0;bottom:110px;z-index:140;
+writing-mode:vertical-rl;transform:rotate(180deg);
+background:var(--volt);color:#fff;border:0;cursor:pointer;
+font-family:var(--disp);font-weight:800;font-size:.72rem;letter-spacing:.16em;
+text-transform:uppercase;padding:18px 11px;border-radius:var(--r) 0 0 var(--r);
+box-shadow:3px 0 18px rgba(8,14,32,.26);transition:background .22s var(--ease),padding .22s var(--ease);
+display:inline-flex;align-items:center;gap:9px}
+.nl-tab:hover,.nl-tab:focus-visible{background:var(--volt-dk);padding-left:15px}
+.nl-tab[hidden]{display:none}
+@media(max-width:640px){.nl-tab{bottom:96px;font-size:.64rem;padding:14px 9px}}
+@media print{.nl-tab{display:none}}
+.nl-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
+background:rgba(8,14,32,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+opacity:0;visibility:hidden;transition:.26s var(--ease)}
+.nl-ov[data-open="1"]{opacity:1;visibility:visible}
+.nl-modal{width:min(100%,560px);max-height:90vh;overflow-y:auto;background:var(--ground);
+border:1px solid rgba(184,208,224,.2);border-top:3px solid var(--volt);border-radius:var(--r);
+padding:clamp(26px,4vw,44px);position:relative;transform:translateY(14px) scale(.985);
+transition:.26s var(--ease);color:#fff}
+.nl-ov[data-open="1"] .nl-modal{transform:none}
+.nl-modal h2{color:#fff;font-size:clamp(1.6rem,4vw,2.3rem);margin-bottom:12px}
+.nl-modal .lede{color:var(--ice);font-size:1rem;max-width:none;margin-bottom:22px}
+.nl-x{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;
+border:1px solid rgba(184,208,224,.24);background:none;color:var(--ice);cursor:pointer;
+font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s var(--ease)}
+.nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
+
+/* ── app store badges ────────────────────────────────────────────────── */
+.apps{display:flex;flex-wrap:wrap;gap:12px}
+.appbtn{display:inline-flex;align-items:center;gap:12px;text-decoration:none;
+background:var(--void);color:#fff;border:1px solid rgba(184,208,224,.26);
+border-radius:var(--r);padding:11px 20px 11px 16px;transition:.22s var(--ease)}
+.appbtn:hover{border-color:var(--volt-lt);color:#fff;transform:translateY(-2px)}
+.appbtn svg{width:24px;height:24px;flex:0 0 auto}
+.appbtn span{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+.appbtn b{display:block;font-family:var(--disp);font-size:1.02rem;letter-spacing:-.03em;margin-top:1px}
+.ftr .appbtn{background:rgba(255,255,255,.05);padding:9px 16px 9px 13px}
+.ftr .appbtn b{color:#fff}
+
 /* ── the blog ─────────────────────────────────────────────────────────
    Reading pages, not marketing pages. The body column is capped at 68ch
    and set at 19px — everything else on this site is built to be read from
@@ -884,9 +1042,9 @@ font-size:1rem;background:rgba(255,255,255,.06);border:1px solid rgba(184,208,22
 .nl-form input::placeholder{color:#8794B8}
 .nl-form input:focus{outline:3px solid var(--volt-lt);outline-offset:2px;background:rgba(255,255,255,.1)}
 .nl-form input.is-bad{border-color:#FF8C7A;background:rgba(255,140,122,.09)}
-.nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
-letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer}
-.nl-check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
+.nl-form .nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
+letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer;line-height:1.45}
+.nl-form .nl-check input{margin-top:3px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
 .nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 /* Stretched edge to edge the button read as a banner, not a control. Sized to
    its own label on desktop; full width on a phone, where a wide tap target wins. */
@@ -907,12 +1065,23 @@ letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:poi
 
 
 /* ------------------------------- nav ----------------------------------- */
+// [href, label, children?] — a third element turns the item into a dropdown.
+// The bar was already at eleven items and Specials had to go somewhere, so
+// About, Our Team and the two new pages group under one heading.
 const NAV = [
-  ["/schedule/", "Schedule"], ["/classes/", "Classes"], ["/amenities/", "The Building"],
-  ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"], ["/fuel-bar/", "Fuel Bar"],
-  ["/blog/", "Blog"],
-  ["/membership/", "Membership"], ["/team/", "Our Team"], ["/about/", "About"], ["/contact/", "Contact"],
+  ["/schedule/", "Schedule"], ["/classes/", "Classes"], ["/specials/", "Specials"],
+  ["/amenities/", "The Building"], ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"],
+  ["/fuel-bar/", "Fuel Bar"], ["/blog/", "Blog"], ["/membership/", "Membership"],
+  ["/about/", "About", [
+    ["/about/", "About us", "Locally owned on South Main since 2001"],
+    ["/team/", "Our team", "All 17 of us, with names on"],
+    ["/members-app/", "Members app", "Book, check in and follow a plan"],
+    ["/community-donations/", "Community donations", "Request a donation for your fundraiser"],
+  ]],
+  ["/contact/", "Contact"],
 ];
+const CHEV = '<svg class="cv" viewBox="0 0 12 12" aria-hidden="true" fill="none"><path d="M2 4.5 6 8.5l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const PHONE_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 2.5h3l1.5 3.8-2 1.3a12 12 0 0 0 5.3 5.3l1.3-2 3.8 1.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.6 4.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
 
 const jsonld = page => {
   const base = {
@@ -964,7 +1133,8 @@ ${PREVIEW ? `<div class="pvw"><span class="wrap"><b>Preview</b> \u2014 work in p
 Tehama Family Fitness Center. Rates, schedule and some photography are still being confirmed with
 the front desk. Not the live site.</span></div>` : ""}
 ${doc ? "" : `<div class="top"><div class="wrap">
-  <a class="wx" id="wx" href="${u("/amenities/")}" hidden><b id="wxT"></b><span>in Red&nbsp;Bluff. It is climate controlled in here.</span></a>
+  <a class="sp-bar" href="${u("/specials/")}"><span class="tagd">${BAR_SPECIAL ? "Now on" : "Included"}</span>
+    ${BAR_SPECIAL ? esc(BAR_SPECIAL.bar) : specials.standingBar}<span class="arw">→</span></a>
   <span>Open today ${todayHours()}</span><span class="dot">·</span>
   <a href="tel:${biz.tel}">${biz.phone}</a><span class="dot">·</span>
   <span>${biz.street}, ${biz.city}</span>
@@ -979,13 +1149,34 @@ ${doc ? `<header class="dhdr"><div class="wrap">
     <span><b>Tehama Family Fitness</b><span>Red&nbsp;Bluff · since 2001</span></span>
   </a>
   <nav class="nav" id="nav" aria-label="Main">
-    ${NAV.map(([h, l]) => `<a href="${u(h)}"${path === h ? ' class="on" aria-current="page"' : ""}>${l}</a>`).join("")}
+    ${NAV.map(([h, l, kids], i) => {
+      const here = path === h || (kids || []).some(k => k[0] === path);
+      if (!kids) return `<a href="${u(h)}"${path === h ? ' class="on" aria-current="page"' : ""}>${l}</a>`;
+      return `<span class="nav-h" data-nav="${i}">
+        <button class="nav-t${here ? " on" : ""}" type="button" aria-expanded="false" aria-controls="navd${i}">${l}${CHEV}</button>
+        <span class="nav-d" id="navd${i}">${kids.map(([kh, kl, kd]) =>
+          `<a href="${u(kh)}"${path === kh ? ' aria-current="page"' : ""}><b>${kl}</b>${kd ? `<span>${kd}</span>` : ""}</a>`).join("")}</span>
+      </span>`;
+    }).join("")}
     <div class="m-cta">
-      <a class="btn btn-volt" href="tel:${biz.tel}">Call ${biz.phone}</a>
+      <a class="btn btn-volt" href="${biz.join}" rel="noopener">Become a member →</a>
+      <a class="btn btn-out" href="tel:${biz.tel}">Call ${biz.phone}</a>
       <a class="btn btn-out" href="${u("/day-pass/")}">Come see the building</a>
     </div>
   </nav>
-  <a class="btn btn-volt btn-sm d-only" href="tel:${biz.tel}">Call ${biz.phone}</a>
+  <span class="callwrap d-only" id="callwrap">
+    <button class="callbtn" id="callbtn" type="button" aria-expanded="false" aria-controls="callmenu"
+            aria-label="Call us">${PHONE_ICON}</button>
+    <span class="callmenu" id="callmenu">
+      <span class="lbl">Call us</span>
+      <a class="num" href="tel:${biz.tel}">${biz.phone}</a>
+      <p class="meta"><b>${staff.frontDesk}</b> is usually the one who answers.<br>
+      Open today ${todayHours()} · ${biz.street}</p>
+      <hr>
+      <a class="go" href="${biz.join}" rel="noopener">Become a member <span class="arw">→</span></a>
+      <a class="go" href="${u("/contact/")}">Or get in touch <span class="arw">→</span></a>
+    </span>
+  </span>
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i></button>
 </div></header>`}
 <main id="main">
@@ -1017,6 +1208,7 @@ ${doc ? `<footer class="dftr"><div class="wrap">
       <li><a href="${u("/personal-training/")}">Personal training</a></li>
       <li><a href="${u("/corporate-wellness/")}">Corporate wellness</a></li>
       <li><a href="${u("/blog/")}">Tips, workouts &amp; recipes</a></li>
+      <li><a href="${u("/members-app/")}">Members app</a></li>
     </ul></div>
     <div><h4>The building</h4><ul>
       <li><a href="${u("/basketball/")}">Basketball &amp; racquetball</a></li>
@@ -1032,11 +1224,23 @@ ${doc ? `<footer class="dftr"><div class="wrap">
       <li><a href="${u("/day-pass/")}">Day pass &amp; drop-in</a></li>
       <li><a href="${u("/tour/")}">Take the tour</a></li>
       <li><a href="${u("/faq/")}">FAQ</a></li>
+      <li><a href="${u("/specials/")}">Specials &amp; what's included</a></li>
       <li><a href="${u("/gym-red-bluff/")}">Gyms in Red Bluff</a></li>
       <li><a href="${u("/about/")}">About us</a></li>
+      <li><a href="${u("/community-donations/")}">Community donations</a></li>
     </ul></div>
   </div>
-  ${newsletterBlock({ compact: true })}
+  <div class="ftr-nl">
+    <h4>The members app</h4>
+    <p style="margin-bottom:14px;max-width:52ch">Free with your membership, on both stores.</p>
+    ${appButtons()}
+  </div>
+  <div class="ftr-nl">
+    <h4>The newsletter</h4>
+    <p style="margin-bottom:14px;max-width:52ch">${newsletter.cadence} &mdash; schedule changes,
+    a recipe with the macros worked out, and what is new in the building.</p>
+    <a class="btn btn-volt btn-sm" href="#newsletter" data-newsletter>Sign up &rarr;</a>
+  </div>
   <p class="honest">Mon&ndash;Fri 5a&ndash;8p &middot; Sat&ndash;Sun 8a&ndash;6p &middot; Childcare from 8.</p>
   <div class="bot">
     <span>© ${new Date().getFullYear()} ${biz.name} · Locally owned in Red Bluff since 2001</span>
@@ -1119,7 +1323,40 @@ else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
 (function(){var b=document.getElementById('burger'),n=document.getElementById('nav');
 b.addEventListener('click',function(){var o=n.classList.toggle('open');
 document.body.classList.toggle('menu-open',o);b.setAttribute('aria-expanded',o);});})();
+
+/* Nav dropdowns + the call menu. Hover alone is a trap on a laptop trackpad and
+   useless on touch, so both open on click and on hover, and both close on Escape
+   and on an outside click. Everything stays keyboard-reachable: the triggers are
+   real buttons carrying aria-expanded. */
+(function(){
+  var groups=[].slice.call(document.querySelectorAll('.nav-h,.callwrap'));
+  if(!groups.length) return;
+  function shut(g){ g.removeAttribute('data-open');
+    var t=g.querySelector('button'); if(t) t.setAttribute('aria-expanded','false'); }
+  function shutAll(except){ groups.forEach(function(g){ if(g!==except) shut(g); }); }
+  groups.forEach(function(g){
+    var t=g.querySelector('button'); if(!t) return;
+    t.addEventListener('click',function(e){
+      e.stopPropagation();
+      var open=g.getAttribute('data-open')==='1';
+      shutAll(g);
+      if(open){ shut(g); } else { g.setAttribute('data-open','1'); t.setAttribute('aria-expanded','true'); }
+    });
+    // Pointer users get hover, but only on a device that really hovers.
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+      g.addEventListener('mouseenter',function(){ shutAll(g);
+        g.setAttribute('data-open','1'); t.setAttribute('aria-expanded','true'); });
+      g.addEventListener('mouseleave',function(){ shut(g); });
+    }
+    g.addEventListener('focusout',function(e){
+      if(!g.contains(e.relatedTarget)) shut(g);
+    });
+  });
+  document.addEventListener('click',function(){ shutAll(null); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') shutAll(null); });
+})();
 </script>
+${doc ? "" : newsletterUI()}
 </body></html>`;
 
 function todayHours() {
@@ -1131,7 +1368,8 @@ function todayHours() {
 
 /* --------------------------- shared blocks ----------------------------- */
 const acts = (primary = true) => `<div class="acts">
-  <a class="btn btn-volt" href="tel:${biz.tel}">Call ${biz.phone}</a>
+  <a class="btn btn-volt" href="${biz.join}" rel="noopener">Become a member →</a>
+  <a class="btn ${primary ? "btn-ghost" : "btn-out"}" href="tel:${biz.tel}">Call ${biz.phone}</a>
   <a class="btn ${primary ? "btn-ghost" : "btn-out"}" href="${u("/day-pass/")}">Walk in — open till 8</a>
 </div>`;
 
@@ -1292,7 +1530,13 @@ const statement = (text, sub, tone = "void") => `
 // Reusable oversized numerals.
 const numbers = (items, dark = true) => `
 <div class="figs${dark ? "" : " on-light"}">
-  ${items.map(([n, l, word]) => `<div class="rv"><b${word ? ' class="word"' : ""}>${n}</b><span>${l}</span></div>`).join("")}
+  ${items.map(([n, l, word]) => {
+    // "30,000" set at 7.5vw is wider than its own grid cell, so it used to
+    // overprint the numeral beside it. Step the size down by length.
+    const len = String(n).length;
+    const cls = word ? "word" : len > 6 ? "xlong" : len > 4 ? "long" : "";
+    return `<div class="rv"><b${cls ? ` class="${cls}"` : ""}>${n}</b><span>${l}</span></div>`;
+  }).join("")}
 </div>`;
 
 // Numbered process rows — for anything sequential.
@@ -1522,47 +1766,91 @@ const todayStrip = () => `
 </script>`;
 
 
-/* ── newsletter opt-in ────────────────────────────────────────────────
-   Two variants off one component so the markup and the JS never drift:
-     newsletterBlock()  — the full dark section, for /blog/ and the posts
-     newsletterBlock({compact:true}) — the one-line version in the footer
-   Both post to the same endpoint, both degrade to a mailto: if there is
-   no endpoint configured, and both refuse to pretend a sign-up worked.
-   `id` keeps the two instances apart when a page carries both. */
-let nlSeq = 0;
-const newsletterBlock = ({ compact = false, heading, lede } = {}) => {
-  const id = `nl${++nlSeq}x`;   // trailing x: keeps nl8-e from ever colliding with nl81
-  const form = `
-<form class="nl-form" id="${id}" novalidate
-      ${newsletter.endpoint ? `action="${newsletter.endpoint}" method="post"` : ""}>
-  <div class="nl-row">
-    <label for="${id}e">Email <span aria-hidden="true">*</span>
-      <input id="${id}e" type="email" name="email" autocomplete="email" required
-             inputmode="email" placeholder="you@example.com"></label>
-    <label for="${id}n">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
-      <input id="${id}n" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
+/* ── newsletter: a bottom-left tab that opens a modal ─────────────────
+   It used to be a full dark section repeated on eight pages, which put a
+   second dark block against the closing band and pushed the actual page
+   content down. As a tab it is available everywhere and in the way nowhere.
+   The tab sits bottom-LEFT deliberately: Marker.io and most chat widgets
+   live bottom-right, and two floating buttons in one corner is a fight. */
+const newsletterUI = () => {
+  const id = "nlx";
+  return `
+<button class="nl-tab" id="${id}Tab" type="button" aria-haspopup="dialog" aria-controls="${id}Ov">
+  ✉ Newsletter
+</button>
+<div class="nl-ov" id="${id}Ov" role="dialog" aria-modal="true" aria-labelledby="${id}H" hidden>
+  <div class="nl-modal">
+    <button class="nl-x" id="${id}X" type="button" aria-label="Close">✕</button>
+    <p class="eyebrow">${newsletter.cadence} · no spam</p>
+    <h2 id="${id}H">Get it in your inbox</h2>
+    <p class="lede">The schedule moves, and the board is not always the first place you
+    find out. Sign up and it comes to you instead.</p>
+    <ul class="nl-topics" style="margin-bottom:24px">${newsletter.topics.map(t => `<li>${t}</li>`).join("")}</ul>
+
+    <form class="nl-form" id="${id}" novalidate
+          ${newsletter.endpoint ? `action="${newsletter.endpoint}" method="post"` : ""}>
+      <div class="nl-row">
+        <label for="${id}e">Email <span aria-hidden="true">*</span>
+          <input id="${id}e" type="email" name="email" autocomplete="email" required
+                 inputmode="email" placeholder="you@example.com"></label>
+        <label for="${id}n">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
+          <input id="${id}n" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
+      </div>
+      <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
+        Send me the recipes too &mdash; macros already worked out</label>
+
+      <!-- spam trap: real people never fill this in -->
+      <div class="nl-hp" aria-hidden="true"><label>Leave this empty
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <input type="hidden" name="_subject" value="${esc(newsletter.subject)}">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <button type="submit" class="btn btn-volt" id="${id}b">Sign me up &rarr;</button>
+      <p class="nl-note" id="${id}t">${newsletter.cadence}. Unsubscribe by replying to any of them,
+      or just <a href="tel:${biz.tel}">tell the desk</a>. We do not sell or share your address, ever.</p>
+      <p class="nl-msg" id="${id}m" role="status" aria-live="polite" hidden></p>
+    </form>
   </div>
-  <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
-    Send me the recipes too &mdash; macros already worked out</label>
-
-  <!-- spam trap: real people never fill this in -->
-  <div class="nl-hp" aria-hidden="true"><label>Leave this empty
-    <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
-  <input type="hidden" name="_subject" value="${esc(newsletter.subject)}">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_template" value="table">
-
-  <button type="submit" class="btn btn-volt" id="${id}b">Sign me up &rarr;</button>
-  <p class="nl-note" id="${id}t">${newsletter.cadence}. Unsubscribe by replying to any of them, or
-  just <a href="tel:${biz.tel}">tell the desk</a>. We do not sell or share your address, ever.</p>
-  <p class="nl-msg" id="${id}m" role="status" aria-live="polite" hidden></p>
-</form>
+</div>
 <script>
 (function(){
-  var f=document.getElementById('${id}'); if(!f) return;
+  var ov=document.getElementById('${id}Ov'), tab=document.getElementById('${id}Tab'),
+      x=document.getElementById('${id}X'), f=document.getElementById('${id}');
+  if(!ov||!f) return;
   var btn=document.getElementById('${id}b'), msg=document.getElementById('${id}m'),
-      note=document.getElementById('${id}t'), em=document.getElementById('${id}e');
+      note=document.getElementById('${id}t'), em=document.getElementById('${id}e'), last=null;
   var ENDPOINT=${newsletter.endpoint ? `'${newsletter.endpoint}'` : "null"};
+
+  function open(){ last=document.activeElement; ov.hidden=false;
+    requestAnimationFrame(function(){ ov.setAttribute('data-open','1'); });
+    // The overlay is still visibility:hidden for the first frames of the
+    // transition, and you cannot focus a hidden element — so wait it out.
+    setTimeout(function(){ try{ em.focus(); }catch(e){} },160);
+    document.body.style.overflow='hidden'; }
+  function close(){ ov.removeAttribute('data-open');
+    document.body.style.overflow='';
+    setTimeout(function(){ ov.hidden=true; },260);
+    if(last) last.focus(); }
+  tab.addEventListener('click',open);
+  x.addEventListener('click',close);
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && ov.getAttribute('data-open')==='1') close(); });
+  // Keep focus inside the dialog while it is open.
+  ov.addEventListener('keydown',function(e){
+    if(e.key!=='Tab') return;
+    var f2=ov.querySelectorAll('button,input,a[href]'); if(!f2.length) return;
+    var first=f2[0], lastEl=f2[f2.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); lastEl.focus(); }
+    else if(!e.shiftKey && document.activeElement===lastEl){ e.preventDefault(); first.focus(); }
+  });
+  // Anything on a page can ask for it: href="#newsletter" or [data-newsletter]
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('a[href$="#newsletter"],[data-newsletter]');
+    if(t){ e.preventDefault(); open(); }
+  });
+
   function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='nl-msg '+(ok?'is-ok':'is-err'); }
   em.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); });
   f.addEventListener('submit',function(e){
@@ -1576,7 +1864,7 @@ const newsletterBlock = ({ compact = false, heading, lede } = {}) => {
       say('That does not look like an email address yet.',false); return;
     }
     var d=new FormData(f); d.delete('_honey');
-    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up\\u2026';
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up…';
     if(!ENDPOINT){
       location.href='mailto:${newsletter.to}?subject='+encodeURIComponent('${newsletter.subject}')+
         '&body='+encodeURIComponent('Please add '+v+' to the newsletter list.');
@@ -1588,7 +1876,8 @@ const newsletterBlock = ({ compact = false, heading, lede } = {}) => {
         f.querySelectorAll('input,button').forEach(function(el){ el.disabled=true; });
         if(note) note.hidden=true;
         say((d.get('first_name')?'Thanks '+d.get('first_name')+'. ':'')+
-            'You are on the list \\u2014 next one goes out within a couple of weeks.',true);
+            'You are on the list — next one goes out within a couple of weeks.',true);
+        setTimeout(close,2600);
       })
       .catch(function(){
         btn.disabled=false; btn.textContent=label;
@@ -1596,27 +1885,7 @@ const newsletterBlock = ({ compact = false, heading, lede } = {}) => {
       });
   });
 })();
-</script>`;
-
-  if (compact) return `<div class="ftr-nl">
-  <h4>The newsletter</h4>
-  <p style="margin-bottom:16px;max-width:52ch">${newsletter.cadence} &mdash; schedule changes, a recipe,
-  and what is new in the building.</p>
-  ${form}
-</div>`;
-
-  return `<section class="sec nl" id="newsletter"><div class="wrap">
-  <div class="split">
-    <div>
-      <p class="eyebrow">${newsletter.cadence.replace(/^About /, "About ")} &middot; no spam</p>
-      <h2>${heading || "Get it in<br>your inbox"}</h2>
-      <p class="lede">${lede || `The schedule moves, and the board is not always the first place you find out.
-      Sign up and it comes to you instead.`}</p>
-      <ul class="nl-topics">${newsletter.topics.map(t => `<li>${t}</li>`).join("")}</ul>
-    </div>
-    ${form}
-  </div>
-</div></section>`;
+</` + `script>`;
 };
 
 const marquee = (items, dark = false) => {
@@ -1787,7 +2056,8 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
     pickleball courts, racquetball, childcare and ${counts.classes} classes a week. Planet Fitness has
     none of those.</p>
     <div class="acts">
-      <a class="btn btn-volt" href="${u("/membership/")}#rate">Get your rate</a>
+      <a class="btn btn-volt" href="${biz.join}" rel="noopener">Become a member \u2192</a>
+      <a class="btn btn-ghost" href="${u("/membership/")}#rate">Get your rate</a>
       <a class="btn btn-ghost" href="${u("/day-pass/")}">Walk in today \u2014 open till 8</a>
     </div>
     <p class="under">${NAMES ? "Karla Stroman, an owner, teaches the 6:00 AM spin. <b>" + staff.frontDesk + "</b> is at the desk." : "<b>" + staff.frontDesk + "</b> is at the desk."} No sales process.</p>
@@ -1811,13 +2081,13 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
     <div class="rv"><b>${counts.total}</b><span>sessions a week</span></div>
     <div class="rv"><b>15</b><span>instructors</span></div>
     <div class="rv"><b>3</b><span>pickleball courts</span></div>
-    <div class="rv"><b>${biz.sqft}</b><span>square feet</span></div>
+    <div class="rv"><b class="long">${biz.sqft}</b><span>square feet</span></div>
   </div>
 </div></section>
 
-${rateForm()}
-
 ${todayStrip()}
+
+${rateForm()}
 
 <section class="sec"><div class="wrap">
   <p class="eyebrow">One building</p>
@@ -2744,10 +3014,6 @@ ${fullBleed(photos.barre, "Two purpose-built studios — a spin room and a yoga,
   </div>
 </div></section>
 
-${newsletterBlock({ heading: "Know before<br>the board does",
-  lede: `Class times move. Sign up and the changes reach you before you drive down for a class that
-  has shifted an hour — plus a recipe with the macros already worked out.` })}
-
 ${band("Your first one is on us — because they all are.",
   "Classes are included with membership. Come a few minutes early and tell the instructor it is your first.",
   [["/schedule/", "The schedule"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
@@ -3120,7 +3386,7 @@ ${spread(photos.frontdesk, { eyebrow: "What we're for", flip: true,
 
 ${fullBleed(photos.exteriorDusk, "Thirty thousand square feet, single storey, on the south end of town.")}
 
-<section class="sec sec-tint"><div class="wrap">
+<section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Being straight with you</p><h2>We close at eight</h2></div>
     <div><p class="lede">We open at five on weekdays and close at eight. If you train later than that,
@@ -3154,7 +3420,8 @@ ${phero(photos.frontdesk, { kick: "2498 S Main St \u00b7 Red Bluff",
       <p class="lede" style="margin-top:26px"><a href="tel:${biz.tel}" style="font-family:var(--disp);font-weight:800;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.04em;text-decoration:none">${biz.phone}</a></p>
       <p class="lede"><a href="mailto:${biz.email}">${biz.email}</a></p>
       <p class="lede" style="margin-top:22px">${biz.street}<br>${biz.city}, ${biz.state} ${biz.zip}</p>
-      <p style="margin-top:24px"><a class="btn btn-volt" href="https://maps.google.com/?q=${encodeURIComponent(biz.name + " " + biz.addr)}">Directions in Google Maps \u2192</a></p>
+      <p style="margin-top:24px"><a class="btn btn-volt" href="https://maps.google.com/?q=${encodeURIComponent(biz.name + " " + biz.addr)}">Directions in Google Maps \u2192</a>
+      <a class="btn btn-out" href="#manage" style="margin-left:10px">Manage my membership \u2192</a></p>
     </div>
     <div>
       <div class="tw"><table><caption>Building hours</caption>
@@ -3163,6 +3430,30 @@ ${phero(photos.frontdesk, { kick: "2498 S Main St \u00b7 Red Bluff",
       <div class="tw" style="margin-top:22px"><table><caption>Childcare</caption>
         <thead><tr><th scope="col">Day</th><th scope="col">Open</th></tr></thead>
         <tbody>${biz.childcareHours.map(([d, h]) => `<tr><td class="t-time">${d}</td><td>${h}</td></tr>`).join("")}</tbody></table></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="sec sec-tint" id="manage"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Already a member</p><h2>Manage your<br>membership</h2>
+      <p class="lede" style="margin-top:18px">Upgrading, adding somebody, freezing it while you are
+      away, changing a card &mdash; or cancelling. Pick the one you need and it opens an email with
+      the subject already filled in, so nobody has to explain themselves twice.</p>
+      ${manage.portal ? `<p style="margin-top:24px"><a class="btn btn-volt" href="${manage.portal}" rel="noopener">Open the member portal \u2192</a></p>`
+        : `<p style="margin-top:18px;color:var(--ink-3);font-size:.92rem">We are checking whether the
+        member portal lets you do these yourself. Until we know, these go to a person.</p>`}
+    </div>
+    <div>
+      <div class="grid g2">
+        ${manage.reasons.map(r => `<a class="card rv" href="mailto:${biz.email}?subject=${encodeURIComponent(r.subject)}">
+          <h3>${esc(r.label)}</h3><p>${esc(r.note)}</p>
+          <span class="more">Email the desk \u2192</span></a>`).join("")}
+      </div>
+      ${has("cancelHow") ? `<div class="note" style="margin-top:24px"><b>Cancelling:</b> ${val("cancelHow")}</div>`
+        : `<div class="note" style="margin-top:24px"><b>On cancelling.</b> We are not going to publish
+        notice periods or terms we have not confirmed with the desk &mdash; a wrong answer there costs
+        you money. <a href="tel:${biz.tel}">Call ${biz.phone}</a> and ask; they will tell you straight.</div>`}
     </div>
   </div>
 </div></section>
@@ -3425,8 +3716,6 @@ ${blogHero({ kick: `${posts.length} posts · routines, workouts, food`,
   </div>
 </div></section>
 
-${newsletterBlock({})}
-
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Browse by shelf</p><h2>Three kinds<br>of post</h2></div>
@@ -3456,8 +3745,6 @@ ${blogHero({ kick: `${list.length} post${list.length === 1 ? "" : "s"}`,
     ${list.slice(1).map(p => postCard(p)).join("")}</div>` : ""}`
   : `<p class="lede">Nothing on this shelf yet.</p>`}
 </div></section>
-
-${newsletterBlock({})}
 
 ${band("It is all included anyway.",
   "Every class we write about is part of the membership. No class fee, nothing to book.",
@@ -3522,13 +3809,6 @@ ${linked.length ? `<section class="sec sec-tint"><div class="wrap">
   </div>
 </div></section>` : ""}
 
-${newsletterBlock({ heading: post.cat === "food" ? "Recipes, in<br>your inbox" : "More like<br>this one",
-  lede: post.cat === "food"
-    ? `A recipe with the macros already worked out, about twice a month — plus schedule changes
-       before they hit the board.`
-    : `Schedule changes before they hit the board, a recipe with the macros already worked out, and
-       what is new in the building. About twice a month.` })}
-
 <section class="sec"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Keep reading</p><h2>More from<br>the blog</h2></div>
@@ -3542,6 +3822,291 @@ ${band("The classes in here are all included.",
   [["/schedule/", "The schedule"], ["/classes/", "All classes", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
 `, { og: post.hero ? photos[post.hero].src : undefined, ld });
 }
+
+
+/* ============================== SPECIALS ==============================
+   Built to be honest about a business that has published no prices. The
+   promotions menu is all switched off (data.mjs `specials.running`), so
+   what this page actually does today is collect the things that ARE free
+   or included — six of them, every one already sourced elsewhere in this
+   repo — which had never been in one place.
+
+   The moment the desk confirms a real promo, `on: true` puts it at the
+   top of this page AND in the top bar, and an `ends` date in the past
+   takes it back down without anybody remembering to.
+   ====================================================================== */
+const APPLE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.2 1.2-2.4 1.2-2.5 0 0-2.4-.9-2.4-3.6ZM14.2 5.9c.6-.8 1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.7-1.3Z"/></svg>';
+const ANDROID = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 3.2 14 12 3.6 20.8c-.3-.2-.5-.6-.5-1V4.2c0-.4.2-.8.5-1Zm11.6 9.7 2.6 2.2-10.4 5.9 7.8-8.1Zm0-1.8L7.4 3l10.4 5.9-2.6 2.2Zm3.9 3.3-3-2.4 3-2.4 2.4 1.4c.6.4.6 1.6 0 2l-2.4 1.4Z"/></svg>';
+
+P("/specials/", `Specials & What's Included | ${biz.short} Red Bluff`,
+  `What's running right now at Tehama Family Fitness Center in Red Bluff, plus everything that is always included with a membership — all 54 classes, the whole building, and free coffee before 9 AM.`,
+  `
+${phero(photos.frontdesk, { kick: LIVE.length ? `${LIVE.length} running now` : "Everything below is always true",
+  h1: LIVE.length ? "What's <em>on</em> right now" : "What you get <em>without</em><br>paying extra",
+  lede: LIVE.length
+    ? "Current offers, plus everything that is included with a membership every day of the year."
+    : "There is no promotion running this week — and we would rather say that than invent one. Here is the part that never changes, which is a better offer than most promotions anyway." })}
+
+${LIVE.length ? `
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Running now</p><h2>On this<br>week</h2></div>
+    <div><p class="lede">Ask at the desk when you come in — there is nothing to print and no code to quote.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:clamp(34px,4vw,52px)">
+    ${LIVE.map(sp => `<div class="card rv">
+      <p class="eyebrow" style="margin-bottom:14px">${sp.ends ? `Until ${fmtDate(sp.ends)}` : "Running now"}</p>
+      <h3>${esc(sp.name)}</h3><p>${esc(sp.blurb)}</p>
+      <p style="margin-top:20px"><a class="btn btn-volt btn-sm" href="tel:${biz.tel}">Ask about it — ${biz.phone}</a></p>
+    </div>`).join("")}
+  </div>
+</div></section>` : `
+<section class="sec"><div class="wrap narrow">
+  <div class="note"><b>No limited-time offer is running this week.</b>
+  When one is, it appears here and in the bar at the top of every page — and it comes down
+  by itself the day it ends. <a href="tel:${biz.tel}">Call ${biz.phone}</a> if you want to
+  check, because the desk always knows before the website does.</div>
+</div></section>`}
+
+${statement("There is no class fee. There is no court fee.",
+  "The thing most people are looking for on a page like this is a discount. The better answer at this building is that there is nothing extra to discount — it is all in the membership already.")}
+
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Always included</p><h2>Six things that<br>never cost extra</h2></div>
+    <div><p class="lede">Not promotions. These are true every day, and each one is checked
+    against the rest of this site rather than written for this page.</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:clamp(34px,4vw,52px)">
+    ${specials.standing.map(sp => `<a class="card rv" href="${u(sp.href)}">
+      <p class="eyebrow" style="margin-bottom:14px">${esc(sp.line)}</p>
+      <h3>${esc(sp.name)}</h3><p>${esc(sp.body)}</p>
+      ${sp.srcKey && tbd[sp.srcKey]?.verify
+        ? `<p style="margin-top:14px;color:var(--ink-3);font-size:.84rem">Source: ${esc(tbd[sp.srcKey].src)} — confirming with the desk.</p>` : ""}
+      <span class="more">${esc(sp.cta)} →</span></a>`).join("")}
+  </div>
+</div></section>
+
+${fullBleed(photos.gymfloor, "One membership, and nothing in here behind a second paywall.")}
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">The honest bit</p><h2>We have not<br>published rates</h2>
+      <p class="lede" style="margin-top:18px">Not a tactic — the numbers genuinely are not online yet,
+      including a family rate at a business with Family in its name. Until they are, the fastest
+      way to a real figure is to ask, and nobody will put you through a sales process for it.</p></div>
+    <div>${askBox("Call and we'll tell you today's rate.", "priceSingle",
+      "One phone call, under a minute. Ask about the family rate specifically — it is the one that is not online.")}
+      <p style="margin-top:22px"><a class="btn btn-out" href="${u("/membership/")}#rate">Or leave your number →</a></p></div>
+  </div>
+</div></section>
+
+${band("Join online, or come and look first.",
+  "Single memberships go through online in a couple of minutes. For a family, couple, student or senior rate, call — it is quicker.",
+  [[biz.join, "Become a member →"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"], ["/tour/", "Take the tour", "btn-ghost"]])}
+`);
+
+/* ============================ MEMBERS APP =============================
+   Answers tbd.trainerize, open since the first build. The app exists on
+   both stores and was invisible on the website. What it can DO is still
+   unconfirmed — Trainerize supports far more than most clubs switch on,
+   so this page lists the app and refuses to describe features nobody has
+   verified (tbd.appDoes).
+   ====================================================================== */
+const appButtons = (cls = "") => `<div class="apps ${cls}">
+  <a class="appbtn" href="${app.ios}" rel="noopener">${APPLE}
+    <span style="text-align:left"><span>Download on the</span><b>App Store</b></span></a>
+  <a class="appbtn" href="${app.android}" rel="noopener">${ANDROID}
+    <span style="text-align:left"><span>Get it on</span><b>Google Play</b></span></a>
+</div>`;
+
+P("/members-app/", `The Members App | ${biz.short} Red Bluff`,
+  `Tehama Family Fitness Center has a members app on iPhone and Android. Download links, what it is for, and who to ask if you cannot get logged in.`,
+  `
+${phero(photos.frontdesk, { kick: "iPhone and Android", h1: "The <em>members app</em>",
+  lede: "There is an app, it is free with your membership, and almost nobody knows about it because it has never been linked from this website. It is now." })}
+
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Get it</p><h2>Two taps<br>and it's yours</h2>
+      <p class="lede" style="margin-top:18px">Search <b>${esc(app.name)}</b> in either store, or use these.
+      It is free — your membership is what pays for it.</p>
+      <div style="margin-top:26px">${appButtons()}</div></div>
+    <div>
+      <div class="note"><b>Trouble logging in?</b> The app account is tied to the email on your
+      membership, so if you joined with a different address it will not find you.
+      <a href="tel:${biz.tel}">Call ${biz.phone}</a> and the desk will sort it in a minute —
+      it is the single most common thing people ask about it.</div>
+      ${has("appDoes") ? "" : `<div class="ask" style="margin-top:22px">
+        <b>What can it actually do?</b>
+        <p>We are not going to list features we have not checked. The app runs on Trainerize,
+        which can do class schedules, booking, workout plans and messaging your trainer — but
+        which of those is switched on here is a question for the desk, and we would rather ask
+        than guess at it on a website.</p>
+        <div class="ask-acts">
+          <a class="btn btn-volt btn-sm" href="${biz.sms("Hi — what does the members app do?")}">Text us and ask</a>
+          <a class="btn btn-ghost btn-sm" href="tel:${biz.tel}">Or call ${biz.phone}</a>
+        </div>
+      </div>`}
+    </div>
+  </div>
+</div></section>
+
+${statement("The schedule is on this website either way.",
+  "If you would rather not install anything, the full class board is a page on this site, it is pulled from the same calendar, and every row tells you whether the kids' room is open at that hour.")}
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">No app needed</p><h2>Everything you<br>might open it for</h2></div>
+    <div class="grid g2">
+      ${[["/schedule/", "The full schedule", `All ${counts.total} sessions a week, with childcare marked.`],
+         ["/classes/", "Every class explained", "What happens in the room and what to bring."],
+         ["/team/", "Who is teaching", "All 17 of us, and what each one teaches."],
+         ["/blog/", "Workouts and recipes", "Plans for the equipment that is genuinely here."],
+        ].map(([h, t, d]) => `<a class="card rv" href="${u(h)}"><h3>${t}</h3><p>${d}</p>
+        <span class="more">Open it →</span></a>`).join("")}
+    </div>
+  </div>
+</div></section>
+
+${band("Not a member yet?", "The app comes with the membership. So does everything else in the building.",
+  [[biz.join, "Become a member →"], ["/membership/", "What's included", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
+`);
+
+
+/* ========================= COMMUNITY DONATIONS ========================
+   A locally owned club in a town of 14,000 gets asked constantly — school
+   auctions, sports boosters, raffle baskets — and every one of those asks
+   currently arrives as a phone call the front desk has to take.
+
+   This page promises nothing. What they give, how much, and how often is
+   theirs to decide and none of it is confirmed (tbd.donationGives,
+   tbd.donationLead). The form exists to move the ask off the desk and
+   into an inbox with the details already attached.
+   ====================================================================== */
+P("/community-donations/", `Community Donation Requests | ${biz.short} Red Bluff`,
+  `Request a donation from Tehama Family Fitness Center for your Red Bluff school fundraiser, sports booster, raffle or non-profit event. One form, and the front desk gets everything at once.`,
+  `
+${phero(photos.exteriorDay, { kick: "Red Bluff and Tehama County", h1: "Community <em>donations</em>",
+  lede: "We have been on South Main since 2001 and most of the people who ask us are neighbours, parents of members, or both. Tell us what you are raising money for.", acts: false })}
+
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Before you fill it in</p><h2>What we can<br>and cannot say</h2>
+      <p class="lede" style="margin-top:18px">Being straight with you: we get asked a lot, and we
+      cannot say yes to everything. Sending this does not mean it is approved — it means the
+      right person sees it with all the details instead of a message on a busy desk.</p>
+      ${has("donationLead") ? `<p class="lede" style="margin-top:16px"><b>Give us ${val("donationLead")}</b> if you can.</p>`
+        : `<p class="lede" style="margin-top:16px">The earlier the better. If your event is inside
+        a couple of weeks, <a href="tel:${biz.tel}">call ${biz.phone}</a> rather than using this form.</p>`}
+    </div>
+    <div>${steps([
+      ["Tell us about the event", "What it is for, when, and who benefits. Local and youth causes get the most attention."],
+      ["We come back to you", "By email or phone, whichever you give us. If it is a no, we will say so rather than go quiet."],
+      ["Collect it at the desk", "Anything we donate is picked up at the front desk during opening hours."],
+    ])}</div>
+  </div>
+</div></section>
+
+<section class="sec sec-dark rf" id="request"><div class="wrap">
+  <div class="split">
+    <div>
+      <p class="eyebrow">One form, no chasing</p>
+      <h2>Request a donation</h2>
+      <p class="lede">Everything the desk needs, in one go. The more specific you are about what
+      you are asking for, the faster you get a real answer.</p>
+      <p class="lede" style="margin-top:20px">Rather talk to somebody?
+      <a href="tel:${biz.tel}" style="color:#fff;font-weight:700">${biz.phone}</a></p>
+      <p class="lede" style="margin-top:20px">Anything sent here goes to the front desk and
+      nowhere else. We do not add you to the newsletter for asking.</p>
+    </div>
+
+    <form class="rf-form" id="dnForm" novalidate
+          ${donations.endpoint ? `action="${donations.endpoint}" method="post"` : ""}>
+      <div class="rf-row">
+        <label for="dnName">Your name <span aria-hidden="true">*</span>
+          <input id="dnName" type="text" name="name" autocomplete="name" required placeholder="Jen Alvarez"></label>
+        <label for="dnOrg">Organisation <span aria-hidden="true">*</span>
+          <input id="dnOrg" type="text" name="organisation" autocomplete="organization" required
+                 placeholder="Red Bluff High Boosters"></label>
+      </div>
+      <div class="rf-row">
+        <label for="dnEmail">Email <span aria-hidden="true">*</span>
+          <input id="dnEmail" type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>
+        <label for="dnPhone">Phone <span class="rf-opt">optional</span>
+          <input id="dnPhone" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="530-555-0142"></label>
+      </div>
+      <div class="rf-row">
+        <label for="dnType">What kind of event?
+          <select id="dnType" name="event_type">
+            ${donations.types.map(t => `<option>${esc(t)}</option>`).join("")}
+          </select></label>
+        <label for="dnDate">Event date <span class="rf-opt">if you have one</span>
+          <input id="dnDate" type="date" name="event_date"></label>
+      </div>
+      <label for="dnWhat">What are you asking for, and what is it raising money for? <span aria-hidden="true">*</span>
+        <textarea id="dnWhat" name="request" rows="4" required
+          placeholder="A raffle item for our spring auction — money goes to team travel for the JV squad."></textarea></label>
+
+      <!-- spam trap: real people never fill this in -->
+      <div class="rf-hp" aria-hidden="true"><label>Leave this empty
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <input type="hidden" name="_subject" value="${esc(donations.subject)}">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <button type="submit" class="btn btn-volt" id="dnBtn">Send the request &rarr;</button>
+      <p class="rf-note" id="dnNote">Sending this is a request, not an approval. We answer either way.</p>
+      <p class="rf-msg" id="dnMsg" role="status" aria-live="polite" hidden></p>
+    </form>
+  </div>
+</div></section>
+<script>
+(function(){
+  var f=document.getElementById('dnForm'); if(!f) return;
+  var btn=document.getElementById('dnBtn'), msg=document.getElementById('dnMsg'),
+      note=document.getElementById('dnNote');
+  var ENDPOINT=${donations.endpoint ? `'${donations.endpoint}'` : "null"};
+  var REQ=[['dnName','your name'],['dnOrg','the organisation'],['dnEmail','an email we can reply to'],
+           ['dnWhat','what you are asking for']];
+  function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='rf-msg '+(ok?'is-ok':'is-err'); }
+  REQ.forEach(function(p){ var el=document.getElementById(p[0]);
+    el.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); }); });
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.querySelector('[name=_honey]').value) return;
+    var bad=null;
+    REQ.forEach(function(p){ var el=document.getElementById(p[0]), empty=!el.value.trim();
+      el.setAttribute('aria-invalid', empty?'true':'false'); el.classList.toggle('is-bad', empty);
+      if(empty && !bad) bad=p; });
+    if(bad){ say('We just need '+bad[1]+'.',false); document.getElementById(bad[0]).focus(); return; }
+    var d=new FormData(f); d.delete('_honey');
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Sending…';
+    if(!ENDPOINT){
+      location.href='mailto:${donations.to}?subject='+encodeURIComponent('${donations.subject}')+
+        '&body='+encodeURIComponent('Organisation: '+d.get('organisation')+'\\n'+d.get('request'));
+      btn.disabled=false; btn.textContent=label; return;
+    }
+    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return{};}) : Promise.reject(r.status); })
+      .then(function(){
+        f.querySelectorAll('input,select,textarea,button').forEach(function(el){ el.disabled=true; });
+        note.hidden=true;
+        say('Thanks — that is with the front desk. We answer either way, so you are not left waiting on a no.',true);
+      })
+      .catch(function(){
+        btn.disabled=false; btn.textContent=label;
+        say('That did not send. Call the desk on ${biz.phone} and we will take the details.',false);
+      });
+  });
+})();
+</` + `script>
+
+${proof()}
+
+${band("Come and see what you are asking.", "Walk in any day we are open. Ten-minute tour, no pressure.",
+  [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/about/", "About us", "btn-ghost"], ["/tour/", "Take the tour", "btn-ghost"]])}
+`);
 
 
 /* ============================== WRITE ================================= */
@@ -3611,6 +4176,16 @@ console.log(`  schedule        ${counts.total} sessions · ${counts.classes} cla
 console.log(`  classes         ${classes.length} pages · ${classes.filter(c => c.flyer).length} carry a named source conflict`);
 console.log(`  blog            ${posts.length} posts · ${CATS.map(c => `${postsIn(c.slug).length} ${c.slug}`).join(" · ")}`);
 console.log(`  base path       ${BASE || "(none — custom domain)"}`);
+// docs/ is the DEPLOYED artefact and it deploys as the preview build. A bare
+// `node gen/build.mjs` writes a production build over it — every link loses the
+// /tehama-family-fitness prefix and robots.txt flips to Allow. Committing that
+// breaks the Pages site and publishes unconfirmed facts. Easy to do by accident;
+// this makes it impossible to do quietly.
+if (!PREVIEW) {
+  console.log(`\n  \u26a0  PRODUCTION BUILD — do NOT commit this docs/.`);
+  console.log(`     Pages deploys the preview build. Before committing, rerun:`);
+  console.log(`     BASE=/tehama-family-fitness PREVIEW=1 node gen/build.mjs`);
+}
 console.log(`  owner names     ${NAMES ? "SHOWN (attributed)" : "hidden (NAMES=0)"}`);
 console.log(`\n  ${open_.length} facts still open — every one renders as an honest ask, not a guess:`);
 for (const [k, t] of open_) console.log(`     · ${t.q}`);

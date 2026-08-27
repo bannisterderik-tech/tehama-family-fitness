@@ -47,7 +47,7 @@
 --disp:'Bricolage Grotesque','Archivo',system-ui,-apple-system,sans-serif;
 --ser:'Instrument Serif',Georgia,serif;
 --body:'Source Sans 3',system-ui,-apple-system,sans-serif;
---wrap:1320px; --r:2px;
+--wrap:1560px; --wrap-hdr:1720px; --r:2px;
 --ease:cubic-bezier(.16,.84,.44,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -67,8 +67,13 @@ h2{font-size:clamp(1.85rem,4.4vw,3.4rem);font-weight:800;text-transform:uppercas
 h3{font-size:clamp(1.15rem,1.8vw,1.45rem);font-weight:800;letter-spacing:-.025em;line-height:1.1}
 h4{font-size:1rem;font-weight:700}
 p{max-width:64ch}
-.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,4.5vw,52px)}
-.narrow{max-width:820px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(20px,4vw,60px)}
+/* The header carries the most in one row, so it gets its own wider track —
+   the nav stops crowding the call button on a laptop. */
+.hdr>.wrap,.top>.wrap,.ftr>.wrap{max-width:var(--wrap-hdr)}
+/* Reading measure does NOT scale with the container: a 1560px-wide paragraph
+   is unreadable no matter how much room there is. */
+.narrow{max-width:860px}
 :focus-visible{outline:3px solid var(--volt);outline-offset:3px}
 .skip{position:absolute;left:-9999px;top:0;background:var(--volt);color:#fff;padding:12px 18px;z-index:200}
 .skip:focus{left:0}
@@ -455,6 +460,15 @@ font-size:.95rem;min-width:3.6em}
 .rf-form{display:grid;gap:18px;align-content:start}
 .rf-form label{display:grid;gap:9px;align-content:start;font-family:var(--disp);font-weight:700;font-size:.76rem;
 letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+.rf-form textarea{width:100%;margin-top:9px;padding:14px 16px;font:inherit;font-size:1rem;
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);border-radius:var(--r);
+color:#fff;resize:vertical;min-height:110px;line-height:1.55}
+.rf-form textarea::placeholder{color:#8794B8}
+.rf-form textarea:focus{outline:2px solid var(--volt-lt);outline-offset:1px;background:rgba(255,255,255,.1)}
+.rf-form textarea.is-bad{border-color:#F0A428;background:rgba(240,164,40,.1)}
+.rf-form input[type=date]{width:100%;margin-top:9px;padding:13px 16px;font:inherit;font-size:1rem;
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);border-radius:var(--r);color:#fff}
+.rf-form input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.6;cursor:pointer}
 .rf-form input[type=text],.rf-form input[type=tel],.rf-form input[type=email],.rf-form select{
 font-family:var(--body);font-size:1.05rem;line-height:1.2;height:54px;padding:0 16px;
 border-radius:var(--r);border:1px solid rgba(184,208,224,.28);background:rgba(255,255,255,.06);
@@ -708,6 +722,144 @@ flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;colo
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
 
+/* ── oversized numerals: stop long values colliding ───────────────────
+   "30,000" at 7.5vw is wider than a quarter of the wrap, so it ran out
+   of its grid cell and straight through the numeral beside it. Grid
+   children default to min-width:auto, which refuses to shrink below
+   content width — that is the actual bug. */
+.figs>div{min-width:0}
+.figs b{max-width:100%}
+.figs b.long{font-size:clamp(2.3rem,5vw,4rem)}
+.figs b.xlong{font-size:clamp(1.9rem,4vw,3.1rem)}
+
+/* ── kicker / eyebrow: pill, no leading rule ──────────────────────────
+   The dash-then-caps treatment was 11px of wide-tracked type at low
+   contrast over a photograph — legible in a mockup, not on a phone in
+   a car park. A solid pill gives it its own ground to sit on. */
+.kick{display:inline-flex;align-items:center;gap:0;background:rgba(8,14,32,.72);
+backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+border:1px solid rgba(184,208,224,.28);border-radius:100px;
+padding:9px 18px;color:#DCE5F5;letter-spacing:.18em;font-size:.7rem;line-height:1.35;
+max-width:min(100%,52ch);text-wrap:balance}
+.kick::before{display:none}
+.hero .kick{margin-bottom:24px}
+.eyebrow{display:inline-flex;align-items:center;gap:0;letter-spacing:.2em;
+padding:7px 15px;border-radius:100px;background:rgba(42,68,204,.09);
+border:1px solid rgba(42,68,204,.22);color:var(--volt);font-size:.68rem}
+.eyebrow::before{display:none}
+.sec-dark .eyebrow,.sec-void .eyebrow,.nl .eyebrow,.bl-hero .kick{
+background:rgba(184,208,224,.1);border-color:rgba(184,208,224,.26);color:var(--volt-lt)}
+.sec-cool .eyebrow{background:rgba(24,40,128,.1);border-color:rgba(24,40,128,.24);color:var(--navy)}
+.sec-hot .eyebrow{background:rgba(115,78,33,.1);border-color:rgba(115,78,33,.24);color:var(--grass-ink)}
+@media(max-width:520px){.kick{letter-spacing:.12em;padding:8px 14px}
+.eyebrow{letter-spacing:.14em}}
+
+/* ── top bar: a live special owns this slot, weather is the fallback ── */
+.sp-bar{display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+background:linear-gradient(96deg,var(--volt) 0%,var(--volt-dk) 100%);
+color:#fff;padding:5px 15px 5px 11px;border-radius:100px;font-weight:700;
+font-size:.78rem;letter-spacing:-.005em;transition:.22s var(--ease);white-space:nowrap}
+.sp-bar:hover{color:#fff;filter:brightness(1.14)}
+.sp-bar .tagd{background:rgba(255,255,255,.22);border-radius:100px;padding:2px 9px;
+font-family:var(--disp);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase}
+.sp-bar .arw{opacity:.8}
+@media(max-width:900px){.sp-bar{font-size:.72rem;padding:4px 12px 4px 9px}
+.sp-bar .tagd{display:none}}
+
+/* ── nav dropdown ────────────────────────────────────────────────────── */
+/* The dropdown trigger is a <button> sitting among <a>s. Left to itself it
+   picked up button metrics and rode 4px lower than every link beside it, so
+   it mirrors .nav a exactly. */
+.nav-h{position:relative;display:inline-flex;align-items:center}
+.nav-t{display:inline-flex;align-items:center;gap:5px;background:none;border:0;
+font-family:inherit;font-size:.85rem;font-weight:600;line-height:inherit;
+color:var(--ink-2);cursor:pointer;padding:8px 2px;white-space:nowrap}
+.nav-t:hover,.nav-t.on{color:var(--ground)}
+.nav-t .cv{width:9px;height:9px;transition:transform .24s var(--ease)}
+.nav-h[data-open="1"] .cv{transform:rotate(180deg)}
+.nav-d{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(-6px);
+min-width:250px;background:#fff;border:1px solid var(--line);border-radius:var(--r);
+box-shadow:0 18px 50px rgba(8,14,32,.17);padding:10px;z-index:120;
+opacity:0;visibility:hidden;transition:.24s var(--ease)}
+.nav-h[data-open="1"] .nav-d{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.nav-d a{display:block;padding:11px 14px;border-radius:var(--r);text-decoration:none;
+color:var(--ink);font-weight:600;font-size:.94rem;transition:.18s var(--ease)}
+.nav-d a b{display:block;font-family:var(--disp);letter-spacing:-.02em;font-size:.98rem}
+.nav-d a span{display:block;color:var(--ink-3);font-size:.82rem;font-weight:400;margin-top:2px;line-height:1.35}
+.nav-d a:hover{background:var(--paper-2);color:var(--volt)}
+.nav-d a:hover b{color:var(--volt)}
+.nav-d::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
+
+/* ── the call button + its mega menu ─────────────────────────────────── */
+.callwrap{position:relative;display:inline-flex}
+.callbtn{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--volt);
+background:none;color:var(--volt);display:grid;place-items:center;cursor:pointer;
+transition:.22s var(--ease);flex:0 0 auto}
+.callbtn:hover,.callwrap[data-open="1"] .callbtn{background:var(--volt);color:#fff}
+.callbtn svg{width:20px;height:20px}
+.callmenu{position:absolute;top:calc(100% + 14px);right:0;width:min(92vw,340px);
+background:var(--void);border:1px solid rgba(184,208,224,.2);border-top:3px solid var(--volt);
+border-radius:var(--r);box-shadow:0 24px 60px rgba(8,14,32,.4);padding:24px;z-index:130;
+opacity:0;visibility:hidden;transform:translateY(-6px);transition:.24s var(--ease)}
+.callwrap[data-open="1"] .callmenu{opacity:1;visibility:visible;transform:translateY(0)}
+.callmenu::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
+.callmenu .lbl{font-family:var(--disp);font-weight:700;font-size:.66rem;letter-spacing:.24em;
+text-transform:uppercase;color:var(--steel)}
+.callmenu .num{display:block;margin-top:8px;font-family:var(--disp);font-weight:800;
+font-size:clamp(1.7rem,4vw,2.15rem);letter-spacing:-.045em;color:#fff;text-decoration:none;line-height:1}
+.callmenu .num:hover{color:var(--volt-lt)}
+.callmenu .meta{margin-top:14px;color:var(--ice);font-size:.9rem;line-height:1.5;max-width:none}
+.callmenu .meta b{color:#fff}
+.callmenu hr{border:0;border-top:1px solid rgba(184,208,224,.18);margin:18px 0}
+.callmenu .go{display:flex;align-items:center;justify-content:space-between;gap:14px;
+text-decoration:none;font-family:var(--disp);font-weight:800;text-transform:uppercase;
+letter-spacing:-.02em;color:#fff;font-size:.95rem}
+.callmenu .go:hover{color:var(--volt-lt)}
+.callmenu .go+.go{margin-top:14px}
+
+/* ── newsletter: bottom-left tab + modal ─────────────────────────────── */
+/* rotate() about a corner threw this 35px off the left edge of the screen.
+   writing-mode gives a genuinely vertical box with no origin arithmetic, and
+   the 180deg turn is only there to make the text read bottom-to-top. */
+.nl-tab{position:fixed;left:0;bottom:110px;z-index:140;
+writing-mode:vertical-rl;transform:rotate(180deg);
+background:var(--volt);color:#fff;border:0;cursor:pointer;
+font-family:var(--disp);font-weight:800;font-size:.72rem;letter-spacing:.16em;
+text-transform:uppercase;padding:18px 11px;border-radius:var(--r) 0 0 var(--r);
+box-shadow:3px 0 18px rgba(8,14,32,.26);transition:background .22s var(--ease),padding .22s var(--ease);
+display:inline-flex;align-items:center;gap:9px}
+.nl-tab:hover,.nl-tab:focus-visible{background:var(--volt-dk);padding-left:15px}
+.nl-tab[hidden]{display:none}
+@media(max-width:640px){.nl-tab{bottom:96px;font-size:.64rem;padding:14px 9px}}
+@media print{.nl-tab{display:none}}
+.nl-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
+background:rgba(8,14,32,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+opacity:0;visibility:hidden;transition:.26s var(--ease)}
+.nl-ov[data-open="1"]{opacity:1;visibility:visible}
+.nl-modal{width:min(100%,560px);max-height:90vh;overflow-y:auto;background:var(--ground);
+border:1px solid rgba(184,208,224,.2);border-top:3px solid var(--volt);border-radius:var(--r);
+padding:clamp(26px,4vw,44px);position:relative;transform:translateY(14px) scale(.985);
+transition:.26s var(--ease);color:#fff}
+.nl-ov[data-open="1"] .nl-modal{transform:none}
+.nl-modal h2{color:#fff;font-size:clamp(1.6rem,4vw,2.3rem);margin-bottom:12px}
+.nl-modal .lede{color:var(--ice);font-size:1rem;max-width:none;margin-bottom:22px}
+.nl-x{position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;
+border:1px solid rgba(184,208,224,.24);background:none;color:var(--ice);cursor:pointer;
+font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s var(--ease)}
+.nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
+
+/* ── app store badges ────────────────────────────────────────────────── */
+.apps{display:flex;flex-wrap:wrap;gap:12px}
+.appbtn{display:inline-flex;align-items:center;gap:12px;text-decoration:none;
+background:var(--void);color:#fff;border:1px solid rgba(184,208,224,.26);
+border-radius:var(--r);padding:11px 20px 11px 16px;transition:.22s var(--ease)}
+.appbtn:hover{border-color:var(--volt-lt);color:#fff;transform:translateY(-2px)}
+.appbtn svg{width:24px;height:24px;flex:0 0 auto}
+.appbtn span{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+.appbtn b{display:block;font-family:var(--disp);font-size:1.02rem;letter-spacing:-.03em;margin-top:1px}
+.ftr .appbtn{background:rgba(255,255,255,.05);padding:9px 16px 9px 13px}
+.ftr .appbtn b{color:#fff}
+
 /* ── the blog ─────────────────────────────────────────────────────────
    Reading pages, not marketing pages. The body column is capped at 68ch
    and set at 19px — everything else on this site is built to be read from
@@ -839,9 +991,9 @@ font-size:1rem;background:rgba(255,255,255,.06);border:1px solid rgba(184,208,22
 .nl-form input::placeholder{color:#8794B8}
 .nl-form input:focus{outline:3px solid var(--volt-lt);outline-offset:2px;background:rgba(255,255,255,.1)}
 .nl-form input.is-bad{border-color:#FF8C7A;background:rgba(255,140,122,.09)}
-.nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
-letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer}
-.nl-check input{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
+.nl-form .nl-check{display:flex;gap:11px;align-items:flex-start;font-family:var(--body);font-size:.94rem;
+letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:pointer;line-height:1.45}
+.nl-form .nl-check input{margin-top:3px;flex:none;width:18px;height:18px;accent-color:var(--volt-lt)}
 .nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 /* Stretched edge to edge the button read as a banner, not a control. Sized to
    its own label on desktop; full width on a phone, where a wide tap target wins. */
@@ -872,7 +1024,8 @@ letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:poi
 Tehama Family Fitness Center. Rates, schedule and some photography are still being confirmed with
 the front desk. Not the live site.</span></div>
 <div class="top"><div class="wrap">
-  <a class="wx" id="wx" href="/tehama-family-fitness/amenities/" hidden><b id="wxT"></b><span>in Red&nbsp;Bluff. It is climate controlled in here.</span></a>
+  <a class="sp-bar" href="/tehama-family-fitness/specials/"><span class="tagd">Included</span>
+    All 54 classes included — no class fee, no booking<span class="arw">→</span></a>
   <span>Open today 5 am–8 pm</span><span class="dot">·</span>
   <a href="tel:+15305288656">530-528-8656</a><span class="dot">·</span>
   <span>2498 S Main St, Red Bluff</span>
@@ -883,13 +1036,29 @@ the front desk. Not the live site.</span></div>
     <span><b>Tehama Family Fitness</b><span>Red&nbsp;Bluff · since 2001</span></span>
   </a>
   <nav class="nav" id="nav" aria-label="Main">
-    <a href="/tehama-family-fitness/schedule/">Schedule</a><a href="/tehama-family-fitness/classes/">Classes</a><a href="/tehama-family-fitness/amenities/">The Building</a><a href="/tehama-family-fitness/pickleball/">Pickleball</a><a href="/tehama-family-fitness/childcare/">Childcare</a><a href="/tehama-family-fitness/fuel-bar/">Fuel Bar</a><a href="/tehama-family-fitness/blog/">Blog</a><a href="/tehama-family-fitness/membership/">Membership</a><a href="/tehama-family-fitness/team/">Our Team</a><a href="/tehama-family-fitness/about/">About</a><a href="/tehama-family-fitness/contact/">Contact</a>
+    <a href="/tehama-family-fitness/schedule/">Schedule</a><a href="/tehama-family-fitness/classes/">Classes</a><a href="/tehama-family-fitness/specials/">Specials</a><a href="/tehama-family-fitness/amenities/">The Building</a><a href="/tehama-family-fitness/pickleball/">Pickleball</a><a href="/tehama-family-fitness/childcare/">Childcare</a><a href="/tehama-family-fitness/fuel-bar/">Fuel Bar</a><a href="/tehama-family-fitness/blog/">Blog</a><a href="/tehama-family-fitness/membership/">Membership</a><span class="nav-h" data-nav="9">
+        <button class="nav-t" type="button" aria-expanded="false" aria-controls="navd9">About<svg class="cv" viewBox="0 0 12 12" aria-hidden="true" fill="none"><path d="M2 4.5 6 8.5l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="nav-d" id="navd9"><a href="/tehama-family-fitness/about/"><b>About us</b><span>Locally owned on South Main since 2001</span></a><a href="/tehama-family-fitness/team/"><b>Our team</b><span>All 17 of us, with names on</span></a><a href="/tehama-family-fitness/members-app/"><b>Members app</b><span>Book, check in and follow a plan</span></a><a href="/tehama-family-fitness/community-donations/"><b>Community donations</b><span>Request a donation for your fundraiser</span></a></span>
+      </span><a href="/tehama-family-fitness/contact/">Contact</a>
     <div class="m-cta">
-      <a class="btn btn-volt" href="tel:+15305288656">Call 530-528-8656</a>
+      <a class="btn btn-volt" href="https://onlinejoin.abcfitness.com/signup/plan?club=31347" rel="noopener">Become a member →</a>
+      <a class="btn btn-out" href="tel:+15305288656">Call 530-528-8656</a>
       <a class="btn btn-out" href="/tehama-family-fitness/day-pass/">Come see the building</a>
     </div>
   </nav>
-  <a class="btn btn-volt btn-sm d-only" href="tel:+15305288656">Call 530-528-8656</a>
+  <span class="callwrap d-only" id="callwrap">
+    <button class="callbtn" id="callbtn" type="button" aria-expanded="false" aria-controls="callmenu"
+            aria-label="Call us"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 2.5h3l1.5 3.8-2 1.3a12 12 0 0 0 5.3 5.3l1.3-2 3.8 1.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.6 4.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button>
+    <span class="callmenu" id="callmenu">
+      <span class="lbl">Call us</span>
+      <a class="num" href="tel:+15305288656">530-528-8656</a>
+      <p class="meta"><b>Courtney</b> is usually the one who answers.<br>
+      Open today 5 am–8 pm · 2498 S Main St</p>
+      <hr>
+      <a class="go" href="https://onlinejoin.abcfitness.com/signup/plan?club=31347" rel="noopener">Become a member <span class="arw">→</span></a>
+      <a class="go" href="/tehama-family-fitness/contact/">Or get in touch <span class="arw">→</span></a>
+    </span>
+  </span>
   <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav"><i></i></button>
 </div></header>
 <main id="main">
@@ -902,7 +1071,8 @@ the front desk. Not the live site.</span></div>
     <h1>Mat Pilates</h1>
     <p class="lede">Core and control on the mat, three mornings a week with Jami.</p>
     <div class="acts">
-  <a class="btn btn-volt" href="tel:+15305288656">Call 530-528-8656</a>
+  <a class="btn btn-volt" href="https://onlinejoin.abcfitness.com/signup/plan?club=31347" rel="noopener">Become a member →</a>
+  <a class="btn btn-ghost" href="tel:+15305288656">Call 530-528-8656</a>
   <a class="btn btn-ghost" href="/tehama-family-fitness/day-pass/">Walk in — open till 8</a>
 </div>
   </div>
@@ -1001,6 +1171,7 @@ the front desk. Not the live site.</span></div>
       <li><a href="/tehama-family-fitness/personal-training/">Personal training</a></li>
       <li><a href="/tehama-family-fitness/corporate-wellness/">Corporate wellness</a></li>
       <li><a href="/tehama-family-fitness/blog/">Tips, workouts &amp; recipes</a></li>
+      <li><a href="/tehama-family-fitness/members-app/">Members app</a></li>
     </ul></div>
     <div><h4>The building</h4><ul>
       <li><a href="/tehama-family-fitness/basketball/">Basketball &amp; racquetball</a></li>
@@ -1016,80 +1187,28 @@ the front desk. Not the live site.</span></div>
       <li><a href="/tehama-family-fitness/day-pass/">Day pass &amp; drop-in</a></li>
       <li><a href="/tehama-family-fitness/tour/">Take the tour</a></li>
       <li><a href="/tehama-family-fitness/faq/">FAQ</a></li>
+      <li><a href="/tehama-family-fitness/specials/">Specials &amp; what's included</a></li>
       <li><a href="/tehama-family-fitness/gym-red-bluff/">Gyms in Red Bluff</a></li>
       <li><a href="/tehama-family-fitness/about/">About us</a></li>
+      <li><a href="/tehama-family-fitness/community-donations/">Community donations</a></li>
     </ul></div>
   </div>
   <div class="ftr-nl">
-  <h4>The newsletter</h4>
-  <p style="margin-bottom:16px;max-width:52ch">About twice a month &mdash; schedule changes, a recipe,
-  and what is new in the building.</p>
-  
-<form class="nl-form" id="nl36x" novalidate
-      action="https://formsubmit.co/ajax/frontdesk@clubtehama.com" method="post">
-  <div class="nl-row">
-    <label for="nl36xe">Email <span aria-hidden="true">*</span>
-      <input id="nl36xe" type="email" name="email" autocomplete="email" required
-             inputmode="email" placeholder="you@example.com"></label>
-    <label for="nl36xn">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
-      <input id="nl36xn" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
-  </div>
-  <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
-    Send me the recipes too &mdash; macros already worked out</label>
-
-  <!-- spam trap: real people never fill this in -->
-  <div class="nl-hp" aria-hidden="true"><label>Leave this empty
-    <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
-  <input type="hidden" name="_subject" value="Newsletter sign-up — tehamafamilyfitness.com">
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_template" value="table">
-
-  <button type="submit" class="btn btn-volt" id="nl36xb">Sign me up &rarr;</button>
-  <p class="nl-note" id="nl36xt">About twice a month. Unsubscribe by replying to any of them, or
-  just <a href="tel:+15305288656">tell the desk</a>. We do not sell or share your address, ever.</p>
-  <p class="nl-msg" id="nl36xm" role="status" aria-live="polite" hidden></p>
-</form>
-<script>
-(function(){
-  var f=document.getElementById('nl36x'); if(!f) return;
-  var btn=document.getElementById('nl36xb'), msg=document.getElementById('nl36xm'),
-      note=document.getElementById('nl36xt'), em=document.getElementById('nl36xe');
-  var ENDPOINT='https://formsubmit.co/ajax/frontdesk@clubtehama.com';
-  function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='nl-msg '+(ok?'is-ok':'is-err'); }
-  em.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); });
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(f.querySelector('[name=_honey]').value) return;                 // bot
-    var v=em.value.trim();
-    // Deliberately loose. A regex that rejects real addresses is worse than
-    // one that lets a typo through — the confirmation email catches those.
-    if(!v || v.indexOf('@')<1 || v.indexOf('.',v.indexOf('@'))<0){
-      em.classList.add('is-bad'); em.setAttribute('aria-invalid','true'); em.focus();
-      say('That does not look like an email address yet.',false); return;
-    }
-    var d=new FormData(f); d.delete('_honey');
-    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up\u2026';
-    if(!ENDPOINT){
-      location.href='mailto:frontdesk@clubtehama.com?subject='+encodeURIComponent('Newsletter sign-up — tehamafamilyfitness.com')+
-        '&body='+encodeURIComponent('Please add '+v+' to the newsletter list.');
-      btn.disabled=false; btn.textContent=label; return;
-    }
-    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
-      .then(function(r){ return r.ok ? r.json().catch(function(){return{};}) : Promise.reject(r.status); })
-      .then(function(){
-        f.querySelectorAll('input,button').forEach(function(el){ el.disabled=true; });
-        if(note) note.hidden=true;
-        say((d.get('first_name')?'Thanks '+d.get('first_name')+'. ':'')+
-            'You are on the list \u2014 next one goes out within a couple of weeks.',true);
-      })
-      .catch(function(){
-        btn.disabled=false; btn.textContent=label;
-        say('That did not send. Give the desk your email on 530-528-8656 and we will add you.',false);
-      });
-  });
-})();
-</script>
+    <h4>The members app</h4>
+    <p style="margin-bottom:14px;max-width:52ch">Free with your membership, on both stores.</p>
+    <div class="apps ">
+  <a class="appbtn" href="https://apps.apple.com/us/app/tehama-family-fitness-center/id6469085639" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.2 1.2-2.4 1.2-2.5 0 0-2.4-.9-2.4-3.6ZM14.2 5.9c.6-.8 1-1.9.9-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.7-1.3Z"/></svg>
+    <span style="text-align:left"><span>Download on the</span><b>App Store</b></span></a>
+  <a class="appbtn" href="https://play.google.com/store/apps/details?id=com.trainerize.tehamahealthandfitness" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 3.2 14 12 3.6 20.8c-.3-.2-.5-.6-.5-1V4.2c0-.4.2-.8.5-1Zm11.6 9.7 2.6 2.2-10.4 5.9 7.8-8.1Zm0-1.8L7.4 3l10.4 5.9-2.6 2.2Zm3.9 3.3-3-2.4 3-2.4 2.4 1.4c.6.4.6 1.6 0 2l-2.4 1.4Z"/></svg>
+    <span style="text-align:left"><span>Get it on</span><b>Google Play</b></span></a>
 </div>
+  </div>
+  <div class="ftr-nl">
+    <h4>The newsletter</h4>
+    <p style="margin-bottom:14px;max-width:52ch">About twice a month &mdash; schedule changes,
+    a recipe with the macros worked out, and what is new in the building.</p>
+    <a class="btn btn-volt btn-sm" href="#newsletter" data-newsletter>Sign up &rarr;</a>
+  </div>
   <p class="honest">Mon&ndash;Fri 5a&ndash;8p &middot; Sat&ndash;Sun 8a&ndash;6p &middot; Childcare from 8.</p>
   <div class="bot">
     <span>© 2026 Tehama Family Fitness Center · Locally owned in Red Bluff since 2001</span>
@@ -1172,5 +1291,149 @@ else{addEventListener('load',function(){setTimeout(maybeAuto,120)});}
 (function(){var b=document.getElementById('burger'),n=document.getElementById('nav');
 b.addEventListener('click',function(){var o=n.classList.toggle('open');
 document.body.classList.toggle('menu-open',o);b.setAttribute('aria-expanded',o);});})();
+
+/* Nav dropdowns + the call menu. Hover alone is a trap on a laptop trackpad and
+   useless on touch, so both open on click and on hover, and both close on Escape
+   and on an outside click. Everything stays keyboard-reachable: the triggers are
+   real buttons carrying aria-expanded. */
+(function(){
+  var groups=[].slice.call(document.querySelectorAll('.nav-h,.callwrap'));
+  if(!groups.length) return;
+  function shut(g){ g.removeAttribute('data-open');
+    var t=g.querySelector('button'); if(t) t.setAttribute('aria-expanded','false'); }
+  function shutAll(except){ groups.forEach(function(g){ if(g!==except) shut(g); }); }
+  groups.forEach(function(g){
+    var t=g.querySelector('button'); if(!t) return;
+    t.addEventListener('click',function(e){
+      e.stopPropagation();
+      var open=g.getAttribute('data-open')==='1';
+      shutAll(g);
+      if(open){ shut(g); } else { g.setAttribute('data-open','1'); t.setAttribute('aria-expanded','true'); }
+    });
+    // Pointer users get hover, but only on a device that really hovers.
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+      g.addEventListener('mouseenter',function(){ shutAll(g);
+        g.setAttribute('data-open','1'); t.setAttribute('aria-expanded','true'); });
+      g.addEventListener('mouseleave',function(){ shut(g); });
+    }
+    g.addEventListener('focusout',function(e){
+      if(!g.contains(e.relatedTarget)) shut(g);
+    });
+  });
+  document.addEventListener('click',function(){ shutAll(null); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') shutAll(null); });
+})();
+</script>
+
+<button class="nl-tab" id="nlxTab" type="button" aria-haspopup="dialog" aria-controls="nlxOv">
+  ✉ Newsletter
+</button>
+<div class="nl-ov" id="nlxOv" role="dialog" aria-modal="true" aria-labelledby="nlxH" hidden>
+  <div class="nl-modal">
+    <button class="nl-x" id="nlxX" type="button" aria-label="Close">✕</button>
+    <p class="eyebrow">About twice a month · no spam</p>
+    <h2 id="nlxH">Get it in your inbox</h2>
+    <p class="lede">The schedule moves, and the board is not always the first place you
+    find out. Sign up and it comes to you instead.</p>
+    <ul class="nl-topics" style="margin-bottom:24px"><li>Schedule changes before they hit the board</li><li>A recipe with the macros already worked out</li><li>What is new in the building</li></ul>
+
+    <form class="nl-form" id="nlx" novalidate
+          action="https://formsubmit.co/ajax/frontdesk@clubtehama.com" method="post">
+      <div class="nl-row">
+        <label for="nlxe">Email <span aria-hidden="true">*</span>
+          <input id="nlxe" type="email" name="email" autocomplete="email" required
+                 inputmode="email" placeholder="you@example.com"></label>
+        <label for="nlxn">First name <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--steel)">optional</span>
+          <input id="nlxn" type="text" name="first_name" autocomplete="given-name" placeholder="Jen"></label>
+      </div>
+      <label class="nl-check"><input type="checkbox" name="recipes" value="yes" checked>
+        Send me the recipes too &mdash; macros already worked out</label>
+
+      <!-- spam trap: real people never fill this in -->
+      <div class="nl-hp" aria-hidden="true"><label>Leave this empty
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <input type="hidden" name="_subject" value="Newsletter sign-up — tehamafamilyfitness.com">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+
+      <button type="submit" class="btn btn-volt" id="nlxb">Sign me up &rarr;</button>
+      <p class="nl-note" id="nlxt">About twice a month. Unsubscribe by replying to any of them,
+      or just <a href="tel:+15305288656">tell the desk</a>. We do not sell or share your address, ever.</p>
+      <p class="nl-msg" id="nlxm" role="status" aria-live="polite" hidden></p>
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('nlxOv'), tab=document.getElementById('nlxTab'),
+      x=document.getElementById('nlxX'), f=document.getElementById('nlx');
+  if(!ov||!f) return;
+  var btn=document.getElementById('nlxb'), msg=document.getElementById('nlxm'),
+      note=document.getElementById('nlxt'), em=document.getElementById('nlxe'), last=null;
+  var ENDPOINT='https://formsubmit.co/ajax/frontdesk@clubtehama.com';
+
+  function open(){ last=document.activeElement; ov.hidden=false;
+    requestAnimationFrame(function(){ ov.setAttribute('data-open','1'); });
+    // The overlay is still visibility:hidden for the first frames of the
+    // transition, and you cannot focus a hidden element — so wait it out.
+    setTimeout(function(){ try{ em.focus(); }catch(e){} },160);
+    document.body.style.overflow='hidden'; }
+  function close(){ ov.removeAttribute('data-open');
+    document.body.style.overflow='';
+    setTimeout(function(){ ov.hidden=true; },260);
+    if(last) last.focus(); }
+  tab.addEventListener('click',open);
+  x.addEventListener('click',close);
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && ov.getAttribute('data-open')==='1') close(); });
+  // Keep focus inside the dialog while it is open.
+  ov.addEventListener('keydown',function(e){
+    if(e.key!=='Tab') return;
+    var f2=ov.querySelectorAll('button,input,a[href]'); if(!f2.length) return;
+    var first=f2[0], lastEl=f2[f2.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); lastEl.focus(); }
+    else if(!e.shiftKey && document.activeElement===lastEl){ e.preventDefault(); first.focus(); }
+  });
+  // Anything on a page can ask for it: href="#newsletter" or [data-newsletter]
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('a[href$="#newsletter"],[data-newsletter]');
+    if(t){ e.preventDefault(); open(); }
+  });
+
+  function say(t,ok){ msg.hidden=false; msg.textContent=t; msg.className='nl-msg '+(ok?'is-ok':'is-err'); }
+  em.addEventListener('input',function(){ this.classList.remove('is-bad'); this.setAttribute('aria-invalid','false'); });
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(f.querySelector('[name=_honey]').value) return;                 // bot
+    var v=em.value.trim();
+    // Deliberately loose. A regex that rejects real addresses is worse than
+    // one that lets a typo through — the confirmation email catches those.
+    if(!v || v.indexOf('@')<1 || v.indexOf('.',v.indexOf('@'))<0){
+      em.classList.add('is-bad'); em.setAttribute('aria-invalid','true'); em.focus();
+      say('That does not look like an email address yet.',false); return;
+    }
+    var d=new FormData(f); d.delete('_honey');
+    btn.disabled=true; var label=btn.textContent; btn.textContent='Signing you up…';
+    if(!ENDPOINT){
+      location.href='mailto:frontdesk@clubtehama.com?subject='+encodeURIComponent('Newsletter sign-up — tehamafamilyfitness.com')+
+        '&body='+encodeURIComponent('Please add '+v+' to the newsletter list.');
+      btn.disabled=false; btn.textContent=label; return;
+    }
+    fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:d})
+      .then(function(r){ return r.ok ? r.json().catch(function(){return{};}) : Promise.reject(r.status); })
+      .then(function(){
+        f.querySelectorAll('input,button').forEach(function(el){ el.disabled=true; });
+        if(note) note.hidden=true;
+        say((d.get('first_name')?'Thanks '+d.get('first_name')+'. ':'')+
+            'You are on the list — next one goes out within a couple of weeks.',true);
+        setTimeout(close,2600);
+      })
+      .catch(function(){
+        btn.disabled=false; btn.textContent=label;
+        say('That did not send. Give the desk your email on 530-528-8656 and we will add you.',false);
+      });
+  });
+})();
 </script>
 </body></html>

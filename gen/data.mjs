@@ -75,12 +75,20 @@ export const tbd = {
   pickleballNets:   { v: "Permanent lines on the floor; portable nets go up for play", ask: null,
                       q: "Do you supply the nets, or is it BYO?", src: "Places2Play · Bounce · Pickleheads", verify: true },
   scheduleSignedOff:{ v: false, ask: null,                           q: "Front desk has confirmed the schedule" },
-  trainerize:       { v: null, ask: null,                            q: "Promote the Trainerize app?" },
+  trainerize:       { v: true, ask: null,                            q: "Promote the Trainerize app? — YES, answered: iOS + Android both live, see `app`" },
   // Added with the blog + newsletter build.
   newsletterList:   { v: null, ask: null, q: "Where should newsletter sign-ups actually land? (Mailchimp / Constant Contact / the front desk inbox)" },
   khAffiliation:    { v: null, ask: null, q: "Kristi Havlin — is KH Macro Coach & Trainer offered THROUGH the club, or is it her own business? Recipes are credited to her; her direct contact and the $250 partner package are held back until you say." },
   khPhotos:         { v: null, ask: null, q: "Can we use Kristi's own recipe photographs on the blog? Right now those posts run without a photo rather than borrow one." },
   barreFlyer:       { v: null, ask: null, q: "The barre flyer, the live calendar and Facebook give three different barre schedules. Which one is real?" },
+  // Added with /specials/ and the manage-membership block.
+  memberPortal:     { v: null, ask: null, q: "Is there a member self-service portal? ABC clubs usually have one (myiclubonline). URL? Can members cancel or upgrade in it, or must they call?" },
+  cancelHow:        { v: null, ask: null, q: "How does a member actually cancel — in person, in writing, 30 days' notice? We will not publish a guess." },
+  upgradeHow:       { v: null, ask: null, q: "Can a single upgrade to a family/couple mid-term, and is it prorated?" },
+  freezeHow:        { v: null, ask: null, q: "Can a membership be frozen (travel, injury, deployment)? Cost, and for how long?" },
+  donationGives:    { v: null, ask: null, q: "What do you actually donate — day passes, a month's membership, a gift basket? Any cap per year?" },
+  donationLead:     { v: null, ask: null, q: "How much notice do you need for a donation request?" },
+  appDoes:          { v: null, ask: null, q: "The member app is Trainerize. Which parts are switched ON — schedule, booking, workout plans, messaging your trainer, check-in?" },
 };
 export const has = k => tbd[k] && tbd[k].v != null && tbd[k].v !== false;
 export const val = k => (has(k) ? tbd[k].v : null);
@@ -1280,3 +1288,166 @@ posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
 export const postsIn = cat => posts.filter(p => p.cat === cat);
 export const catOf = slug => CATS.find(c => c.slug === slug);
+
+/* ------------------------------------------------------------------ *
+ * SPECIALS
+ *
+ * THE RULE HERE IS THE RULE EVERYWHERE: nothing renders as an offer
+ * until somebody confirms it. `running` is the promotions menu, every
+ * one of them `on: false`. The front desk flips one to true, fills in
+ * `ends`, and it takes over the top bar and the top of /specials/.
+ *
+ * An expired special on a website is worse than no specials page, so
+ * `ends` is checked at build time and a lapsed promo will not render.
+ *
+ * `standing` is the other half, and the more honest one: things that
+ * are permanently true and already verified elsewhere in this file.
+ * They were scattered across nine pages with no single place that said
+ * "here is everything you get without paying extra." That IS the offer
+ * at this business, and it has never been collected in one place.
+ * ------------------------------------------------------------------ */
+export const specials = {
+  /* Promotions. All off. Flip `on` and set `ends` to publish one. */
+  running: [
+    { id: "joinFeeWaived", on: false, ends: null,
+      name: "Enrollment fee waived",
+      bar: "Enrollment fee waived this month",
+      blurb: "No joining fee — you pay the monthly rate and nothing else to start.",
+      ask: "Confirm the normal enrollment fee first (call sheet A8)." },
+    { id: "firstMonth", on: false, ends: null,
+      name: "First month",
+      bar: "A deal on your first month",
+      blurb: "A reduced or free first month for new members.",
+      ask: "Needs the real rate confirmed before it can say a number." },
+    { id: "bringAFriend", on: false, ends: null,
+      name: "Bring a friend",
+      bar: "Bring a friend free this week",
+      blurb: "Bring somebody with you at no charge — they train on your membership for the visit.",
+      ask: "How many visits, and do they need to sign a waiver at the desk?" },
+    { id: "backToSchool", on: false, ends: null,
+      name: "Back to school",
+      bar: "The kids are back in school — now it's your turn",
+      blurb: "The late-August window when the mornings free up and the 8:15 classes fill.",
+      ask: "Seasonal. Worth running late August; the childcare window covers it either way." },
+    { id: "corporate", on: false, ends: null,
+      name: "Corporate rate",
+      bar: "Corporate rates for Red Bluff employers",
+      blurb: "A rate for local employers who put staff on the membership.",
+      ask: "Confirm the rate and who at the club handles the enquiry (call sheet F7)." },
+  ],
+
+  /* Permanently true, and every one already sourced elsewhere in this file. */
+  standing: [
+    { id: "classes", name: "Every class, included",
+      line: "No class fee, no booking, no app",
+      body: "All 54 group classes a week are part of the membership — spin, yoga, barre, Zumba, Pilates, tai chi, kettlebell, Drums Alive and the rest. You do not book, you do not pay per class, and there is no app to download. Turn up.",
+      href: "/classes/", cta: "See all 19 classes" },
+    { id: "building", name: "The whole building",
+      line: "One membership, no separate charges",
+      body: "The full basketball court, three indoor pickleball courts, racquetball, the strength floor, the women's weight room, the circuit room, cardio theater and the sauna. There is no court fee and no room that costs extra.",
+      href: "/amenities/", cta: "What's in the building" },
+    { id: "coffee", name: "Coffee is free until 9 AM",
+      line: "Every day, no purchase",
+      body: "In the lobby, free before nine, $1.25 after. On a February morning that is a more effective motivator than anything else we could put on this page.",
+      href: "/fuel-bar/", cta: "The Fuel Bar menu" },
+    { id: "tour", name: "A tour costs nothing",
+      line: "Walk in, no appointment",
+      body: "Ten minutes, no pressure, and nobody will put you through a sales process. Come any day we are open and ask at the desk.",
+      href: "/tour/", cta: "Take the tour first" },
+    { id: "silversneakers", name: "SilverSneakers",
+      line: "At no cost on qualifying plans",
+      body: "If your Medicare Advantage or supplement plan includes SilverSneakers, your membership here is covered by it. Bring the card the first time.",
+      href: "/silversneakers/", cta: "How it works here" },
+    { id: "pickleball", name: "Pickleball drop-in",
+      line: "$5 for non-members",
+      body: "Three indoor courts with permanent lines, climate controlled. Members play at no extra charge.",
+      href: "/pickleball/", cta: "Play times", srcKey: "pickleballFee" },
+  ],
+
+  /* The top bar. A live promo wins it; otherwise this, which is simply true. */
+  standingBar: "All 54 classes included — no class fee, no booking",
+};
+
+/* Live promos only — an `ends` date in the past disqualifies one, so a
+   forgotten special expires itself instead of lying on the homepage.
+   `today` is passed in by the build; this file never reads the clock. */
+export const liveSpecials = today =>
+  specials.running.filter(s => s.on && (!s.ends || s.ends >= today));
+
+/* ------------------------------------------------------------------ *
+ * MANAGING AN EXISTING MEMBERSHIP
+ *
+ * Every gym website is built for people who are not members yet, and
+ * then a member who wants to cancel, upgrade, freeze or change a card
+ * cannot find a single link — so they call, and the desk absorbs it.
+ *
+ * We do not know the answers yet (tbd.cancelHow, tbd.memberPortal), and
+ * a cancellation policy is the LAST thing to guess at, so every route
+ * below goes to a real human with the subject line already filled in.
+ * The moment `portal` gets a URL, it becomes a button.
+ * ------------------------------------------------------------------ */
+export const manage = {
+  portal: null,          // tbd.memberPortal — ABC clubs usually have one
+  reasons: [
+    { id: "upgrade", label: "Upgrade or add someone",
+      note: "Going from single to a couple or a family, or adding a child.",
+      subject: "Membership change — upgrade or add someone" },
+    { id: "edit", label: "Update card or contact details",
+      note: "New bank card, new phone number, new address.",
+      subject: "Membership change — update my details" },
+    { id: "freeze", label: "Freeze it for a while",
+      note: "Travel, injury, deployment. Ask what is possible before you cancel.",
+      subject: "Membership change — freeze my membership" },
+    { id: "cancel", label: "Cancel",
+      note: "We would rather you told us why, but you do not have to.",
+      subject: "Membership change — cancel my membership" },
+  ],
+};
+
+/* ------------------------------------------------------------------ *
+ * THE MEMBER APP
+ *
+ * This answers tbd.trainerize, which has been open since the first
+ * build: yes, there is an app, and it is Trainerize white-labelled —
+ * the Android package name says so outright
+ * (com.trainerize.tehamahealthandfitness).
+ *
+ * The App Store link supplied was a Mexican storefront with en-GB
+ * (apps.apple.com/mx/...?l=en-GB). Same app id, wrong region: a Red
+ * Bluff member tapping it lands in the wrong store. Normalised to /us/.
+ * ------------------------------------------------------------------ */
+export const app = {
+  name: "Tehama Family Fitness Center",
+  platform: "Trainerize",
+  ios: "https://apps.apple.com/us/app/tehama-family-fitness-center/id6469085639",
+  iosId: "6469085639",
+  android: "https://play.google.com/store/apps/details?id=com.trainerize.tehamahealthandfitness",
+  androidId: "com.trainerize.tehamahealthandfitness",
+  // What it does is NOT confirmed — Trainerize supports all of this, but
+  // which parts this club has switched on is a question for the desk.
+  does: null,
+  verify: true,
+};
+
+/* ------------------------------------------------------------------ *
+ * COMMUNITY DONATION REQUESTS
+ *
+ * A locally owned club in a town of 14,000 gets asked constantly —
+ * raffle baskets, sports boosters, school auctions, fundraisers. Right
+ * now every one of those arrives as a phone call to the front desk.
+ *
+ * Nothing here promises anybody anything: what they give, how much and
+ * how often is theirs to decide, and none of it is confirmed. The form
+ * exists to get the ask off the desk and into an inbox with the details
+ * already attached.
+ * ------------------------------------------------------------------ */
+export const donations = {
+  endpoint: "https://formsubmit.co/ajax/frontdesk@clubtehama.com",
+  to: "frontdesk@clubtehama.com",
+  subject: "Community donation request — tehamafamilyfitness.com",
+  confirmed: false,
+  lead: null,        // tbd.donationLead — how much notice they need
+  gives: null,       // tbd.donationGives — what they actually donate
+  types: ["School or sports fundraiser", "Raffle or silent auction",
+          "Non-profit event", "Youth program", "Something else"],
+};
