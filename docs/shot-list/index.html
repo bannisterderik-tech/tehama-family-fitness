@@ -721,6 +721,14 @@ letter-spacing:-.015em;text-transform:uppercase}
 line-height:.95;display:block;text-transform:uppercase}
 .ftr .bot{margin-top:clamp(30px,5vw,52px);padding-top:26px;border-top:1px solid rgba(180,204,216,.14);display:flex;
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
+.ai-row{display:flex;align-items:center;gap:13px;margin-top:clamp(26px,4vw,40px);
+padding:16px 20px;border:1px solid rgba(180,204,216,.2);border-radius:var(--r);
+text-decoration:none;color:var(--ice);transition:.24s var(--ease);max-width:520px}
+.ai-row:hover{border-color:var(--volt-lt);background:rgba(123,147,244,.07);color:#fff}
+.ai-row svg{color:var(--volt-lt);flex:0 0 auto}
+.ai-row span{font-family:var(--disp);font-weight:700;letter-spacing:-.02em;font-size:.98rem}
+.ai-row em{margin-left:auto;font-style:normal;opacity:.7}
+.ftr-legal{display:flex;flex-wrap:wrap;gap:6px 8px}
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
 
@@ -792,6 +800,35 @@ color:var(--ink);font-weight:600;font-size:.94rem;transition:.18s var(--ease)}
 .nav-d a:hover b{color:var(--volt)}
 .nav-d::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
 
+/* Mobile drawer treatment for the dropdown. This HAS to sit after the desktop
+   rules above: same specificity, so source order decides, and when it lived up
+   in the @media block earlier in the sheet "About" kept the 13.6px body style
+   while every link beside it was 28.8px, and the panel stayed absolutely
+   positioned and floated over the drawer. */
+@media(max-width:1180px){
+ .nav-h{display:block;width:100%;position:static}
+ .nav-t{display:flex;width:100%;justify-content:space-between;align-items:center;
+ font-family:var(--disp);font-weight:800;font-size:clamp(1.8rem,7vw,2.4rem);letter-spacing:-.045em;
+ padding:15px 0;border-bottom:1px solid rgba(180,204,216,.14);color:#fff;text-transform:uppercase;
+ line-height:1.05}
+ .nav-t:hover,.nav-t.on{color:var(--volt-lt)}
+ .nav-t .cv{width:16px;height:16px;flex:0 0 auto}
+ /* A 0fr->1fr grid reveal only works with ONE child; this panel has four links
+    as direct children, so every row past the first would refuse to collapse.
+    Plain display toggle instead — correct beats animated. */
+ .nav-d{position:static;transform:none;min-width:0;width:100%;background:none;border:0;
+ box-shadow:none;padding:0;opacity:1;visibility:visible;display:none}
+ .nav-h[data-open="1"] .nav-d{display:block;transform:none}
+ .nav-d::before{display:none}
+ .nav-d a{padding:13px 0 13px 18px;border-bottom:1px solid rgba(180,204,216,.09);
+ border-left:2px solid rgba(184,208,224,.22);margin-left:2px;border-radius:0;color:var(--ice)}
+ .nav-d a:hover{background:none;color:var(--volt-lt)}
+ .nav-d a b{font-size:1.06rem;color:#fff;text-transform:none;letter-spacing:-.02em}
+ .nav-d a:hover b{color:var(--volt-lt)}
+ .nav-d a span{color:#8794B8;font-size:.88rem}
+ .nav-d a[aria-current="page"] b{color:var(--volt-lt)}
+}
+
 /* ── the call button + its mega menu ─────────────────────────────────── */
 .callwrap{position:relative;display:inline-flex}
 .callbtn{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--volt);
@@ -832,6 +869,9 @@ box-shadow:3px 0 18px rgba(8,14,32,.26);transition:background .22s var(--ease),p
 display:inline-flex;align-items:center;gap:9px}
 .nl-tab:hover,.nl-tab:focus-visible{background:var(--volt-dk);padding-left:15px}
 .nl-tab[hidden]{display:none}
+/* The drawer is z-index 70 and this tab is 140, so with the menu open it sat
+   on top of the nav items and clipped "Fuel Bar" and "Blog". */
+body.menu-open .nl-tab{display:none}
 @media(max-width:640px){.nl-tab{bottom:96px;font-size:.64rem;padding:14px 9px}}
 @media print{.nl-tab{display:none}}
 .nl-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
@@ -849,6 +889,54 @@ transition:.26s var(--ease);color:#fff}
 border:1px solid rgba(184,208,224,.24);background:none;color:var(--ice);cursor:pointer;
 font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s var(--ease)}
 .nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
+
+
+/* ── ask-us widget, bottom right ─────────────────────────────────────── */
+.ask-fab{position:fixed;right:20px;bottom:20px;z-index:150;width:58px;height:58px;border-radius:50%;
+border:0;cursor:pointer;background:var(--volt);color:#fff;display:grid;place-items:center;
+box-shadow:0 10px 30px -6px rgba(42,68,204,.6);transition:.24s var(--ease)}
+.ask-fab:hover{background:var(--volt-dk);transform:translateY(-2px)}
+.ask-fab svg{width:26px;height:26px}
+.ask-fab .x{display:none}
+.ask-wrap[data-open="1"] .ask-fab .c{display:none}
+.ask-wrap[data-open="1"] .ask-fab .x{display:block}
+@media print{.ask-wrap{display:none}}
+
+/* Marker.io parks an edge tab mid-height on the right in preview builds, and a
+   380px panel at right:20px clips about 19px of it. Nudged clear while Marker
+   is present; at launch (MARKER=0) it goes back to the corner. */
+.ask-panel{position:fixed;right:62px;bottom:88px;z-index:150;width:min(calc(100vw - 40px),380px);
+height:min(72vh,560px);background:var(--ground);border:1px solid rgba(184,208,224,.2);
+border-top:3px solid var(--volt);border-radius:var(--r);box-shadow:0 24px 60px rgba(8,14,32,.44);
+display:flex;flex-direction:column;overflow:hidden;
+opacity:0;visibility:hidden;transform:translateY(10px);transition:.24s var(--ease)}
+.ask-wrap[data-open="1"] .ask-panel{opacity:1;visibility:visible;transform:none}
+.ask-hd{padding:16px 18px;border-bottom:1px solid rgba(184,208,224,.16);flex:0 0 auto}
+.ask-hd b{display:block;font-family:var(--disp);font-size:1.02rem;letter-spacing:-.03em;color:#fff}
+.ask-hd span{display:block;font-size:.82rem;color:var(--steel);margin-top:2px}
+.ask-log{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.ask-msg{max-width:88%;padding:11px 14px;border-radius:12px;font-size:.94rem;line-height:1.5}
+.ask-msg a{color:var(--volt-lt);font-weight:600}
+.ask-bot{background:rgba(184,208,224,.1);color:var(--ice);border-bottom-left-radius:3px;align-self:flex-start}
+.ask-bot b{color:#fff}
+.ask-me{background:var(--volt);color:#fff;border-bottom-right-radius:3px;align-self:flex-end}
+.ask-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 12px;flex:0 0 auto}
+.ask-chips button{font-size:.79rem;padding:7px 12px;border-radius:99px;cursor:pointer;
+border:1px solid rgba(184,208,224,.28);background:none;color:var(--ice);font-family:var(--body);
+transition:.18s var(--ease)}
+.ask-chips button:hover{border-color:var(--volt-lt);color:#fff;background:rgba(123,147,244,.14)}
+.ask-form{display:flex;gap:8px;padding:12px 14px;border-top:1px solid rgba(184,208,224,.16);flex:0 0 auto}
+.ask-form input{flex:1;min-width:0;padding:11px 13px;font:inherit;font-size:.94rem;border-radius:var(--r);
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);color:#fff}
+.ask-form input::placeholder{color:#8794B8}
+.ask-form input:focus{outline:2px solid var(--volt-lt);outline-offset:1px}
+.ask-form button{flex:0 0 auto;width:42px;border-radius:var(--r);border:0;background:var(--volt);
+color:#fff;cursor:pointer;display:grid;place-items:center}
+.ask-form button:hover{background:var(--volt-dk)}
+.ask-foot{padding:0 18px 12px;font-size:.74rem;color:#7C87A8;flex:0 0 auto}
+/* Marker.io parks itself on the right edge too; lift the launcher clear of it. */
+@media(max-width:640px){.ask-fab{right:14px;bottom:14px;width:52px;height:52px}
+.ask-panel{right:14px;bottom:76px;width:calc(100vw - 28px);height:min(70vh,520px)}}
 
 /* ── app store badges ────────────────────────────────────────────────── */
 .apps{display:flex;flex-wrap:wrap;gap:12px}
@@ -1053,24 +1141,11 @@ the front desk. Not the live site.</span></div>
 </div></footer>
 <script>
 
-/* The valley is the argument. Pull the real reading; if it fails, show nothing —
-   never invent a temperature. */
-(function(){
-  var el=document.getElementById('wx'),t=document.getElementById('wxT'); if(!el) return;
-  try{
-    var c=sessionStorage.getItem('tffc_wx');
-    if(c){ var o=JSON.parse(c); if(Date.now()-o.at<1800000){ t.textContent=o.f+'°'; el.hidden=false; return; } }
-  }catch(e){}
-  fetch('https://api.weather.gov/stations/KRBL/observations/latest',{headers:{'Accept':'application/geo+json'}})
-    .then(function(r){ return r.ok?r.json():null; })
-    .then(function(j){
-      var v=j&&j.properties&&j.properties.temperature&&j.properties.temperature.value;
-      if(v===null||v===undefined||isNaN(v)) return;
-      var f=Math.round(v*9/5+32);
-      t.textContent=f+'°'; el.hidden=false;
-      try{ sessionStorage.setItem('tffc_wx',JSON.stringify({f:f,at:Date.now()})); }catch(e){}
-    }).catch(function(){});
-})();
+/* The weather readout was removed with the temperature slot in the top bar —
+   a special sits there now. Its fetch to api.weather.gov and its sessionStorage
+   cache went with it, which is also what lets the privacy policy say, truthfully,
+   that this site stores nothing on your device and calls no third party you did
+   not ask for. */
 /* Hero film. Decorative, muted, looping, no on-screen control.
    The autoplay itself is done by the attributes on the element, which is far
    more reliable than driving it from JS — the previous version refused to start
@@ -1192,5 +1267,6 @@ document.body.classList.toggle('menu-open',o);b.setAttribute('aria-expanded',o);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') shutAll(null); });
 })();
 </script>
+
 
 </body></html>

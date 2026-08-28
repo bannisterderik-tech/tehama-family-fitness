@@ -721,6 +721,14 @@ letter-spacing:-.015em;text-transform:uppercase}
 line-height:.95;display:block;text-transform:uppercase}
 .ftr .bot{margin-top:clamp(30px,5vw,52px);padding-top:26px;border-top:1px solid rgba(180,204,216,.14);display:flex;
 flex-wrap:wrap;gap:10px 28px;justify-content:space-between;font-size:.83rem;color:#7C87A8}
+.ai-row{display:flex;align-items:center;gap:13px;margin-top:clamp(26px,4vw,40px);
+padding:16px 20px;border:1px solid rgba(180,204,216,.2);border-radius:var(--r);
+text-decoration:none;color:var(--ice);transition:.24s var(--ease);max-width:520px}
+.ai-row:hover{border-color:var(--volt-lt);background:rgba(123,147,244,.07);color:#fff}
+.ai-row svg{color:var(--volt-lt);flex:0 0 auto}
+.ai-row span{font-family:var(--disp);font-weight:700;letter-spacing:-.02em;font-size:.98rem}
+.ai-row em{margin-left:auto;font-style:normal;opacity:.7}
+.ftr-legal{display:flex;flex-wrap:wrap;gap:6px 8px}
 .ftr .honest{border-left:3px solid var(--volt);padding:18px 0 18px 26px;margin-top:clamp(30px,5vw,52px);color:#C9D3E4;
 font-family:var(--ser);font-style:italic;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.015em;max-width:52ch;line-height:1.35}
 
@@ -792,6 +800,35 @@ color:var(--ink);font-weight:600;font-size:.94rem;transition:.18s var(--ease)}
 .nav-d a:hover b{color:var(--volt)}
 .nav-d::before{content:"";position:absolute;top:-14px;left:0;right:0;height:14px}
 
+/* Mobile drawer treatment for the dropdown. This HAS to sit after the desktop
+   rules above: same specificity, so source order decides, and when it lived up
+   in the @media block earlier in the sheet "About" kept the 13.6px body style
+   while every link beside it was 28.8px, and the panel stayed absolutely
+   positioned and floated over the drawer. */
+@media(max-width:1180px){
+ .nav-h{display:block;width:100%;position:static}
+ .nav-t{display:flex;width:100%;justify-content:space-between;align-items:center;
+ font-family:var(--disp);font-weight:800;font-size:clamp(1.8rem,7vw,2.4rem);letter-spacing:-.045em;
+ padding:15px 0;border-bottom:1px solid rgba(180,204,216,.14);color:#fff;text-transform:uppercase;
+ line-height:1.05}
+ .nav-t:hover,.nav-t.on{color:var(--volt-lt)}
+ .nav-t .cv{width:16px;height:16px;flex:0 0 auto}
+ /* A 0fr->1fr grid reveal only works with ONE child; this panel has four links
+    as direct children, so every row past the first would refuse to collapse.
+    Plain display toggle instead — correct beats animated. */
+ .nav-d{position:static;transform:none;min-width:0;width:100%;background:none;border:0;
+ box-shadow:none;padding:0;opacity:1;visibility:visible;display:none}
+ .nav-h[data-open="1"] .nav-d{display:block;transform:none}
+ .nav-d::before{display:none}
+ .nav-d a{padding:13px 0 13px 18px;border-bottom:1px solid rgba(180,204,216,.09);
+ border-left:2px solid rgba(184,208,224,.22);margin-left:2px;border-radius:0;color:var(--ice)}
+ .nav-d a:hover{background:none;color:var(--volt-lt)}
+ .nav-d a b{font-size:1.06rem;color:#fff;text-transform:none;letter-spacing:-.02em}
+ .nav-d a:hover b{color:var(--volt-lt)}
+ .nav-d a span{color:#8794B8;font-size:.88rem}
+ .nav-d a[aria-current="page"] b{color:var(--volt-lt)}
+}
+
 /* ── the call button + its mega menu ─────────────────────────────────── */
 .callwrap{position:relative;display:inline-flex}
 .callbtn{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--volt);
@@ -832,6 +869,9 @@ box-shadow:3px 0 18px rgba(8,14,32,.26);transition:background .22s var(--ease),p
 display:inline-flex;align-items:center;gap:9px}
 .nl-tab:hover,.nl-tab:focus-visible{background:var(--volt-dk);padding-left:15px}
 .nl-tab[hidden]{display:none}
+/* The drawer is z-index 70 and this tab is 140, so with the menu open it sat
+   on top of the nav items and clipped "Fuel Bar" and "Blog". */
+body.menu-open .nl-tab{display:none}
 @media(max-width:640px){.nl-tab{bottom:96px;font-size:.64rem;padding:14px 9px}}
 @media print{.nl-tab{display:none}}
 .nl-ov{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
@@ -849,6 +889,54 @@ transition:.26s var(--ease);color:#fff}
 border:1px solid rgba(184,208,224,.24);background:none;color:var(--ice);cursor:pointer;
 font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s var(--ease)}
 .nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
+
+
+/* ── ask-us widget, bottom right ─────────────────────────────────────── */
+.ask-fab{position:fixed;right:20px;bottom:20px;z-index:150;width:58px;height:58px;border-radius:50%;
+border:0;cursor:pointer;background:var(--volt);color:#fff;display:grid;place-items:center;
+box-shadow:0 10px 30px -6px rgba(42,68,204,.6);transition:.24s var(--ease)}
+.ask-fab:hover{background:var(--volt-dk);transform:translateY(-2px)}
+.ask-fab svg{width:26px;height:26px}
+.ask-fab .x{display:none}
+.ask-wrap[data-open="1"] .ask-fab .c{display:none}
+.ask-wrap[data-open="1"] .ask-fab .x{display:block}
+@media print{.ask-wrap{display:none}}
+
+/* Marker.io parks an edge tab mid-height on the right in preview builds, and a
+   380px panel at right:20px clips about 19px of it. Nudged clear while Marker
+   is present; at launch (MARKER=0) it goes back to the corner. */
+.ask-panel{position:fixed;right:62px;bottom:88px;z-index:150;width:min(calc(100vw - 40px),380px);
+height:min(72vh,560px);background:var(--ground);border:1px solid rgba(184,208,224,.2);
+border-top:3px solid var(--volt);border-radius:var(--r);box-shadow:0 24px 60px rgba(8,14,32,.44);
+display:flex;flex-direction:column;overflow:hidden;
+opacity:0;visibility:hidden;transform:translateY(10px);transition:.24s var(--ease)}
+.ask-wrap[data-open="1"] .ask-panel{opacity:1;visibility:visible;transform:none}
+.ask-hd{padding:16px 18px;border-bottom:1px solid rgba(184,208,224,.16);flex:0 0 auto}
+.ask-hd b{display:block;font-family:var(--disp);font-size:1.02rem;letter-spacing:-.03em;color:#fff}
+.ask-hd span{display:block;font-size:.82rem;color:var(--steel);margin-top:2px}
+.ask-log{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.ask-msg{max-width:88%;padding:11px 14px;border-radius:12px;font-size:.94rem;line-height:1.5}
+.ask-msg a{color:var(--volt-lt);font-weight:600}
+.ask-bot{background:rgba(184,208,224,.1);color:var(--ice);border-bottom-left-radius:3px;align-self:flex-start}
+.ask-bot b{color:#fff}
+.ask-me{background:var(--volt);color:#fff;border-bottom-right-radius:3px;align-self:flex-end}
+.ask-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 12px;flex:0 0 auto}
+.ask-chips button{font-size:.79rem;padding:7px 12px;border-radius:99px;cursor:pointer;
+border:1px solid rgba(184,208,224,.28);background:none;color:var(--ice);font-family:var(--body);
+transition:.18s var(--ease)}
+.ask-chips button:hover{border-color:var(--volt-lt);color:#fff;background:rgba(123,147,244,.14)}
+.ask-form{display:flex;gap:8px;padding:12px 14px;border-top:1px solid rgba(184,208,224,.16);flex:0 0 auto}
+.ask-form input{flex:1;min-width:0;padding:11px 13px;font:inherit;font-size:.94rem;border-radius:var(--r);
+background:rgba(255,255,255,.06);border:1px solid rgba(184,208,224,.26);color:#fff}
+.ask-form input::placeholder{color:#8794B8}
+.ask-form input:focus{outline:2px solid var(--volt-lt);outline-offset:1px}
+.ask-form button{flex:0 0 auto;width:42px;border-radius:var(--r);border:0;background:var(--volt);
+color:#fff;cursor:pointer;display:grid;place-items:center}
+.ask-form button:hover{background:var(--volt-dk)}
+.ask-foot{padding:0 18px 12px;font-size:.74rem;color:#7C87A8;flex:0 0 auto}
+/* Marker.io parks itself on the right edge too; lift the launcher clear of it. */
+@media(max-width:640px){.ask-fab{right:14px;bottom:14px;width:52px;height:52px}
+.ask-panel{right:14px;bottom:76px;width:calc(100vw - 28px);height:min(70vh,520px)}}
 
 /* ── app store badges ────────────────────────────────────────────────── */
 .apps{display:flex;flex-wrap:wrap;gap:12px}
@@ -1197,31 +1285,26 @@ the front desk. Not the live site.</span></div>
     <a class="btn btn-volt btn-sm" href="#newsletter" data-newsletter>Sign up &rarr;</a>
   </div>
   <p class="honest">Mon&ndash;Fri 5a&ndash;8p &middot; Sat&ndash;Sun 8a&ndash;6p &middot; Childcare from 8.</p>
+  <a class="ai-row" href="/tehama-family-fitness/llm-info.md">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4L12 2z"/><path d="M19 15l.9 2.6L22.5 18l-2.6.9L19 21.5l-.9-2.6L15.5 18l2.6-.9L19 15z" opacity=".75"/></svg>
+    <span>Howdy AI &mdash; learn about us</span><em>&rarr;</em></a>
   <div class="bot">
     <span>© 2026 Tehama Family Fitness Center · Locally owned in Red Bluff since 2001</span>
-    <span>30,000 sq ft · Tehama County</span>
+    <span class="ftr-legal">
+      <a href="/tehama-family-fitness/privacy/">Privacy</a> ·
+      <a href="/tehama-family-fitness/terms/">Terms</a> ·
+      <a href="/tehama-family-fitness/accessibility/">Accessibility</a> ·
+      <a href="/tehama-family-fitness/do-not-sell/">Do not sell my info</a>
+    </span>
   </div>
 </div></footer>
 <script>
 
-/* The valley is the argument. Pull the real reading; if it fails, show nothing —
-   never invent a temperature. */
-(function(){
-  var el=document.getElementById('wx'),t=document.getElementById('wxT'); if(!el) return;
-  try{
-    var c=sessionStorage.getItem('tffc_wx');
-    if(c){ var o=JSON.parse(c); if(Date.now()-o.at<1800000){ t.textContent=o.f+'°'; el.hidden=false; return; } }
-  }catch(e){}
-  fetch('https://api.weather.gov/stations/KRBL/observations/latest',{headers:{'Accept':'application/geo+json'}})
-    .then(function(r){ return r.ok?r.json():null; })
-    .then(function(j){
-      var v=j&&j.properties&&j.properties.temperature&&j.properties.temperature.value;
-      if(v===null||v===undefined||isNaN(v)) return;
-      var f=Math.round(v*9/5+32);
-      t.textContent=f+'°'; el.hidden=false;
-      try{ sessionStorage.setItem('tffc_wx',JSON.stringify({f:f,at:Date.now()})); }catch(e){}
-    }).catch(function(){});
-})();
+/* The weather readout was removed with the temperature slot in the top bar —
+   a special sits there now. Its fetch to api.weather.gov and its sessionStorage
+   cache went with it, which is also what lets the privacy policy say, truthfully,
+   that this site stores nothing on your device and calls no third party you did
+   not ask for. */
 /* Hero film. Decorative, muted, looping, no on-screen control.
    The autoplay itself is done by the attributes on the element, which is far
    more reliable than driving it from JS — the previous version refused to start
@@ -1453,6 +1536,146 @@ document.body.classList.toggle('menu-open',o);b.setAttribute('aria-expanded',o);
         say('That did not send. Give the desk your email on 530-528-8656 and we will add you.',false);
       });
   });
+})();
+</script>
+
+<div class="ask-wrap" id="askWrap">
+  <div class="ask-panel" id="askPanel" role="dialog" aria-modal="false" aria-label="Ask the front desk">
+    <div class="ask-hd"><b>Ask us anything</b><span>Answers straight from this website</span></div>
+    <div class="ask-log" id="askLog"></div>
+    <div class="ask-chips" id="askChips"></div>
+    <form class="ask-form" id="askForm">
+      <input id="askIn" type="text" autocomplete="off" placeholder="What time is spin?" aria-label="Your question">
+      <button type="submit" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+    <p class="ask-foot">Not a chatbot — it reads this website. Nothing you type leaves your browser.</p>
+  </div>
+  <button class="ask-fab" id="askFab" type="button" aria-expanded="false" aria-controls="askPanel" aria-label="Ask us a question">
+    <svg class="c" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-4.6A8.4 8.4 0 1 1 21 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.5" cy="11.5" r="1.1" fill="currentColor"/><circle cx="12" cy="11.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="11.5" r="1.1" fill="currentColor"/></svg>
+    <svg class="x" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+</div>
+<script>
+(function(){
+var K={"phone":"530-528-8656","tel":"+15305288656","email":"frontdesk@clubtehama.com","addr":"2498 S Main St, Red Bluff, CA 96080","join":"https://onlinejoin.abcfitness.com/signup/plan?club=31347","desk":"Courtney","hours":["Monday 5:00 AM–8:00 PM","Tuesday 5:00 AM–8:00 PM","Wednesday 5:00 AM–8:00 PM","Thursday 5:00 AM–8:00 PM","Friday 5:00 AM–8:00 PM","Saturday 8:00 AM–6:00 PM","Sunday 8:00 AM–6:00 PM"],"today":"Fri","todayHours":"5 am–8 pm","nClass":54,"nTotal":64,"nInstructors":15,"classes":[{"n":"Spin","s":"spin","r":"Spin Room"},{"n":"Yoga","s":"yoga","r":"Yoga/Pilates/Dance Studio"},{"n":"Barre Above","s":"barre","r":"Studio"},{"n":"Zumba & Tone","s":"zumba","r":"Studio"},{"n":"Mat Pilates","s":"pilates","r":"Studio"},{"n":"Tai Chi","s":"tai-chi","r":"Studio"},{"n":"Tone Zone","s":"tone-zone","r":"Studio"},{"n":"Body Burner","s":"body-burner","r":"Studio"},{"n":"Lean & Mean","s":"lean-and-mean","r":"Studio"},{"n":"Hybrid","s":"hybrid","r":"Studio"},{"n":"U-Jam","s":"u-jam","r":"Studio"},{"n":"Cardio Circuit","s":"cardio-circuit","r":"Circuit Training Room"},{"n":"Stretch & Mobility","s":"stretch-and-mobility","r":"Studio"},{"n":"Drums Alive","s":"drums-alive","r":"Studio"},{"n":"Kettlebell","s":"kettlebell","r":"Freeweight Room"},{"n":"Spin/Tone","s":"spin-tone","r":"Spin Room"},{"n":"SilverSneakers Classic","s":"silversneakers-classic","r":"Studio"},{"n":"SilverSneakers Cardio Circuit","s":"silversneakers-cardio-circuit","r":"Circuit Room"},{"n":"Yoga Easy Flow","s":"yoga-easy-flow","r":"Studio"}],"todaySessions":[{"t":"5:30 AM","n":"Body Burner","w":"Roxane","cc":false},{"t":"6:00 AM","n":"Spin","w":"Kris","cc":false},{"t":"7:15 AM","n":"Tai Chi","w":"Kevin","cc":false},{"t":"8:15 AM","n":"Zumba & Tone","w":"Tonnie","cc":true},{"t":"8:30 AM","n":"Spin","w":"","cc":true},{"t":"9:15 AM","n":"Yoga","w":"Jami","cc":true},{"t":"9:30 AM","n":"Lean & Mean","w":"Aubrie","cc":true},{"t":"10:30 AM","n":"Drums Alive","w":"Kevin","cc":true},{"t":"10:30 AM","n":"Mat Pilates","w":"Jami","cc":true},{"t":"12:00 PM","n":"SilverSneakers Classic","w":"Kevin","cc":true},{"t":"1:00 PM","n":"Basketball Open Gym","w":"","cc":false},{"t":"6:00 PM","n":"Basketball Open Gym","w":"","cc":false}],"childcare":["Mon 8:00 AM–1:00 PM & 4:00 PM–8:00 PM","Tue 8:00 AM–1:00 PM & 4:00 PM–8:00 PM","Wed 8:00 AM–1:00 PM & 4:00 PM–8:00 PM","Thu 8:00 AM–1:00 PM & 4:00 PM–8:00 PM","Fri 8:00 AM–1:00 PM","Sat 8:00 AM–1:00 PM","Sun Closed"],"specials":[{"n":"Every class, included","l":"No class fee, no booking, no app","h":"/tehama-family-fitness/classes/"},{"n":"The whole building","l":"One membership, no separate charges","h":"/tehama-family-fitness/amenities/"},{"n":"Coffee is free until 9 AM","l":"Every day, no purchase","h":"/tehama-family-fitness/fuel-bar/"},{"n":"A tour costs nothing","l":"Walk in, no appointment","h":"/tehama-family-fitness/tour/"},{"n":"SilverSneakers","l":"At no cost on qualifying plans","h":"/tehama-family-fitness/silversneakers/"},{"n":"Pickleball drop-in","l":"$5 for non-members","h":"/tehama-family-fitness/pickleball/"}],"live":[],"u":{"schedule":"/tehama-family-fitness/schedule/","classes":"/tehama-family-fitness/classes/","membership":"/tehama-family-fitness/membership/","childcare":"/tehama-family-fitness/childcare/","pickleball":"/tehama-family-fitness/pickleball/","basketball":"/tehama-family-fitness/basketball/","contact":"/tehama-family-fitness/contact/","specials":"/tehama-family-fitness/specials/","app":"/tehama-family-fitness/members-app/","blog":"/tehama-family-fitness/blog/","team":"/tehama-family-fitness/team/","daypass":"/tehama-family-fitness/day-pass/","pt":"/tehama-family-fitness/personal-training/","fuel":"/tehama-family-fitness/fuel-bar/","tour":"/tehama-family-fitness/tour/","silver":"/tehama-family-fitness/silversneakers/"}};
+var wrap=document.getElementById('askWrap'), fab=document.getElementById('askFab'),
+    log=document.getElementById('askLog'), form=document.getElementById('askForm'),
+    input=document.getElementById('askIn'), chips=document.getElementById('askChips');
+if(!wrap) return;
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function say(html, me){
+  var d=document.createElement('div');
+  d.className='ask-msg '+(me?'ask-me':'ask-bot');
+  d.innerHTML = me ? esc(html) : html;
+  log.appendChild(d); log.scrollTop=log.scrollHeight;
+}
+var CALL='<a href="tel:'+K.tel+'">'+K.phone+'</a>';
+
+/* Every answer is assembled from K, which came from data.mjs. There is no
+   generation step, so there is nothing here that can invent a fact. */
+var RULES=[
+ {k:/price|cost|how much|rate|fee|dues|monthly|expensive|cheap/i, a:function(){
+   return "We have not published membership prices — not here and not in the online sign-up, so I am not going to guess one at you. "+
+   "Call "+CALL+" and the desk will tell you today’s rate in under a minute. Ask about the family rate specifically; it is the one that is not online. "+
+   "<br><br><a href='"+K.u.membership+"'>What the membership includes →</a>";}},
+ {k:/pool|swim|swimming|lap lane|aqua/i, a:function(){
+   return "<b>There is no swimming pool here.</b> Some directory listings say otherwise — that pool belongs to the physical therapy clinic next door, which is a different business. Sorry to disappoint if that is what you were after.";}},
+ {k:/hour|open|close|closing|what time.*(open|close)|when.*open/i, a:function(){
+   return "Today ("+K.today+") we are open <b>"+K.todayHours+"</b>.<br><br>"+K.hours.join("<br>")+
+   "<br><br>Childcare:<br>"+K.childcare.join("<br>");}},
+ {k:/child ?care|kids|daycare|babysit|creche|nursery/i, a:function(){
+   return "Childcare is in the building:<br><br>"+K.childcare.join("<br>")+
+   "<br><br>Every session on our schedule shows whether the kids’ room is open at that hour. Ages, registration and how the first visit works are best answered by the desk — "+CALL+
+   ".<br><br><a href='"+K.u.childcare+"'>Childcare →</a>";}},
+ {k:/today|tonight|right now|what.*on now|schedule for today/i, a:function(){
+   if(!K.todaySessions.length) return "Nothing is programmed today — the floor is still open, "+K.todayHours+".<br><br><a href='"+K.u.schedule+"'>Full schedule →</a>";
+   return "On the board today ("+K.today+"):<br><br>"+K.todaySessions.map(function(s){
+     return "<b>"+s.t+"</b> "+esc(s.n)+(s.w?" · "+esc(s.w):"")+(s.cc?" · kids’ room open":"");
+   }).join("<br>")+"<br><br><a href='"+K.u.schedule+"'>Full schedule →</a>";}},
+ {k:/pickle ?ball/i, a:function(){
+   return "Three indoor courts with permanent lines, climate controlled. Members play at no extra charge; non-members drop in for $5 (we are still confirming that figure). <br><br><a href='"+K.u.pickleball+"'>Play times →</a>";}},
+ {k:/basketball|court|gym floor|hoop/i, a:function(){
+   return "There is a full-size indoor basketball court with open gym twice a day, Monday to Friday. Nobody else in Red Bluff has one.<br><br><a href='"+K.u.basketball+"'>Basketball and racquetball →</a>";}},
+ {k:/where|address|direction|location|find you|parking/i, a:function(){
+   return K.addr+"<br><br>Parking out front, no charge, level entry through the front doors.<br><br><a href='"+K.u.contact+"'>Directions →</a>";}},
+ {k:/phone|call|contact|email|talk to|speak/i, a:function(){
+   return "Call "+CALL+" — "+K.desk+" usually answers. Or email <a href='mailto:"+K.email+"'>"+K.email+"</a>.<br><br><a href='"+K.u.contact+"'>Contact →</a>";}},
+ {k:/join|sign ?up|become a member|membership|enroll/i, a:function(){
+   return "You can join online in a couple of minutes, or walk in and do it at the desk. For a family, couple, student or senior rate, calling is quicker — those are not all in the online flow.<br><br><a href='"+K.join+"'>Become a member →</a><br><a href='"+K.u.membership+"'>What is included →</a>";}},
+ {k:/cancel|freeze|upgrade|change my|quit|stop my/i, a:function(){
+   return "That is handled by a person, not a form. Call "+CALL+" or email <a href='mailto:"+K.email+"'>"+K.email+"</a> and say what you need — upgrade, freeze, change of card, or cancel. We are not going to publish notice periods we have not confirmed.<br><br><a href='"+K.u.contact+"#manage'>Manage my membership →</a>";}},
+ {k:/app|trainerize|android|iphone|ios|download/i, a:function(){
+   return "There is a members app, free with your membership, on both stores.<br><br><a href='"+K.u.app+"'>Get the app →</a>";}},
+ {k:/special|deal|promo|discount|offer|free/i, a:function(){
+   var s = K.live.length ? "Running now: "+K.live.join(", ")+".<br><br>" : "No limited-time offer is running this week, and I would rather say that than invent one.<br><br>";
+   return s+"What is always included:<br>"+K.specials.map(function(x){return "· <b>"+esc(x.n)+"</b> — "+esc(x.l);}).join("<br>")+
+   "<br><br><a href='"+K.u.specials+"'>Specials →</a>";}},
+ {k:/personal train|trainer|coach|one on one|1 on 1/i, a:function(){
+   return "We have personal training — the desk will match you with somebody.<br><br><a href='"+K.u.pt+"'>Personal training →</a>";}},
+ {k:/silver ?sneakers|medicare|senior/i, a:function(){
+   return "We are a SilverSneakers facility. If your plan includes it, your membership is covered by it — bring the card the first time.<br><br><a href='"+K.u.silver+"'>How it works here →</a>";}},
+ {k:/food|recipe|macro|meal|eat|nutrition|protein|smoothie|shake|coffee/i, a:function(){
+   return "The Fuel Bar is in the lobby — coffee is free until 9am. There are also meal-prep recipes with the macros worked out on the blog.<br><br><a href='"+K.u.fuel+"'>Fuel Bar →</a><br><a href='"+K.u.blog+"'>Recipes and workouts →</a>";}},
+ {k:/tour|look around|visit|try|day pass|guest|drop in/i, a:function(){
+   return "Walk in any day we are open and ask for a look around — ten minutes, no pressure, no appointment. Day-pass pricing is one of the things not published yet, so ask at the desk.<br><br><a href='"+K.u.tour+"'>Take the tour →</a><br><a href='"+K.u.daypass+"'>Day pass →</a>";}},
+ {k:/who teaches|instructor|staff|team|trainer name/i, a:function(){
+   return K.nInstructors+" instructors between them teach "+K.nClass+" classes a week, and three of the owners are on the schedule.<br><br><a href='"+K.u.team+"'>Meet the team →</a>";}},
+ {k:/class|spin|yoga|barre|zumba|pilates|tai ?chi|kettlebell|drums|circuit|u-?jam|stretch|tone|hybrid|body burner|lean/i, a:function(q){
+   var hit=K.classes.filter(function(c){ return q.toLowerCase().indexOf(c.n.toLowerCase().split(' ')[0].toLowerCase())>-1; });
+   if(hit.length===1&&hit[0].s){
+     var c=hit[0];
+     var rows=K.todaySessions.filter(function(s){return s.n===c.n;});
+     return "<b>"+esc(c.n)+"</b> runs in the "+esc(c.r)+"."+
+       (rows.length?"<br><br>Today: "+rows.map(function(r){return r.t;}).join(", "):"<br><br>Not on today’s board.")+
+       "<br><br><a href='"+K.u.classes+c.s+"/'>Times and what to bring →</a>";
+   }
+   return K.nClass+" classes a week, all included — no class fee and nothing to book. Every one has its own page with times and what to bring.<br><br><a href='"+K.u.classes+"'>All classes →</a><br><a href='"+K.u.schedule+"'>Full schedule →</a>";}},
+ {k:/sauna|locker|shower|tanning|racquetball|equipment|weight|machine|cardio|treadmill/i, a:function(){
+   return "It is 30,000 sq ft: a strength floor with new Matrix and Nautilus, a freeweight room with an Olympic platform, a women’s weight room, a circuit room, 30+ cardio pieces, a cardio theater, racquetball, sauna and tanning.<br><br><a href='"+K.u.contact.replace('contact','amenities')+"'>Everything in the building →</a>";}},
+ {k:/24|overnight|all night|midnight|early|5 ?am/i, a:function(){
+   return "We are not a 24-hour gym. Doors open at 5am on weekdays and we close at 8pm, 8–6 at weekends. The 5am hour is genuinely quiet if that is what you are after.<br><br><a href='"+K.u.schedule+"'>Schedule →</a>";}}
+];
+
+function answer(q){
+  for(var i=0;i<RULES.length;i++) if(RULES[i].k.test(q)) return RULES[i].a(q);
+  return "I could not match that to anything on the site, and I would rather say so than guess. "+
+    "The desk will know — "+CALL+", "+K.desk+" usually answers.<br><br>"+
+    "<a href='"+K.u.schedule+"'>Schedule →</a> · <a href='"+K.u.classes+"'>Classes →</a> · <a href='"+K.u.membership+"'>Membership →</a>";
+}
+
+var CHIPS=['What are your hours?','How much is it?','What classes are on today?','Do you have childcare?','Where are you?'];
+CHIPS.forEach(function(c){
+  var b=document.createElement('button'); b.type='button'; b.textContent=c;
+  b.addEventListener('click',function(){ ask(c); });
+  chips.appendChild(b);
+});
+
+function ask(q){
+  say(q,true);
+  setTimeout(function(){ say(answer(q),false); }, 220);
+}
+form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var q=input.value.trim(); if(!q) return;
+  input.value=''; ask(q);
+});
+
+var opened=false;
+fab.addEventListener('click',function(){
+  var open=wrap.getAttribute('data-open')==='1';
+  if(open){ wrap.removeAttribute('data-open'); fab.setAttribute('aria-expanded','false'); return; }
+  wrap.setAttribute('data-open','1'); fab.setAttribute('aria-expanded','true');
+  if(!opened){ opened=true;
+    say("Hi — I can answer from what is on this website: hours, classes, childcare, what is included. "+
+        "I will tell you when I do not know something rather than guess.",false); }
+  setTimeout(function(){ input.focus(); },180);
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&wrap.getAttribute('data-open')==='1'){
+    wrap.removeAttribute('data-open'); fab.setAttribute('aria-expanded','false'); fab.focus(); }
+});
 })();
 </script>
 </body></html>

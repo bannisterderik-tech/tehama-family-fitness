@@ -89,6 +89,12 @@ export const tbd = {
   donationGives:    { v: null, ask: null, q: "What do you actually donate — day passes, a month's membership, a gift basket? Any cap per year?" },
   donationLead:     { v: null, ask: null, q: "How much notice do you need for a donation request?" },
   appDoes:          { v: null, ask: null, q: "The member app is Trainerize. Which parts are switched ON — schedule, booking, workout plans, messaging your trainer, check-in?" },
+  // Legal pages. NONE of this is legal advice and none of it has been reviewed.
+  legalReview:      { v: null, ask: null, q: "Has anyone with a law licence read the privacy policy, terms and CA opt-out pages? They are written from what this site actually does, but they are not lawyer-drafted." },
+  dataRetention:    { v: null, ask: null, q: "How long does the front desk keep enquiry and sign-up emails? The privacy policy currently cannot say." },
+  memberDataPolicy: { v: null, ask: null, q: "Membership records live in ABC Fitness, not on this website. Is there an existing privacy notice for those, and should this site link to it?" },
+  adsRetargeting:   { v: null, ask: null, q: "Do you run any Facebook/Google ads that retarget site visitors? Right now the site has NO tracking of any kind and the policy says so — that stops being true the day a pixel goes on." },
+  accessibilityAudit:{ v: null, ask: null, q: "Nobody has run this site through a screen reader end to end. Worth doing before launch; the statement says plainly that it has not been done." },
 };
 export const has = k => tbd[k] && tbd[k].v != null && tbd[k].v !== false;
 export const val = k => (has(k) ? tbd[k].v : null);
@@ -1450,4 +1456,64 @@ export const donations = {
   gives: null,       // tbd.donationGives — what they actually donate
   types: ["School or sports fundraiser", "Raffle or silent auction",
           "Non-profit event", "Youth program", "Something else"],
+};
+
+/* ------------------------------------------------------------------ *
+ * LEGAL
+ *
+ * These pages describe what THIS WEBSITE does, which is unusually
+ * little: no cookies, no analytics, no tracking pixels, nothing kept in
+ * your browser. That is verified against the built output on every
+ * build, not asserted — see the privacy scan in build.mjs.
+ *
+ * They are NOT lawyer-drafted and nobody with a law licence has read
+ * them (tbd.legalReview). They are an honest, specific description of
+ * real behaviour, which is a far better starting point for a solicitor
+ * than a template full of clauses about cookies this site does not set.
+ * ------------------------------------------------------------------ */
+export const legal = {
+  updated: "2026-08-28",
+  // Every third party the built pages actually reach out to, and why.
+  thirdParties: [
+    { name: "Google Fonts", host: "fonts.googleapis.com, fonts.gstatic.com",
+      why: "Loads the three typefaces the site is set in.",
+      gets: "Your IP address and browser user-agent, as with any file a browser fetches." },
+    { name: "FormSubmit", host: "formsubmit.co",
+      why: "Relays the rate request, newsletter and donation forms to the front desk inbox.",
+      gets: "Only what you typed into that form, and only when you press the button." },
+  ],
+  // Links out. Nothing is sent to these unless a visitor clicks.
+  outbound: [
+    ["ABC Fitness", "the online join flow"],
+    ["Facebook and Instagram", "our pages"],
+    ["Apple App Store and Google Play", "the members app"],
+    ["Google Maps", "directions"],
+  ],
+  forms: [
+    ["Rate request", "Name and mobile number, plus optional email, who is joining, best time to reach you, and whether you want childcare details."],
+    ["Newsletter", "Email address, and first name if you give one."],
+    ["Community donation request", "Your name, organisation, email, optional phone, event type and date, and what you are asking for."],
+  ],
+};
+
+/* ------------------------------------------------------------------ *
+ * FOR AI ASSISTANTS
+ *
+ * Same idea as the llms.txt / llm-info.md pair on the Dudley's site:
+ * one short index and one plainly-worded fact sheet, so an assistant
+ * answering "is there childcare at Tehama Family Fitness" reads what we
+ * actually said instead of a directory scrape.
+ *
+ * The honesty rules apply here HARDER than anywhere else, because a
+ * wrong number in this file gets repeated by a machine with confidence.
+ * Anything unconfirmed is listed as unconfirmed, by name.
+ * ------------------------------------------------------------------ */
+export const aiNotes = {
+  updated: "August 2026",
+  oneLine: "Tehama Family Fitness Center is a 30,000 sq ft independent, locally owned family gym at 2498 S Main St, Red Bluff, California, open since September 2001.",
+  isNot: [
+    "not a franchise and not part of a chain",
+    "not open 24 hours — it closes at 8pm on weekdays and 6pm at weekends",
+    "not a pool facility: there is no swimming pool at this address",
+  ],
 };

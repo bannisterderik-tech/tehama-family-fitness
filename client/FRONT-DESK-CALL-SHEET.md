@@ -136,6 +136,45 @@ from her own graphics with her macros exactly as she published them and credited
 
 ---
 
+## L. Legal pages (new — and NOT reviewed by a lawyer)
+
+The site now has a privacy policy, terms, an accessibility statement and a California
+"do not sell or share" page. They are written from what the website **actually does**, checked
+against the built pages on every build — not from a template. Nobody with a law licence has read
+them.
+
+| # | Question | Answer |
+|---|---|---|
+| L1 | **Get these in front of your attorney.** They are accurate and specific, which makes them a cheap review — but they are not legal advice and we should not pretend otherwise. | ☐ reviewed |
+| L2 | How long does the front desk keep enquiry and sign-up emails? The policy currently cannot say. | |
+| L3 | Membership records live in ABC Fitness, not on this site. Is there an existing privacy notice for those we should link to? | |
+| L4 | **Do you run any Facebook or Google ads that retarget site visitors?** Today the site has NO tracking of any kind and the policy says so in writing. The day a pixel goes on, that page stops being true — and the build will fail until it is corrected. | |
+| L5 | Nobody has taken this site through a screen reader end to end. Worth doing before launch; the accessibility page says plainly that it has not been done. | ☐ done |
+
+> **The privacy claim is enforced, not asserted.** The build scans every output file for cookies,
+> analytics, `localStorage`/`sessionStorage` and known trackers, and fails if it finds any. Same for
+> missing alt text. If someone adds a tracker later, the build stops rather than the policy quietly
+> becoming a lie.
+
+---
+
+## M. AI assistants
+
+`/llms.txt` and `/llm-info.md` are published for AI assistants, linked from the footer as
+"Howdy AI". They are generated from the same data file as the site, so they cannot drift.
+
+They exist mostly to correct two things assistants currently get wrong: **the pool** (there isn't
+one — it's the PT clinic next door) and **prices** (none published, so quote none). There is also an
+"Ask us" widget in the corner of every page that answers from the site's own data — it has no AI
+model behind it and cannot invent a price.
+
+| # | Question | Answer |
+|---|---|---|
+| M1 | Read `/llm-info.md` once. If an assistant repeats something wrong about you, that file is where we fix it. | ☐ read |
+| M2 | Anything you want the "Ask us" widget to answer that it does not? | |
+
+---
+
 ## G. Photos — bring a phone, 20 minutes
 
 **Landscape. One steady shot per room. All lights on. No filter.**
