@@ -4,8 +4,17 @@
     {
       "name": "tffc",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "http-server", "docs", "-p", "4310", "-c-1", "--silent"],
-      "port": 4310
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        ".preview",
+        "-p",
+        "4310",
+        "-c-1",
+        "--silent"
+      ],
+      "port": 4310,
+      "url": "http://localhost:4310"
     }
   ]
 }

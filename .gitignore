@@ -10,3 +10,4 @@ gen-vid/
 node_modules/
 .DS_Store
 *.log
+.preview/

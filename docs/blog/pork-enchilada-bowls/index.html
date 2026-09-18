@@ -1321,7 +1321,13 @@ modify any of it for you; ask before class.</p>
    cache went with it, which is also what lets the privacy policy say, truthfully,
    that this site stores nothing on your device and calls no third party you did
    not ask for. */
-/* Hero film. Decorative, muted, looping, no on-screen control.
+/* The film is cut from the September 2026 shoot — ten real frames of this
+   building with slow push-ins and crossfades, opening and closing on the
+   exterior so it loops onto its own poster. It replaced AI-generated footage
+   made before the shoot existed, which had been playing over the real photo.
+   Rendered at 1.6:1 — the hero's real shape on a laptop. The first cut copied
+   the old film's 2.34:1 and lost a third of every frame to the crop.
+   Hero film. Decorative, muted, looping, no on-screen control.
    The autoplay itself is done by the attributes on the element, which is far
    more reliable than driving it from JS — the previous version refused to start
    on any screen under 700px and on anything the browser called slow, which is
@@ -1336,7 +1342,7 @@ var v=document.getElementById('hv'); if(!v) return;
 if(matchMedia('(prefers-reduced-motion:reduce)').matches){
   v.autoplay=false; v.removeAttribute('autoplay'); v.pause(); return; }
 // Pick the file before anything is fetched: a phone on cellular should not pull
-// the 1.7 MB desktop cut for a background that is 375px wide. The element ships
+// the 2 MB desktop cut for a background that is 375px wide. The element ships
 // with no src and preload=metadata precisely so this choice happens first.
 // NB: no v.load() here. Setting .src already starts the fetch, and load()
 // additionally RESETS the element, which cancels the autoplay the attributes
