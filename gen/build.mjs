@@ -10,7 +10,7 @@ import { join } from "node:path";
 import {
   biz, tbd, has, val, askFor, sessions, DAYS, DAYNAME, mins, counts, childcareOpenAt,
   instructors, staff, team, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
-  CHILDCARE_WINDOWS, lengthOf, leadForm,
+  CHILDCARE_WINDOWS, lengthOf, leadForm, generatedShots,
   joinFlow, retracted,
   newsletter, posts, postsIn, CATS, catOf, authors,
   specials, liveSpecials, manage, app, donations, legal, aiNotes,
@@ -371,6 +371,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1592,15 +1595,20 @@ function markdown(src) {
    fall back to a plain src. */
 const srcset = photo => {
   const small = photo.src.replace(/\.jpg$/, "-800.jpg");
-  return photo.src.startsWith("/assets/hero/")
-    ? ` srcset="${u(small)} 800w, ${u(photo.src)} 2000w"` : "";
+  // The shoot's files are 1600px on the long side, not 2000 — declare the width
+  // the file really has, or the browser picks it thinking it is sharper than it is.
+  const big = photo.src.startsWith("/assets/photos/") ? photo.w : 2000;
+  return /^\/assets\/(hero|photos)\//.test(photo.src)
+    ? ` srcset="${u(small)} 800w, ${u(photo.src)} ${big}w"` : "";
 };
 const pimg = (photo, { sizes, alt = null, cls = "", eager = false, style = "" } = {}) =>
   `<img src="${u(photo.src)}"${srcset(photo)} sizes="${sizes}"` +
   ` alt="${alt === null ? esc(photo.alt) : alt}" width="${photo.w}" height="${photo.h}"` +
   (cls ? ` class="${cls}"` : "") +
   (eager ? ` fetchpriority="high"` : ` loading="lazy" decoding="async"`) +
-  (style ? ` style="${style}"` : "") + `>`;
+  // Most shoot frames are portrait, and heroes crop them to a wide band. `pos`
+  // is each frame's focal point, so the spin hero is bikes rather than floor.
+  ((style || photo.pos) ? ` style="${[photo.pos ? `object-position:${photo.pos}` : "", style].filter(Boolean).join(";")}"` : "") + `>`;
 
 const phero = (photo, { kick, h1, lede, acts: a = true, sm = true } = {}) => `
 <section class="hero${sm ? " hero-sm" : ""}">
@@ -2779,7 +2787,7 @@ ${band("Open till eight on weeknights.", "Eight to six at weekends. Come by when
 P("/personal-training/", `Personal Training &amp; Bootcamps | ${biz.short} Red Bluff`,
   `Personal training, bootcamps and nutrition coaching at Tehama Family Fitness Center in Red Bluff, CA.`,
   `
-${phero(photos.freeweights, { kick: "One on one",
+${phero(photos.pt, { kick: "One on one",
   h1: "Personal <em>training</em>",
   lede: "Nationally accredited college graduates, personal trainers, exercise physiologists, strength and conditioning specialists, certified nutrition consultants, college athletes and certified instructors." })}
 
@@ -2973,7 +2981,7 @@ ${band("Run it at one, or run it at six.", "Open gym twice a day, five days a we
 P("/strength-floor/", `The Strength Floor — New Nautilus &amp; Matrix | ${biz.short}`,
   `A brand-new commercial-grade Nautilus and Matrix strength floor at Tehama Family Fitness Center in Red Bluff, plus a freeweight room with an Olympic platform.`,
   `
-${phero(photos.nautilus, { kick: "Members named it the Wolf Cave",
+${phero(photos.rack, { kick: "Members named it the Wolf Cave",
   h1: "The <em>strength</em> floor",
   lede: "A full replacement with brand-new, commercial-grade Nautilus and Matrix. Not refurbished, not hand-me-down club equipment \u2014 new." })}
 
@@ -3164,7 +3172,7 @@ ${spread(photos.coffee, { eyebrow: "Where it is", flip: true,
   </div>
 </div></section>
 
-${fullBleed(photos.frontdesk, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
+${fullBleed(photos.fuelServe, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
 
 <section class="sec"><div class="wrap narrow">
   <h2>Nutrition coaching</h2>
@@ -3838,29 +3846,15 @@ ${band("Didn't answer it?", "Call the desk. Somebody there knows.",
   "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a.replace(/<[^>]+>/g, "") } })) } });
 
 /* =============================== TOUR ================================= */
-P("/tour/", `Take a Look Around | ${biz.short} Red Bluff`,
-  `A look inside Tehama Family Fitness Center in Red Bluff — 30,000 square feet, room by room.`,
-  `
-${phero(photos.exterior, { sm: false, kick: "Room by room",
-  h1: "Have a look <em>around</em>",
-  lede: "No list conveys thirty thousand square feet. Here is the building, room by room \u2014 then come and stand in it, because that is what actually decides it." })}
-
-
-<section class="sec"><div class="wrap">
-  ${numbers([[biz.sqft, "square feet"], ["1", "storey"], ["25", "amenities"], ["0", "of it behind a second paywall"]], false)}
-</div></section>
-
-<section class="sec"><div class="wrap">
-  <figure>
-  <div class="grid g2 gal">
-    ${[
+// One list, rendered AND counted from — the caption used to count a hand-copied subset.
+const TOUR_ROOMS = [
        [photos.basketball, "The court", "Full size, with open gym twice a day."],
        [photos.pickleball, "Pickleball", "Three courts, permanent lines, nets up for league nights."],
        [photos.racquetball, "Racquetball", "The only court in town."],
        [photos.freeweights, "Freeweights", "Racks, benches and an Olympic platform."],
        [photos.womens, "The women's weight room", "Its own room, off the main floor."],
        [photos.studio, "The studio", "Barre, Zumba, Pilates, yoga and most of the schedule."],
-       [photos.spin, "The spin room", "Ten sessions a week, most of them before nine."],
+       [photos.spin, "The spin room", "Eleven sessions a week, most of them before nine."],
        [photos.cardio, "The cardio deck", "Thirty-plus pieces and the cardio theater."],
        [photos.locker, "Locker rooms", "Full service both sides, sauna in each."],
        [photos.childcare, "The kids' room", "Open most of the hours you would actually use it."],
@@ -3877,10 +3871,28 @@ ${phero(photos.exterior, { sm: false, kick: "Room by room",
        [photos.saunaDoor, "The sauna", "One in each locker room."],
        [photos.tanning, "Tanning", "Off the service corridor, included."],
        [photos.lobby, "The lobby", "Where a ten-minute tour starts."],
-      ].map(([ph, t, d], gi) => `<figure class="rv">${pimg(ph, { sizes: "(max-width:700px) 46vw, min(46vw, 620px)", eager: gi < 4 })}
+      ];
+
+P("/tour/", `Take a Look Around | ${biz.short} Red Bluff`,
+  `A look inside Tehama Family Fitness Center in Red Bluff — 30,000 square feet, room by room.`,
+  `
+${phero(photos.exterior, { sm: false, kick: "Room by room",
+  h1: "Have a look <em>around</em>",
+  lede: "No list conveys thirty thousand square feet. Here is the building, room by room \u2014 then come and stand in it, because that is what actually decides it." })}
+
+
+<section class="sec"><div class="wrap">
+  ${numbers([[biz.sqft, "square feet"], ["1", "storey"], ["25", "amenities"], ["0", "of it behind a second paywall"]], false)}
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <figure>
+  <div class="grid g2 gal">
+    ${TOUR_ROOMS.map(([ph, t, d], gi) => `<figure class="rv">${pimg(ph, { sizes: "(max-width:700px) 46vw, min(46vw, 620px)", eager: gi < 4 })}
       <figcaption><b style="font-family:var(--disp);font-style:normal;color:var(--ink);display:block;font-size:1.05rem;letter-spacing:-.02em">${t}</b>${d}</figcaption></figure>`).join("")}
   </div>
-  <figcaption>Three photographs of this building. The rest show rooms like ours \u2014 come stand in the real one.</figcaption>
+  ${(() => { const real = TOUR_ROOMS.filter(([ph]) => ph.real).length;
+    return `<figcaption>${real} of these ${TOUR_ROOMS.length} are photographs of this building, taken September 2026. The other ${TOUR_ROOMS.length - real} show rooms like ours until we photograph them \u2014 come stand in the real one.</figcaption>`; })()}
   </figure>
 </div></section>
 
@@ -4637,9 +4649,9 @@ ${has("accessibilityAudit") ? val("accessibilityAudit") : `- **Nobody has taken 
   and it is on the list before launch.
 - **No disabled users have tested it.** Automated checks and careful markup are not the same thing
   as somebody who actually uses assistive technology telling us what is wrong.`}
-- Some of the photography is commissioned stand-in imagery while we wait on a real photo shoot.
-  Alt text describes what is in the picture accurately, but the pictures are not yet all of this
-  specific building.
+- Most photographs are now of this building, from a September 2026 shoot. ${generatedShots.length}
+  rooms the shoot did not cover still use stand-in imagery; their alt text describes what is in the
+  picture accurately, but those pictures are not yet of this specific building.
 
 ### The building itself
 

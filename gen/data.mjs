@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 // Tehama Family Fitness Center — single source of truth.
 // RULE: nothing in this file that isn't sourced to the business itself.
 // Anything the front desk hasn't confirmed lives in `tbd` and renders as an honest
@@ -557,6 +558,96 @@ export const photos = {
                 alt: "The Kids Fit room at Tehama Family Fitness Center",
                 note: "HELD — identifiable children. Signed release required before publish." },
 };
+/* ------------------------------------------------------------------ *
+ * THE PHOTO SHOOT — September 2026, 93 frames
+ * (~/Downloads/tehemafitness-photo-download-1of1.zip, Highlights/).
+ *
+ * Every room we had a real frame of now uses it. Overlaid on the entries
+ * above rather than editing them, so `real:false` stand-ins survive for
+ * the rooms the shoot did not cover — pickleball courts, circuit room,
+ * sauna, tanning, reformers, the women's weight room, the corridor, dusk —
+ * and every page that already said `photos.spin` gets the real spin room
+ * with no page edits.
+ *
+ * Files live in assets/photos/, NOT assets/hero/: `node gen/images.mjs
+ * --force` rewrites assets/hero from gen-img/ and would silently put the
+ * generated image back over a real one.
+ *
+ * HELD, not placed:
+ *  · DSC02292, DSC02308 — childcare room with identifiable children. Same
+ *    rule as the Kids Fit photo: nothing with a child in it goes up
+ *    without a signed release. The empty-room frames are used instead.
+ *  · The 22 portraits against the ivy wall. Nobody is named to us, and a
+ *    face on a team page with the wrong name under it is worse than the
+ *    monogram. See client/PORTRAIT-MATCH.md — name them and they go up.
+ * ------------------------------------------------------------------ */
+export const SHOOT = {
+  exterior:      { src: "/assets/photos/exterior.jpg", w: 1024, h: 683, shot: "DSC02331.jpg",
+                  alt: "The front of Tehama Family Fitness Center on South Main Street, Red Bluff" },
+  exteriorDay:   { src: "/assets/photos/exteriorDay.jpg", w: 1024, h: 1505, shot: "DSC02326.jpg", pos: "center 68%",
+                  alt: "The entrance gable of Tehama Family Fitness Center on a clear day" },
+  frontdesk:     { src: "/assets/photos/frontdesk.jpg", w: 1024, h: 695, shot: "DSC02322.jpg",
+                  alt: "The stone-faced front desk just inside the doors" },
+  lobby:         { src: "/assets/photos/lobby.jpg", w: 1024, h: 1470, shot: "DSC02316.jpg", pos: "center 52%",
+                  alt: "The lobby seating area under the Tehama logo, racquetball courts behind glass" },
+  fuelbar:       { src: "/assets/photos/fuelbar.jpg", w: 1024, h: 682, shot: "DSC02317.jpg",
+                  alt: "The Fuel Bar counter with stools, drinks fridge and menu boards" },
+  coffee:        { src: "/assets/photos/coffee.jpg", w: 1024, h: 689, shot: "DSC02528.jpg",
+                  alt: "The Fuel Bar menu boards under the lit FUEL sign" },
+  basketball:    { src: "/assets/photos/basketball.jpg", w: 1024, h: 683, shot: "DSC02385.jpg",
+                  alt: "The full-size hardwood basketball court" },
+  courtLines:    { src: "/assets/photos/courtLines.jpg", w: 1024, h: 683, shot: "DSC02389.jpg",
+                  alt: "The basketball court from centre court, painted lines to the hoop" },
+  racquetball:   { src: "/assets/photos/racquetball.jpg", w: 1024, h: 1529, shot: "DSC02340.jpg", pos: "center 70%",
+                  alt: "Glass-backed racquetball court under the Tehama logo" },
+  childcare:     { src: "/assets/photos/childcare.jpg", w: 1024, h: 658, shot: "DSC02455.jpg",
+                  alt: "The childcare room, empty, with a sun mural, toys and a TV" },
+  kidsroom:      { src: "/assets/photos/kidsroom.jpg", w: 1024, h: 1536, shot: "DSC02304.jpg", pos: "center 42%",
+                  alt: "The viewing window into the childcare room" },
+  studio:        { src: "/assets/photos/studio.jpg", w: 1024, h: 708, shot: "DSC02482.jpg",
+                  alt: "The studio with mirrored walls, wood floor and a ballet barre" },
+  yoga:          { src: "/assets/photos/yoga.jpg", w: 1024, h: 665, shot: "DSC02479.jpg",
+                  alt: "The yoga, Pilates and dance studio with its wood floor and mirrors" },
+  barre:         { src: "/assets/photos/barre.jpg", w: 1024, h: 756, shot: "DSC02571.jpg",
+                  alt: "An instructor holding a position at the barre in the studio" },
+  spin:          { src: "/assets/photos/spin.jpg", w: 1024, h: 1475, shot: "DSC02475.jpg", pos: "center 52%",
+                  alt: "The spin room, rows of Spinning bikes facing the mirror" },
+  cardio:        { src: "/assets/photos/cardio.jpg", w: 1024, h: 700, shot: "DSC02349.jpg",
+                  alt: "Rows of treadmills and ellipticals on the cardio floor" },
+  cardioTheater: { src: "/assets/photos/cardioTheater.jpg", w: 1024, h: 1498, shot: "DSC02347.jpg", pos: "center 60%",
+                  alt: "Treadmills lined up under the screens" },
+  gymfloor:      { src: "/assets/photos/gymfloor.jpg", w: 1024, h: 662, shot: "DSC02358.jpg",
+                  alt: "The free-weight floor with benches and racks" },
+  freeweights:   { src: "/assets/photos/freeweights.jpg", w: 1024, h: 683, shot: "DSC02355.jpg",
+                  alt: "Benches, plate trees and racks in the free-weight room" },
+  platform:      { src: "/assets/photos/platform.jpg", w: 1024, h: 756, shot: "DSC02353.jpg",
+                  alt: "Racks, benches and the free-weight floor" },
+  dumbbells:     { src: "/assets/photos/dumbbells.jpg", w: 1024, h: 1504, shot: "DSC02363.jpg", pos: "center 58%",
+                  alt: "The dumbbell rack running light to heavy" },
+  nautilus:      { src: "/assets/photos/nautilus.jpg", w: 1024, h: 1494, shot: "DSC02608.jpg", pos: "center 55%",
+                  alt: "A cable strength machine on the rubber floor" },
+  crosstrain:    { src: "/assets/photos/crosstrain.jpg", w: 1024, h: 683, shot: "DSC02403.jpg",
+                  alt: "Members training in the cross-training rig" },
+  kettlebells:   { src: "/assets/photos/kettlebells.jpg", w: 1024, h: 1456, shot: "DSC02407.jpg", pos: "center 58%",
+                  alt: "The cross-training area with medicine balls and plates, a member planking" },
+  stretch:       { src: "/assets/photos/stretch.jpg", w: 1024, h: 1584, shot: "DSC02616.jpg", pos: "center 52%",
+                  alt: "A trainer coaching a member on the TRX straps" },
+  locker:        { src: "/assets/photos/locker.jpg", w: 1024, h: 1536, shot: "DSC02391.jpg", pos: "center 50%",
+                  alt: "The locker room — wood lockers and benches" },
+  pt:            { src: "/assets/photos/pt.jpg", w: 1024, h: 1536, shot: "DSC02624.jpg", pos: "center 40%",
+                  alt: "A trainer coaching a member through a cable pulldown" },
+  fuelServe:     { src: "/assets/photos/fuelServe.jpg", w: 1024, h: 1538, shot: "DSC02534.jpg",
+                  alt: "A member being handed a drink across the Fuel Bar counter" },
+  smoothie:      { src: "/assets/photos/smoothie.jpg", w: 1024, h: 1536, shot: "DSC02529.jpg", pos: "center 55%",
+                  alt: "A green smoothie on the Fuel Bar counter" },
+  rack:          { src: "/assets/photos/rack.jpg", w: 1024, h: 1495, shot: "DSC02425.jpg", pos: "center 50%",
+                  alt: "A blue power rack loaded with plates" },
+};
+// Real pixel sizes, written by gen/photos.mjs — so a full-resolution re-export
+// updates width/height/srcset everywhere without touching this file.
+const SHOOT_DIMS = (() => { try { return JSON.parse(readFileSync(new URL("./photos.json", import.meta.url), "utf8")); } catch { return {}; } })();
+for (const [k, v] of Object.entries(SHOOT)) photos[k] = { ...(photos[k] || {}), ...v, ...(SHOOT_DIMS[k] || {}), real: true, note: undefined };
+
 // Everything generated, for the disclosure line and the swap-list.
 export const generatedShots = Object.entries(photos)
   .filter(([, p]) => p.real === false).map(([k]) => k);
@@ -875,7 +966,7 @@ better fit.
     title: "What to order at the Fuel Bar, and what it costs",
     dek: "The whole menu, the actual prices, and which one is right for what you just did.",
     kicker: "Every price on the board",
-    hero: "coffee",
+    hero: "smoothie",
     lede: "The Fuel Bar is in the lobby and the coffee is free until 9 AM. Beyond that, here is the honest version of what to order — including when the answer is water and a banana.",
     body: `
 ### After a class

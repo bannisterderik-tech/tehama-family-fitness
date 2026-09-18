@@ -53,8 +53,11 @@ BASE=/tehama-family-fitness PREVIEW=1 node gen/build.mjs   # GitHub Pages previe
 2. **The schedule**, reconciled on paper. The printed sheet, the live calendar and Facebook
    disagree; rows marked ⚑ are the conflicts.
 3. **Childcare specifics** — ages, registration, first visit, pickup.
-4. **Photography.** Only three real photographs of this business exist. Everything else is
-   commissioned stand-in imagery, people-free by design. Swap the file and flip `real: true`
+4. **Photography.** The September 2026 shoot is in: 30 real frames now cover the building
+   (`assets/photos/`, mapped in the `SHOOT` block in `gen/data.mjs`). Ten rooms the shoot did not
+   cover still use stand-ins — pickleball courts, circuit room, sauna, tanning, reformers, the
+   women's weight room, the corridor, dusk. The 12 staff portraits are held until they are named —
+   see `client/PORTRAIT-MATCH.md`. Swap the file and flip `real: true`
    in `photos` when the walkthrough lands.
 5. **Ownership**, confirmed with the family, and how they want to be named.
 6. **The newsletter has no list behind it.** Sign-ups email the front desk; nothing can

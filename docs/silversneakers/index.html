@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1200,7 +1203,7 @@ the front desk. Not the live site.</span></div>
 
 <section class="sec  sp sp-flip"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/stretch.jpg" srcset="/tehama-family-fitness/assets/hero/stretch-800.jpg 800w, /tehama-family-fitness/assets/hero/stretch.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The stretching area with mats, foam rollers and TRX straps" width="2000" height="1116" loading="lazy" decoding="async"></figure>
+    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/photos/stretch.jpg" srcset="/tehama-family-fitness/assets/photos/stretch-800.jpg 800w, /tehama-family-fitness/assets/photos/stretch.jpg 1024w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="A trainer coaching a member on the TRX straps" width="1024" height="1584" loading="lazy" decoding="async" style="object-position:center 52%"></figure>
     <div class="sp-txt">
       <p class="eyebrow">Low impact</p>
       <h2>Easy on the joints,<br>hard on your balance</h2>

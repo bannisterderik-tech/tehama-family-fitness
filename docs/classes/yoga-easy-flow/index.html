@@ -10,7 +10,7 @@
 <meta property="og:title" content="Yoga Easy Flow Classes in Red Bluff | TFFC">
 <meta property="og:description" content="Yoga Easy Flow at Tehama Family Fitness Center, Red Bluff — 1 session a week, included with membership. The gentler evening yoga, Thursdays with Kathy.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://bannisterderik-tech.github.io/tehama-family-fitness/assets/hero/yoga.jpg">
+<meta property="og:image" content="https://bannisterderik-tech.github.io/tehama-family-fitness/assets/photos/yoga.jpg">
 <meta property="og:image:alt" content="Yoga Easy Flow Classes in Red Bluff | TFFC">
 <meta name="theme-color" content="#0A0D1E">
 <link rel="icon" href="/tehama-family-fitness/assets/logo.png">
@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1155,7 +1158,7 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="hero hero-sm">
-  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/yoga.jpg" srcset="/tehama-family-fitness/assets/hero/yoga-800.jpg 800w, /tehama-family-fitness/assets/hero/yoga.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
+  <div class="hero-media"><img src="/tehama-family-fitness/assets/photos/yoga.jpg" srcset="/tehama-family-fitness/assets/photos/yoga-800.jpg 800w, /tehama-family-fitness/assets/photos/yoga.jpg 1024w" sizes="100vw" alt="" width="1024" height="665" fetchpriority="high"></div>
   <div class="wrap">
     <p class="kick">1 a week · included with membership</p>
     <h1>Yoga Easy Flow</h1>
@@ -1196,7 +1199,7 @@ the front desk. Not the live site.</span></div>
 
 <section class="sec  sp sp-flip"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/studio.jpg" srcset="/tehama-family-fitness/assets/hero/studio-800.jpg 800w, /tehama-family-fitness/assets/hero/studio.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="A group fitness studio with a mirrored wall and barre" width="2000" height="848" loading="lazy" decoding="async"></figure>
+    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/photos/studio.jpg" srcset="/tehama-family-fitness/assets/photos/studio-800.jpg 800w, /tehama-family-fitness/assets/photos/studio.jpg 1024w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The studio with mirrored walls, wood floor and a ballet barre" width="1024" height="708" loading="lazy" decoding="async"></figure>
     <div class="sp-txt">
       <p class="eyebrow">What actually happens</p>
       <h2>In the room</h2>
@@ -1210,7 +1213,7 @@ the front desk. Not the live site.</span></div>
 
 
 
-<figure class="fb"><img src="/tehama-family-fitness/assets/hero/studio.jpg" srcset="/tehama-family-fitness/assets/hero/studio-800.jpg 800w, /tehama-family-fitness/assets/hero/studio.jpg 2000w" sizes="100vw" alt="A group fitness studio with a mirrored wall and barre" width="2000" height="848" loading="lazy" decoding="async">
+<figure class="fb"><img src="/tehama-family-fitness/assets/photos/studio.jpg" srcset="/tehama-family-fitness/assets/photos/studio-800.jpg 800w, /tehama-family-fitness/assets/photos/studio.jpg 1024w" sizes="100vw" alt="The studio with mirrored walls, wood floor and a ballet barre" width="1024" height="708" loading="lazy" decoding="async">
 <figcaption class="fb-cap"><span class="wrap">Studio — where Yoga Easy Flow runs.</span></figcaption></figure>
 
 <section class="sec"><div class="wrap">

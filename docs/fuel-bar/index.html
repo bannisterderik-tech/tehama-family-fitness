@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1155,7 +1158,7 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="hero hero-sm">
-  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/fuelbar.jpg" srcset="/tehama-family-fitness/assets/hero/fuelbar-800.jpg 800w, /tehama-family-fitness/assets/hero/fuelbar.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
+  <div class="hero-media"><img src="/tehama-family-fitness/assets/photos/fuelbar.jpg" srcset="/tehama-family-fitness/assets/photos/fuelbar-800.jpg 800w, /tehama-family-fitness/assets/photos/fuelbar.jpg 1024w" sizes="100vw" alt="" width="1024" height="682" fetchpriority="high"></div>
   <div class="wrap">
     <p class="kick">Tehama Nutrition Center</p>
     <h1>The Fuel Bar</h1>
@@ -1220,7 +1223,7 @@ the front desk. Not the live site.</span></div>
 
 <section class="sec  sp sp-flip"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/coffee.jpg" srcset="/tehama-family-fitness/assets/hero/coffee-800.jpg 800w, /tehama-family-fitness/assets/hero/coffee.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The Fuel Bar counter — blender, coffee and the drinks fridge" width="2000" height="1116" loading="lazy" decoding="async"></figure>
+    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/photos/coffee.jpg" srcset="/tehama-family-fitness/assets/photos/coffee-800.jpg 800w, /tehama-family-fitness/assets/photos/coffee.jpg 1024w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The Fuel Bar menu boards under the lit FUEL sign" width="1024" height="689" loading="lazy" decoding="async"></figure>
     <div class="sp-txt">
       <p class="eyebrow">Where it is</p>
       <h2>A few steps<br>off the floor</h2>
@@ -1246,7 +1249,7 @@ the front desk. Not the live site.</span></div>
 </div></section>
 
 
-<figure class="fb"><img src="/tehama-family-fitness/assets/hero/frontdesk.jpg" srcset="/tehama-family-fitness/assets/hero/frontdesk-800.jpg 800w, /tehama-family-fitness/assets/hero/frontdesk.jpg 2000w" sizes="100vw" alt="The front desk and entry lobby" width="2000" height="848" loading="lazy" decoding="async">
+<figure class="fb"><img src="/tehama-family-fitness/assets/photos/fuelServe.jpg" srcset="/tehama-family-fitness/assets/photos/fuelServe-800.jpg 800w, /tehama-family-fitness/assets/photos/fuelServe.jpg 1024w" sizes="100vw" alt="A member being handed a drink across the Fuel Bar counter" width="1024" height="1538" loading="lazy" decoding="async">
 <figcaption class="fb-cap"><span class="wrap">The counter is by the lobby — you pass it on the way in and on the way out.</span></figcaption></figure>
 
 <section class="sec"><div class="wrap narrow">

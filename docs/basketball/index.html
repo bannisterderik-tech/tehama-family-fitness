@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1155,7 +1158,7 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="hero hero-sm">
-  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/basketball.jpg" srcset="/tehama-family-fitness/assets/hero/basketball-800.jpg 800w, /tehama-family-fitness/assets/hero/basketball.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
+  <div class="hero-media"><img src="/tehama-family-fitness/assets/photos/basketball.jpg" srcset="/tehama-family-fitness/assets/photos/basketball-800.jpg 800w, /tehama-family-fitness/assets/photos/basketball.jpg 1024w" sizes="100vw" alt="" width="1024" height="683" fetchpriority="high"></div>
   <div class="wrap">
     <p class="kick">Full court · open gym twice a day</p>
     <h1>Basketball &amp; racquetball</h1>
@@ -1189,7 +1192,7 @@ the front desk. Not the live site.</span></div>
 
 <section class="sec  sp sp-flip"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/racquetball.jpg" srcset="/tehama-family-fitness/assets/hero/racquetball-800.jpg 800w, /tehama-family-fitness/assets/hero/racquetball.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="An indoor racquetball court" width="2000" height="848" loading="lazy" decoding="async"></figure>
+    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/photos/racquetball.jpg" srcset="/tehama-family-fitness/assets/photos/racquetball-800.jpg 800w, /tehama-family-fitness/assets/photos/racquetball.jpg 1024w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="Glass-backed racquetball court under the Tehama logo" width="1024" height="1529" loading="lazy" decoding="async" style="object-position:center 70%"></figure>
     <div class="sp-txt">
       <p class="eyebrow">Racquetball</p>
       <h2>The only court<br>in Red Bluff</h2>
@@ -1207,7 +1210,7 @@ the front desk. Not the live site.</span></div>
 </div></section>
 
 
-<figure class="fb"><img src="/tehama-family-fitness/assets/hero/courtlines.jpg" srcset="/tehama-family-fitness/assets/hero/courtlines-800.jpg 800w, /tehama-family-fitness/assets/hero/courtlines.jpg 2000w" sizes="100vw" alt="The hardwood court from floor level, painted lines running to the hoop" width="2000" height="1116" loading="lazy" decoding="async">
+<figure class="fb"><img src="/tehama-family-fitness/assets/photos/courtLines.jpg" srcset="/tehama-family-fitness/assets/photos/courtLines-800.jpg 800w, /tehama-family-fitness/assets/photos/courtLines.jpg 1024w" sizes="100vw" alt="The basketball court from centre court, painted lines to the hoop" width="1024" height="683" loading="lazy" decoding="async">
 <figcaption class="fb-cap"><span class="wrap">Full size, properly lined, and the lights are on twice a day.</span></figcaption></figure>
 
 <section class="sec"><div class="wrap narrow">

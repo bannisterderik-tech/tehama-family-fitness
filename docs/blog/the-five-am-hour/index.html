@@ -10,7 +10,7 @@
 <meta property="og:title" content="The 5 AM hour | TFFC Red Bluff">
 <meta property="og:description" content="The doors open at five. Here is how to make the early hour a habit instead of a heroic act. From Tehama Family Fitness Center, Red Bluff.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://bannisterderik-tech.github.io/tehama-family-fitness/assets/hero/exterior-day.jpg">
+<meta property="og:image" content="https://bannisterderik-tech.github.io/tehama-family-fitness/assets/photos/exteriorDay.jpg">
 <meta property="og:image:alt" content="The 5 AM hour | TFFC Red Bluff">
 <meta name="theme-color" content="#0A0D1E">
 <link rel="icon" href="/tehama-family-fitness/assets/logo.png">
@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1155,7 +1158,7 @@ the front desk. Not the live site.</span></div>
 
 
 <section class="hero hero-sm">
-  <div class="hero-media"><img src="/tehama-family-fitness/assets/hero/exterior-day.jpg" srcset="/tehama-family-fitness/assets/hero/exterior-day-800.jpg 800w, /tehama-family-fitness/assets/hero/exterior-day.jpg 2000w" sizes="100vw" alt="" width="2000" height="848" fetchpriority="high"></div>
+  <div class="hero-media"><img src="/tehama-family-fitness/assets/photos/exteriorDay.jpg" srcset="/tehama-family-fitness/assets/photos/exteriorDay-800.jpg 800w, /tehama-family-fitness/assets/photos/exteriorDay.jpg 1024w" sizes="100vw" alt="" width="1024" height="1505" fetchpriority="high" style="object-position:center 68%"></div>
   <div class="wrap">
     <p class="kick">Routines · August 22, 2026</p>
     <h1>The 5 AM hour</h1>
@@ -1209,7 +1212,7 @@ modify any of it for you; ask before class.</p>
   <div class="split">
     <div><p class="eyebrow">Keep reading</p><h2>More from<br>the blog</h2></div>
     <div class="bl-grid"><a class="bl-card rv" href="/tehama-family-fitness/blog/training-around-the-kids-room/">
-  <div class="bl-img"><img src="/tehama-family-fitness/assets/hero/childcare.jpg" srcset="/tehama-family-fitness/assets/hero/childcare-800.jpg 800w, /tehama-family-fitness/assets/hero/childcare.jpg 2000w" sizes="(max-width:700px) 92vw, 380px" alt="" width="2000" height="848" loading="lazy" decoding="async"></div>
+  <div class="bl-img"><img src="/tehama-family-fitness/assets/photos/childcare.jpg" srcset="/tehama-family-fitness/assets/photos/childcare-800.jpg 800w, /tehama-family-fitness/assets/photos/childcare.jpg 1024w" sizes="(max-width:700px) 92vw, 380px" alt="" width="1024" height="658" loading="lazy" decoding="async"></div>
   <div class="bl-body">
     <p class="bl-meta">Routines <span class="dim">August 18, 2026</span>
       <span class="dim">2 min</span></p>
@@ -1227,7 +1230,7 @@ modify any of it for you; ask before class.</p>
     <span class="more">Read it →</span>
   </div>
 </a><a class="bl-card rv" href="/tehama-family-fitness/blog/your-first-spin-class/">
-  <div class="bl-img"><img src="/tehama-family-fitness/assets/hero/spin.jpg" srcset="/tehama-family-fitness/assets/hero/spin-800.jpg 800w, /tehama-family-fitness/assets/hero/spin.jpg 2000w" sizes="(max-width:700px) 92vw, 380px" alt="" width="2000" height="848" loading="lazy" decoding="async"></div>
+  <div class="bl-img"><img src="/tehama-family-fitness/assets/photos/spin.jpg" srcset="/tehama-family-fitness/assets/photos/spin-800.jpg 800w, /tehama-family-fitness/assets/photos/spin.jpg 1024w" sizes="(max-width:700px) 92vw, 380px" alt="" width="1024" height="1475" loading="lazy" decoding="async" style="object-position:center 52%"></div>
   <div class="bl-body">
     <p class="bl-meta">Workouts <span class="dim">August 26, 2026</span>
       <span class="dim">2 min</span></p>

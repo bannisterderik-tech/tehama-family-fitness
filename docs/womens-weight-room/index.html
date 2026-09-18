@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1175,13 +1178,13 @@ the front desk. Not the live site.</span></div>
 </div></section>
 
 
-<figure class="fb"><img src="/tehama-family-fitness/assets/hero/dumbbells.jpg" srcset="/tehama-family-fitness/assets/hero/dumbbells-800.jpg 800w, /tehama-family-fitness/assets/hero/dumbbells.jpg 2000w" sizes="100vw" alt="The dumbbell rack running light to heavy, benches in front" width="2000" height="1116" loading="lazy" decoding="async">
+<figure class="fb"><img src="/tehama-family-fitness/assets/photos/dumbbells.jpg" srcset="/tehama-family-fitness/assets/photos/dumbbells-800.jpg 800w, /tehama-family-fitness/assets/photos/dumbbells.jpg 1024w" sizes="100vw" alt="The dumbbell rack running light to heavy" width="1024" height="1504" loading="lazy" decoding="async" style="object-position:center 58%">
 <figcaption class="fb-cap"><span class="wrap">Its own dumbbells, its own benches, its own door.</span></figcaption></figure>
 
 
 <section class="sec  sp sp-flip"><div class="wrap">
   <div class="sp-grid">
-    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/hero/kettlebells.jpg" srcset="/tehama-family-fitness/assets/hero/kettlebells-800.jpg 800w, /tehama-family-fitness/assets/hero/kettlebells.jpg 2000w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="Kettlebells, medicine balls and bands on the class equipment rack" width="2000" height="1116" loading="lazy" decoding="async"></figure>
+    <figure class="sp-img rv"><img src="/tehama-family-fitness/assets/photos/kettlebells.jpg" srcset="/tehama-family-fitness/assets/photos/kettlebells-800.jpg 800w, /tehama-family-fitness/assets/photos/kettlebells.jpg 1024w" sizes="(max-width:880px) 92vw, min(50vw, 680px)" alt="The cross-training area with medicine balls and plates, a member planking" width="1024" height="1456" loading="lazy" decoding="async" style="object-position:center 58%"></figure>
     <div class="sp-txt">
       <p class="eyebrow">What's in it</p>
       <h2>Its own equipment</h2>

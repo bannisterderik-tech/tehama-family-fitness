@@ -320,6 +320,9 @@ color:var(--volt);margin-bottom:22px;display:flex;align-items:flex-start;gap:14p
 .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 /* The room gallery: two-up on a phone. One-up stacked 25 full-width images
    into a column so tall it read as mostly blank space between captions. */
+/* The shoot mixes portrait and landscape frames; the generated set was all one
+   shape. Crop every tile to one aspect or the grid goes ragged. */
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 55%}
 @media(max-width:700px){.gal{grid-template-columns:1fr 1fr;gap:14px 12px}
 .gal figcaption{font-size:.78rem;line-height:1.35;padding-left:10px;margin-top:8px}
 .gal figcaption b{font-size:.88rem!important;letter-spacing:-.01em!important}}
@@ -1205,7 +1208,7 @@ modify any of it for you; ask before class.</p>
   <div class="split">
     <div><p class="eyebrow">Keep reading</p><h2>More from<br>the blog</h2></div>
     <div class="bl-grid"><a class="bl-card rv" href="/tehama-family-fitness/blog/your-first-spin-class/">
-  <div class="bl-img"><img src="/tehama-family-fitness/assets/hero/spin.jpg" srcset="/tehama-family-fitness/assets/hero/spin-800.jpg 800w, /tehama-family-fitness/assets/hero/spin.jpg 2000w" sizes="(max-width:700px) 92vw, 380px" alt="" width="2000" height="848" loading="lazy" decoding="async"></div>
+  <div class="bl-img"><img src="/tehama-family-fitness/assets/photos/spin.jpg" srcset="/tehama-family-fitness/assets/photos/spin-800.jpg 800w, /tehama-family-fitness/assets/photos/spin.jpg 1024w" sizes="(max-width:700px) 92vw, 380px" alt="" width="1024" height="1475" loading="lazy" decoding="async" style="object-position:center 52%"></div>
   <div class="bl-body">
     <p class="bl-meta">Workouts <span class="dim">August 26, 2026</span>
       <span class="dim">2 min</span></p>
@@ -1214,7 +1217,7 @@ modify any of it for you; ask before class.</p>
     <span class="more">Read it →</span>
   </div>
 </a><a class="bl-card rv" href="/tehama-family-fitness/blog/strength-floor-first-three-weeks/">
-  <div class="bl-img"><img src="/tehama-family-fitness/assets/hero/nautilus.jpg" srcset="/tehama-family-fitness/assets/hero/nautilus-800.jpg 800w, /tehama-family-fitness/assets/hero/nautilus.jpg 2000w" sizes="(max-width:700px) 92vw, 380px" alt="" width="2000" height="1116" loading="lazy" decoding="async"></div>
+  <div class="bl-img"><img src="/tehama-family-fitness/assets/photos/nautilus.jpg" srcset="/tehama-family-fitness/assets/photos/nautilus-800.jpg 800w, /tehama-family-fitness/assets/photos/nautilus.jpg 1024w" sizes="(max-width:700px) 92vw, 380px" alt="" width="1024" height="1494" loading="lazy" decoding="async" style="object-position:center 55%"></div>
   <div class="bl-body">
     <p class="bl-meta">Workouts <span class="dim">August 15, 2026</span>
       <span class="dim">2 min</span></p>
@@ -1223,7 +1226,7 @@ modify any of it for you; ask before class.</p>
     <span class="more">Read it →</span>
   </div>
 </a><a class="bl-card rv" href="/tehama-family-fitness/blog/what-barre-actually-does/">
-  <div class="bl-img"><img src="/tehama-family-fitness/assets/hero/barre.jpg" srcset="/tehama-family-fitness/assets/hero/barre-800.jpg 800w, /tehama-family-fitness/assets/hero/barre.jpg 2000w" sizes="(max-width:700px) 92vw, 380px" alt="" width="2000" height="848" loading="lazy" decoding="async"></div>
+  <div class="bl-img"><img src="/tehama-family-fitness/assets/photos/barre.jpg" srcset="/tehama-family-fitness/assets/photos/barre-800.jpg 800w, /tehama-family-fitness/assets/photos/barre.jpg 1024w" sizes="(max-width:700px) 92vw, 380px" alt="" width="1024" height="756" loading="lazy" decoding="async"></div>
   <div class="bl-body">
     <p class="bl-meta">Workouts <span class="dim">August 1, 2026</span>
       <span class="dim">2 min</span></p>
