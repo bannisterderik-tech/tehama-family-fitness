@@ -56,8 +56,8 @@ BASE=/tehama-family-fitness PREVIEW=1 node gen/build.mjs   # GitHub Pages previe
 4. **Photography.** The September 2026 shoot is in: 30 real frames now cover the building
    (`assets/photos/`, mapped in the `SHOOT` block in `gen/data.mjs`). Ten rooms the shoot did not
    cover still use stand-ins — pickleball courts, circuit room, sauna, tanning, reformers, the
-   women's weight room, the corridor, dusk. The 12 staff portraits are held until they are named —
-   see `client/PORTRAIT-MATCH.md`. Swap the file and flip `real: true`
+   women's weight room, the corridor, dusk. The 12 staff portraits are named and on the team pages (23 people now);
+   open questions are in `client/PORTRAIT-MATCH.md`. Swap the file and flip `real: true`
    in `photos` when the walkthrough lands.
 5. **Ownership**, confirmed with the family, and how they want to be named.
 6. **The newsletter has no list behind it.** Sign-ups email the front desk; nothing can

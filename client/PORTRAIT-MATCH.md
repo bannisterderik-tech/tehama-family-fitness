@@ -1,38 +1,31 @@
-# Portraits — who is who?
+# Portraits — named 2026-09-19, now on the site
 
-The September 2026 shoot has 12 people photographed against the ivy wall. **None of them are
-on the website yet**, because none of them has been named to us, and a face on a team page with the
-wrong name under it is worse than the monogram that is there now.
+All 12 people from the September 2026 shoot were named by the club and are live on their
+`/team/<name>/` pages, the team grid and the About page.
 
-Fill in the right-hand column (a first name is enough) and every one of these goes onto their own
-`/team/<name>/` page, plus the team grid and the About page.
+| File | Name | On the site as |
+|---|---|---|
+| DSC02460 (also DSC02496) | Aubrie Thomas | Co-owner — already on the calendar |
+| DSC02678 | Karla Stroman | Owner — already on the calendar |
+| DSC02585 | Roxane Maddox | Instructor — already on the calendar |
+| DSC02645 | Jami Ramey | Instructor — already on the calendar |
+| DSC02688 | Kevin Weaver | Instructor — already on the calendar |
+| DSC02681 | Tonnie Spencer | Instructor — already on the calendar |
+| DSC02544 | Maggie Brown | **New.** Barre instructor (from the barre flyer) |
+| DSC02604 | John Giorvas | **New.** Personal trainer (the TRAINER shirt in the floor shots) |
+| DSC02465 | Kristi Havlin | **New.** Macro coach and trainer — also now the face on her recipe bylines |
+| DSC02654 | Derek Nova | **New.** Role shown as "Team" — confirm |
+| DSC02499 | Shea Marshall | **New.** Role shown as "Team" — confirm |
+| DSC02667 | Krista Renno | **New.** Role shown as "Team" — confirm |
 
-Source: `~/Downloads/tehemafitness-photo-download-1of1.zip` → `Highlights/`
+## Still open
 
-| | File | What we can see | Who is it? |
-|---|---|---|---|
-| A | DSC02460 · DSC02462 | Navy polo, arms crossed | |
-| B | DSC02496 | **Same person as A** — navy polo, hands on hips | (same as A) |
-| C | DSC02465 | Glasses, maroon tank with a **KH** logo. Also the one making smoothies at the Fuel Bar (DSC02512–02515). The KH logo is Kristi Havlin's macro-coaching brand — **is this Kristi?** | |
-| D | DSC02499 | Tattoos, black tank, leopard leggings | |
-| E | DSC02544 | White sleeveless hoodie. Also the one at the barre (DSC02554–02580). **Maggie**, from the barre flyer? | |
-| F | DSC02585 · DSC02588 | Light blue sleeveless top | |
-| G | DSC02593 · DSC02597 · DSC02604 | Cap, glasses, tattoos, navy polo. Wears the TRAINER shirt in the floor shots (DSC02616–02637) | |
-| H | DSC02645 | Maroon knit sweater | |
-| I | DSC02654 | Tehama hoodie. Also at the front desk (DSC02657, DSC02663) | |
-| J | DSC02667 | Flag t-shirt | |
-| K | DSC02678 | Light tank, jeans | |
-| L | DSC02681 | Black tank, crossed arms | |
-| M | DSC02688 | Under Armour tank | |
+- **Roles** for Derek, Shea and Krista (and confirm John = trainer, Maggie = barre).
+- **Who is "Kris"?** The calendar's spin instructor Kris (Tue & Fri 6 AM) could be Kristi or Krista.
+  Until we know, Kris keeps a monogram rather than borrowing somebody's face.
+- **No photo yet** for Tami, Amie, Debbie, Kathy, Kris, Kyle, Leslie, Sally, Ty, Courtney and Alma.
+  They keep the initial until they are photographed.
 
-Current team list on the site (from the class calendar): Amie, Aubrie, Courtney (front desk), Alma
-(childcare), Debbie, Jami, Karla, Kathy, Kevin, Kris, Kyle, Leslie, Roxane, Sally, Tami, Tonnie, Ty.
+## Still held back
 
-Some of these people may be members rather than staff — say so and they will be used as scene
-photos only, never with a name.
-
-## Also held back
-
-- **DSC02292, DSC02308** — the childcare room with children in it. Nothing with an identifiable
-  child goes on the site without a signed parental release (same rule as the Kids Fit photo). The
-  empty-room frames are used instead.
+- **DSC02292, DSC02308** — the childcare room with children in it. Needs a signed parental release.

@@ -89,6 +89,8 @@ export const tbd = {
   freezeHow:        { v: null, ask: null, q: "Can a membership be frozen (travel, injury, deployment)? Cost, and for how long?" },
   donationGives:    { v: null, ask: null, q: "What do you actually donate — day passes, a month's membership, a gift basket? Any cap per year?" },
   donationLead:     { v: null, ask: null, q: "How much notice do you need for a donation request?" },
+  newTeamRoles:     { v: null, ask: null, q: "Roles for the people the shoot added: Derek Nova, Shea Marshall and Krista Renno show as 'Team'. John Giorvas is listed as a personal trainer (TRAINER shirt) and Maggie Brown as barre (the flyer). Right?" },
+  whoIsKris:        { v: null, ask: null, q: "The calendar's spin instructor 'Kris' (Tue & Fri 6 AM) — is that Kristi Havlin, Krista Renno, or someone else? Until we know, Kris keeps a monogram." },
   appDoes:          { v: null, ask: null, q: "The member app is Trainerize. Which parts are switched ON — schedule, booking, workout plans, messaging your trainer, check-in?" },
   // Legal pages. NONE of this is legal advice and none of it has been reviewed.
   legalReview:      { v: null, ask: null, q: "Has anyone with a law licence read the privacy policy, terms and CA opt-out pages? They are written from what this site actually does, but they are not lawyer-drafted." },
@@ -266,10 +268,10 @@ const ROLES = {
   Karla:    { full: "Karla Stroman",  role: "Owner",            desk: false },
   Aubrie:   { full: "Aubrie Thomas",  role: "Co-owner",         desk: false },
   Kyle:     { full: "Kyle Tingley",   role: "Co-owner",         desk: false },
-  Kevin:    { full: "Kevin",          role: "Instructor",       desk: false },
-  Tonnie:   { full: "Tonnie",         role: "Instructor",       desk: false },
-  Jami:     { full: "Jami",           role: "Instructor",       desk: false },
-  Roxane:   { full: "Roxane",         role: "Instructor",       desk: false },
+  Kevin:    { full: "Kevin Weaver",   role: "Instructor",       desk: false },
+  Tonnie:   { full: "Tonnie Spencer", role: "Instructor",       desk: false },
+  Jami:     { full: "Jami Ramey",     role: "Instructor",       desk: false },
+  Roxane:   { full: "Roxane Maddox",  role: "Instructor",       desk: false },
   Tami:     { full: "Tami",           role: "Instructor",       desk: false },
   Kris:     { full: "Kris",           role: "Instructor",       desk: false },
   Amie:     { full: "Amie",           role: "Instructor",       desk: false },
@@ -279,6 +281,15 @@ const ROLES = {
   Kathy:    { full: "Kathy",          role: "Instructor",       desk: false },
   Ty:       { full: "Ty",             role: "Instructor",       desk: false },
 };
+
+/* Portraits from the September 2026 shoot, named by the club on 2026-09-19
+   (client/PORTRAIT-MATCH.md). Crops and sizes written to gen/portraits.json.
+   Anyone not in that file keeps the monogram — never a stock or generated face. */
+const PORTRAIT_FILES = (() => { try { return JSON.parse(readFileSync(new URL("./portraits.json", import.meta.url), "utf8")); } catch { return {}; } })();
+const portraitFor = (slug, name) => PORTRAIT_FILES[slug]
+  ? { src: `/assets/photos/team/${slug}.jpg`, w: PORTRAIT_FILES[slug].w, h: PORTRAIT_FILES[slug].h,
+      shot: PORTRAIT_FILES[slug].shot, real: true, alt: `${name}, Tehama Family Fitness Center` }
+  : null;
 
 export const slugify = n => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -292,11 +303,39 @@ export const team = [
       role: meta.role,
       teaches: i.teaches,
       sessions: sessions.filter(s => s.who === i.name),
-      portrait: null,          // set once the shoot lands
+      portrait: portraitFor(slugify(i.name), meta.full),
       bio: null,               // ask the front desk
       desk: false,
     };
   }),
+  /* Named in the September 2026 shoot but not on the class calendar, so there
+     are no sessions to pull. Roles are only what the evidence supports; where
+     it supports nothing, the role says "Team" rather than guessing
+     (tbd.newTeamRoles). */
+  { slug: "maggie", first: "Maggie", name: "Maggie Brown", role: "Barre instructor",
+    teaches: [], sessions: [], portrait: portraitFor("maggie", "Maggie Brown"), bio: null, desk: true,
+    blurb: "Teaches barre. Our own barre flyer lists her for Barre Basics, Barre Burn and Barre 30 — the live calendar has not caught up yet.",
+    where: { text: "In the studio, at the barre. The class times on our flyer and on the calendar still disagree, so call before you plan around one.", href: "/classes/barre/", cta: "About barre →" } },
+  { slug: "john", first: "John", name: "John Giorvas", role: "Personal trainer",
+    teaches: [], sessions: [], portrait: portraitFor("john", "John Giorvas"), bio: null, desk: true,
+    blurb: "One of the trainers on the floor — he is the one in the TRAINER shirt in our photographs.",
+    where: { text: "On the strength floor. Ask the desk to book a session with him.", href: "/personal-training/", cta: "Personal training →" } },
+  { slug: "kristi", first: "Kristi", name: "Kristi Havlin", role: "Macro coach and trainer",
+    teaches: [], sessions: [], portrait: portraitFor("kristi", "Kristi Havlin"), bio: null, desk: true,
+    blurb: "Coaches macros and trains. The meal-prep recipes on our blog are hers, macros already worked out.",
+    where: { text: "Her recipes are on the blog — five servings at a time, with the numbers done for you.", href: "/blog/food/", cta: "Kristi's recipes →" } },
+  { slug: "derek", first: "Derek", name: "Derek Nova", role: "Team",
+    teaches: [], sessions: [], portrait: portraitFor("derek", "Derek Nova"), bio: null, desk: true,
+    blurb: "Often behind the front desk. The printed schedule also lists a Derek for AMRAP on Thursday evenings.",
+    where: { text: "Often at the front desk. Ask for him when you come in.", href: "/contact/", cta: "Contact and hours →" } },
+  { slug: "shea", first: "Shea", name: "Shea Marshall", role: "Team",
+    teaches: [], sessions: [], portrait: portraitFor("shea", "Shea Marshall"), bio: null, desk: true,
+    blurb: "Part of the team at 2498 South Main.",
+    where: { text: "Ask for her at the desk.", href: "/contact/", cta: "Contact and hours →" } },
+  { slug: "krista", first: "Krista", name: "Krista Renno", role: "Team",
+    teaches: [], sessions: [], portrait: portraitFor("krista", "Krista Renno"), bio: null, desk: true,
+    blurb: "Part of the team at 2498 South Main.",
+    where: { text: "Ask for her at the desk.", href: "/contact/", cta: "Contact and hours →" } },
   { slug: "courtney", first: staff.frontDesk, name: staff.frontDesk, role: "Front desk",
     teaches: [], sessions: [], portrait: null, bio: null, desk: true,
     blurb: "The first person you meet, and the one who answers when you call." },

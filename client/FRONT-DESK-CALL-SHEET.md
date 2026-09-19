@@ -178,7 +178,7 @@ model behind it and cannot invent a price.
 ## G. Photos — bring a phone, 20 minutes
 
 **Landscape. One steady shot per room. All lights on. No filter.**
-**Update, September 2026: the shoot is in and on the site.** 30 frames placed. Still missing: the pickleball courts, the circuit room, the sauna, tanning, the reformers, the women's weight room and the corridor — those still show stand-ins. And **12 portraits need names** before they can go on the team pages: `client/PORTRAIT-MATCH.md`.
+**Update, September 2026: the shoot is in and on the site.** 30 frames placed. Still missing: the pickleball courts, the circuit room, the sauna, tanning, the reformers, the women's weight room and the corridor — those still show stand-ins. 12 portraits are named and live. **Still to confirm:** roles for Derek Nova, Shea Marshall and Krista Renno (shown as "Team"), and whether the calendar's spin instructor "Kris" is Kristi or Krista — see `client/PORTRAIT-MATCH.md`.
 
 ☐ 1. Front entry, from the parking lot
 ☐ 2. Front desk

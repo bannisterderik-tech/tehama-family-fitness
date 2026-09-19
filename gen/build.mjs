@@ -1167,7 +1167,7 @@ const NAV = [
   ["/fuel-bar/", "Fuel Bar"], ["/blog/", "Blog"], ["/membership/", "Membership"],
   ["/about/", "About", [
     ["/about/", "About us", "Locally owned on South Main since 2001"],
-    ["/team/", "Our team", "All 17 of us, with names on"],
+    ["/team/", "Our team", `All ${team.length} of us, with names on`],
     ["/members-app/", "Members app", "Book, check in and follow a plan"],
     ["/community-donations/", "Community donations", "Request a donation for your fundraiser"],
   ]],
@@ -3511,10 +3511,10 @@ ${m.sessions.length ? `
 </div></section>` : `
 <section class="sec sec-tint"><div class="wrap narrow">
   <h2>Where you'll find ${esc(m.first)}</h2>
-  <p class="lede">${m.slug === "alma"
+  <p class="lede">${m.where ? esc(m.where.text) : m.slug === "alma"
     ? `In the kids’ room, ${biz.childcareHours[0][1].replace("&", "and")} most weekdays. Full hours are on the childcare page.`
     : `At the front desk, most of the hours we are open. ${biz.hoursShort}.`}</p>
-  <p style="margin-top:26px"><a class="btn btn-out" href="${u(m.slug === "alma" ? "/childcare/" : "/contact/")}">${m.slug === "alma" ? "Childcare hours →" : "Hours and directions →"}</a></p>
+  <p style="margin-top:26px"><a class="btn btn-out" href="${u(m.where ? m.where.href : m.slug === "alma" ? "/childcare/" : "/contact/")}">${m.where ? esc(m.where.cta) : m.slug === "alma" ? "Childcare hours →" : "Hours and directions →"}</a></p>
 </div></section>`}
 
 ${m.teaches.length ? `
@@ -3522,7 +3522,7 @@ ${m.teaches.length ? `
   <p class="eyebrow">What ${esc(m.first)} teaches</p>
   <div class="grid g3" style="margin-top:26px">
     ${m.teaches.map(t => {
-      const c = classes.find(c2 => c2.name === t && c2.page);
+      const c = classes.find(c2 => c2.name === t && c2.slug);
       const n = sessions.filter(x => x.name === t).length;
       return `<${c ? "a" : "div"} class="card rv"${c ? ` href="${u(`/classes/${c.slug}/`)}" style="text-decoration:none;color:inherit"` : ""}>
         <h3>${esc(t)}</h3>
@@ -3989,7 +3989,9 @@ const postCard = (post, { lead = false } = {}) => {
 const byline = post => {
   const a = authors[post.author];
   return `<div class="post-by">
-  <span class="av" aria-hidden="true">${esc(a.name.split(" ").map(w => w[0]).join("").slice(0, 2))}</span>
+  ${(() => { const face = team.find(t => t.name === a.name)?.portrait;
+    return face ? `<img class="av" src="${u(face.src.replace(/\.jpg$/, "-800.jpg"))}" alt="" width="44" height="44" style="object-fit:cover;object-position:center 22%">`
+      : `<span class="av" aria-hidden="true">${esc(a.name.split(" ").map(w => w[0]).join("").slice(0, 2))}</span>`; })()}
   <span><b>${esc(a.name)}</b><span>${esc(a.role)}</span></span>
   <span style="margin-left:auto;color:var(--ink-3);font-size:.9rem">${fmtDate(post.date)} · ${readMins(post)} min read</span>
 </div>`;
@@ -4288,7 +4290,7 @@ ${statement("The schedule is on this website either way.",
     <div class="grid g2">
       ${[["/schedule/", "The full schedule", `All ${counts.total} sessions a week, with childcare marked.`],
          ["/classes/", "Every class explained", "What happens in the room and what to bring."],
-         ["/team/", "Who is teaching", "All 17 of us, and what each one teaches."],
+         ["/team/", "Who is teaching", `All ${team.length} of us, and what each one teaches.`],
          ["/blog/", "Workouts and recipes", "Plans for the equipment that is genuinely here."],
         ].map(([h, t, d]) => `<a class="card rv" href="${u(h)}"><h3>${t}</h3><p>${d}</p>
         <span class="more">Open it →</span></a>`).join("")}

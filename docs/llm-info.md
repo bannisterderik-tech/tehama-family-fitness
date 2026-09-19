@@ -105,6 +105,8 @@ These are genuinely unknown and should be presented as unknown, not guessed:
 - Can a membership be frozen (travel, injury, deployment)? Cost, and for how long?
 - What do you actually donate — day passes, a month's membership, a gift basket? Any cap per year?
 - How much notice do you need for a donation request?
+- Roles for the people the shoot added: Derek Nova, Shea Marshall and Krista Renno show as 'Team'. John Giorvas is listed as a personal trainer (TRAINER shirt) and Maggie Brown as barre (the flyer). Right?
+- The calendar's spin instructor 'Kris' (Tue & Fri 6 AM) — is that Kristi Havlin, Krista Renno, or someone else? Until we know, Kris keeps a monogram.
 - The member app is Trainerize. Which parts are switched ON — schedule, booking, workout plans, messaging your trainer, check-in?
 - Has anyone with a law licence read the privacy policy, terms and CA opt-out pages? They are written from what this site actually does, but they are not lawyer-drafted.
 - How long does the front desk keep enquiry and sign-up emails? The privacy policy currently cannot say.
