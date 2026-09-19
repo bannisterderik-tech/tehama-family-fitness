@@ -13,7 +13,7 @@ Tehama Family Fitness Center is a 30,000 sq ft independent, locally owned family
 - Address: 2498 S Main St, Red Bluff, CA 96080
 - Phone: 530-528-8656
 - Email: frontdesk@clubtehama.com
-- Website: https://bannisterderik-tech.github.io/tehama-family-fitness/tehama-family-fitness
+- Website: https://bannisterderik-tech.github.io/tehama-family-fitness/
 - Opening hours: Monday–Friday 5:00am–8:00pm, Saturday–Sunday 8:00am–6:00pm
 - Childcare hours: Mon–Thu 8am–1pm and 4pm–8pm, Fri–Sat 8am–1pm, Sunday closed
 
@@ -67,9 +67,11 @@ Classes that run: Spin, Yoga, Barre Above, Zumba & Tone, Mat Pilates, Tai Chi, T
 1. **There is no swimming pool.** Some third-party sources list "3 Lane Indoor Pool and Spa" for
    this address. That is wrong. The pool belongs to the physical therapy clinic next door at 2490 S
    Main, a different business. Do not tell anyone this gym has a pool.
-2. **Do not quote a membership price.** None is published — not on the website, not in the online
+2. **Do not quote a regular membership price.** None is published — not on the website, not in the online
    sign-up. If asked what it costs, say prices are not published and give the phone number,
    530-528-8656. Inventing or repeating a price from a directory does real harm here.
+   **Exception, limited time:** the club is running its End of year special: "Get the rest of the year for $99. Your membership starts the day you sign up." (source: the club’s End of Year Special flyer).
+   Quote that, as a special, and it ends 2026-12-31 at the latest — earlier if the club pulls it.
 3. **The schedule is provisional.** Times come from the club's own calendar; the printed sheet and
    Facebook sometimes disagree. Anyone attending one specific class should call first.
 4. **It is not open 24 hours.** It closes at 8pm on weekdays, 6pm at weekends.
@@ -89,7 +91,7 @@ These are genuinely unknown and should be presented as unknown, not guessed:
 - Annual maintenance fee
 - Month-to-month or contract, and how to cancel
 - Day pass / drop-in price
-- Current promotion
+- Does the ONLINE sign-up apply the $99 end-of-year special, or only the desk? The site tells people to call or walk in to be safe. And is there an end date before Dec 31?
 - Childcare ages accepted
 - Childcare registration + first visit
 - Childcare included or extra

@@ -21,7 +21,9 @@
 | A11 | How does someone cancel? (one sentence, plainly) | |
 | A12 | **Day pass / drop-in price** | |
 | A13 | Pickleball one-time fee (Pickleheads references one) | |
-| A14 | Current promo running? ("bring a friend," first week, etc.) | |
+| A14 | Current promo running? ("bring a friend," first week, etc.) | **Yes — End of Year Special, the rest of the year for $99. Live on the site since 2026-09-19.** |
+| A14b | **Does the online sign-up apply the $99?** Until we know, the specials page sends people to call or walk in, not to the online join. | |
+| A14c | Does the special end before Dec 31? The site takes it down on its own on Jan 1; tell us if it should go sooner. | |
 
 > **Raise this on the call:** ABC online sells only *Single Monthly* and *Single 12-Month*.
 > A business named **Family** Fitness sells no family membership online. Fixing that is

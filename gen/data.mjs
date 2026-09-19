@@ -60,7 +60,9 @@ export const tbd = {
   dayPass:          { v: null, ask: "Call for the day-pass rate",    q: "Day pass / drop-in price" },
   pickleballFee:    { v: "$5", ask: null, q: "Confirm the $5 non-member drop-in",
                       src: "Places2Play (USA Pickleball)", verify: true },
-  promo:            { v: null, ask: null,                            q: "Current promotion" },
+  promo:            { v: "End of year special — the rest of the year for $99", ask: null, q: "Current promotion",
+                      src: "the club's own End of Year Special flyer, 2026-09-19" },
+  promoOnline:      { v: null, ask: null, q: "Does the ONLINE sign-up apply the $99 end-of-year special, or only the desk? The site tells people to call or walk in to be safe. And is there an end date before Dec 31?" },
   // FOUND — two independent published sources. Confirm with the family before publish:
   // the Enjoy Magazine piece is from Jan 2019, and ownership can move in seven years.
   ownerName:        { v: "the Stroman family", ask: null, q: "Confirm ownership + how they want to be named",
@@ -1445,6 +1447,20 @@ export const catOf = slug => CATS.find(c => c.slug === slug);
 export const specials = {
   /* Promotions. All off. Flip `on` and set `ends` to publish one. */
   running: [
+    /* LIVE. From the club's own "End of Year Special" flyer, supplied
+       2026-09-19. Wording is the flyer's. The flyer gives no end date
+       beyond "this special won't last" — `ends` is the latest it can
+       possibly mean (a membership for "the rest of the year" runs out on
+       Dec 31), so it comes down by itself then if nobody pulls it sooner.
+       Open question: does the ONLINE sign-up apply it? (tbd.promoOnline) */
+    { id: "endOfYear", on: true, ends: "2026-12-31",
+      name: "End of year special",
+      bar: "End of year special — the rest of the year for $99",
+      price: "$99", priceFor: "the rest of the year",
+      blurb: "Get the rest of the year for $99. Your membership starts the day you sign up.",
+      urgency: "Don’t wait — this special won’t last.",
+      includes: ["Group classes", "One-on-one trainers", "New equipment", "Nutrition coaches"],
+      src: "the club’s End of Year Special flyer" },
     { id: "joinFeeWaived", on: false, ends: null,
       name: "Enrollment fee waived",
       bar: "Enrollment fee waived this month",
