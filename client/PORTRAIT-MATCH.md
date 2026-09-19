@@ -23,8 +23,10 @@ All 12 people from the September 2026 shoot were named by the club and are live 
 - **Roles** for Derek, Shea and Krista (and confirm John = trainer, Maggie = barre).
 - **Who is "Kris"?** The calendar's spin instructor Kris (Tue & Fri 6 AM) could be Kristi or Krista.
   Until we know, Kris keeps a monogram rather than borrowing somebody's face.
-- **No photo yet** for Tami, Amie, Debbie, Kathy, Kris, Kyle, Leslie, Sally, Ty, Courtney and Alma.
-  They keep the initial until they are photographed.
+- **Not on the website** (decided 2026-09-19 — only photographed people are shown): Tami, Amie,
+  Debbie, Kathy, Kris, Kyle, Leslie, Sally, Ty, Courtney and Alma. They still appear by first name on
+  the class schedule, because they still teach those classes. Their old team URLs redirect to /team/.
+  Photograph them and they come back automatically.
 
 ## Still held back
 

@@ -12,7 +12,7 @@ import {
   instructors, staff, team, classes, amenities, fuelBar, photos, onlyHere, owners, pickleball,
   CHILDCARE_WINDOWS, lengthOf, leadForm, generatedShots,
   joinFlow, retracted,
-  newsletter, posts, postsIn, CATS, catOf, authors,
+  newsletter, posts, postsIn, CATS, catOf, authors, teamOffSite,
   specials, liveSpecials, manage, app, donations, legal, aiNotes,
 } from "./data.mjs";
 
@@ -1177,7 +1177,7 @@ const NAV = [
   ["/fuel-bar/", "Fuel Bar"], ["/blog/", "Blog"], ["/membership/", "Membership"],
   ["/about/", "About", [
     ["/about/", "About us", "Locally owned on South Main since 2001"],
-    ["/team/", "Our team", `All ${team.length} of us, with names on`],
+    ["/team/", "Our team", "The people you will meet here"],
     ["/members-app/", "Members app", "Book, check in and follow a plan"],
     ["/community-donations/", "Community donations", "Request a donation for your fundraiser"],
   ]],
@@ -3429,14 +3429,14 @@ ${band("It's included. Just turn up.",
 
 /* =========================== INSTRUCTORS ============================== */
 P("/team/", `Our Team — ${team.length} People | ${biz.short} Red Bluff`,
-  `Meet the team at Tehama Family Fitness Center in Red Bluff: ${instructors.length} instructors teaching ${counts.classes} classes a week, plus the front desk and the childcare room.`,
+  `Meet the team at Tehama Family Fitness Center in Red Bluff — instructors, trainers and the owners, photographed in the building.`,
   `
 ${phero(photos.barre, { kick: `${team.length} people`,
   h1: "Our <em>team</em>",
-  lede: `${instructors.length} instructors between them teach ${counts.classes} classes a week. Three of them own the building. And you will meet ${staff.frontDesk} before you meet any of them.` })}
+  lede: `The people you will meet in the building, photographed here in September 2026. Two of them own it, and both are on the class board every week.` })}
 
-${NAMES ? statement("Three of the people on this list own the building.",
-  "Karla teaches the six o'clock spin class. Aubrie has Lean & Mean most weekday mornings. Kyle is in the studio on Wednesday evenings. You will not find that at a franchise.") : ""}
+${NAMES ? statement("Two of the people on this list own the building.",
+  "Karla teaches the six o'clock spin class. Aubrie has Lean & Mean most weekday mornings. You will not find that at a franchise.") : ""}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -3459,13 +3459,6 @@ ${NAMES ? statement("Three of the people on this list own the building.",
 </div></section>
 
 ${fullBleed(photos.studio, "Most of them teach in this room, most weeks of the year.")}
-
-<section class="sec sec-tint"><div class="wrap narrow">
-  <div class="hold"><b>Portraits coming</b>
-  Real faces, photographed here. Until then everybody gets an initial — we would rather
-  show you nothing than show you somebody who does not work here.</div>
-</div></section>
-
 ${band("Find their class on the board.", "Every instructor, every session, one page.",
   [["/schedule/", "The schedule"], ["/classes/", "All classes", "btn-ghost"]])}
 `);
@@ -3551,7 +3544,7 @@ ${m.teaches.length ? `
       ${portrait(o, { sizes: "(max-width:520px) 44vw, 200px" })}
       <h3>${esc(o.name)}</h3><span class="r">${esc(o.role)}</span></a>`).join("")}
   </div>
-  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/team/")}">All ${team.length} of us →</a></p>
+  <p style="margin-top:30px"><a class="btn btn-out" href="${u("/team/")}">The whole team →</a></p>
 </div></section>
 
 ${band(`Come and meet ${esc(m.first)}.`,
@@ -3692,12 +3685,12 @@ ${statement("The person taking your six o'clock spin class owns the building.",
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
-    <div><p class="eyebrow">Everybody who works here</p><h2>All ${team.length} of us,<br>with names on</h2>
-      <p class="lede" style="margin-top:20px">${instructors.length} instructors, the front desk and the
-      childcare room. Every name is a page — their classes, their days, and the room they teach in.</p>
+    <div><p class="eyebrow">Who you'll meet</p><h2>The people<br>in the building</h2>
+      <p class="lede" style="margin-top:20px">Instructors, trainers and the owners, photographed here.
+      Every name is a page — their classes, their days, and the room they teach in.</p>
       <p style="margin-top:24px"><a class="btn btn-volt" href="${u("/team/")}">Our team \u2192</a></p></div>
     <div><p class="lede">Nobody here is an agency hire on a six-month contract. Most of them have
-    been teaching in this building for years, and three of them own it.</p></div>
+    been teaching in this building for years, and the owners are on the class board every week.</p></div>
   </div>
 
   <div class="tm-grid" style="margin-top:clamp(34px,4vw,52px)">
@@ -3929,6 +3922,9 @@ ${band("Come and stand in it.", "Walk in any day. Open till eight weeknights, ei
    any more, but bookmarks and anyone we sent the preview link to would hit a
    404. GitHub Pages can't issue a 301, so this is the honest static version. */
 PAGES.push({ path: "/instructors/", redirect: u("/team/") });
+// People taken off the site until they are photographed: their old URLs land on
+// the team page rather than a 404.
+for (const m of teamOffSite) PAGES.push({ path: `/team/${m.slug}/`, redirect: u("/team/") });
 
 /* ---- /shot-list/ ----------------------------------------------------
    The photographer's brief, rendered from client/PHOTO-SHOT-LIST.md so the
@@ -4323,7 +4319,7 @@ ${statement("The schedule is on this website either way.",
     <div class="grid g2">
       ${[["/schedule/", "The full schedule", `All ${counts.total} sessions a week, with childcare marked.`],
          ["/classes/", "Every class explained", "What happens in the room and what to bring."],
-         ["/team/", "Who is teaching", `All ${team.length} of us, and what each one teaches.`],
+         ["/team/", "Who you will meet", "The team, and what each of them teaches."],
          ["/blog/", "Workouts and recipes", "Plans for the equipment that is genuinely here."],
         ].map(([h, t, d]) => `<a class="card rv" href="${u(h)}"><h3>${t}</h3><p>${d}</p>
         <span class="more">Open it →</span></a>`).join("")}
@@ -4854,7 +4850,7 @@ writeFileSync(join(OUT, "llms.txt"),
 - [Specials and what is always included](${abs("/specials/")})
 - [Childcare](${abs("/childcare/")})
 - [Pickleball](${abs("/pickleball/")})
-- [Our team — all ${team.length} people](${abs("/team/")})
+- [Our team](${abs("/team/")})
 - [Blog — routines, workouts, food](${abs("/blog/")})
 - [Contact and directions](${abs("/contact/")})
 

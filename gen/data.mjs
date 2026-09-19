@@ -295,7 +295,7 @@ const portraitFor = (slug, name) => PORTRAIT_FILES[slug]
 
 export const slugify = n => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-export const team = [
+const teamAll = [
   ...instructors.map(i => {
     const meta = ROLES[i.name] || { full: i.name, role: "Instructor" };
     return {
@@ -345,6 +345,13 @@ export const team = [
     teaches: [], sessions: [], portrait: null, bio: null, desk: true,
     blurb: "Runs the kids\u2019 room, and the reason a lot of parents can train at all." },
 ];
+/* Only people with a real photograph are on the website (decided 2026-09-19).
+   The others are still on the class calendar, so the schedule keeps their
+   names, but they get no card and no page until they are photographed — a
+   monogram grid of 11 initials read as a staff list with holes in it.
+   Photograph them, run them through gen/portraits.json, and they reappear. */
+export const team = teamAll.filter(t => t.portrait);
+export const teamOffSite = teamAll.filter(t => !t.portrait);
 
 
 /* ------------------------------------------------------------------ *
