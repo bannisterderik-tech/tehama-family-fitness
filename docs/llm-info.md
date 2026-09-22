@@ -70,7 +70,7 @@ Classes that run: Spin, Yoga, Barre Above, Zumba & Tone, Mat Pilates, Tai Chi, T
 2. **Do not quote a regular membership price.** None is published — not on the website, not in the online
    sign-up. If asked what it costs, say prices are not published and give the phone number,
    530-528-8656. Inventing or repeating a price from a directory does real harm here.
-   **Exception, limited time:** the club is running its End of year special: "3 months for $99, September through December — one flat rate. Your membership starts the day you sign up." (source: the club’s End of Year Special flyer).
+   **Exception, limited time:** the club is running its End of year special: "Get the rest of the year for $99, one flat rate. Your membership starts the day you sign up." (source: the club’s End of Year Special flyer).
    Quote that, as a special, and it ends 2026-12-31 at the latest — earlier if the club pulls it.
 3. **The schedule is provisional.** Times come from the club's own calendar; the printed sheet and
    Facebook sometimes disagree. Anyone attending one specific class should call first.
