@@ -65,8 +65,8 @@ export const tbd = {
   promoOnline:      { v: null, ask: null, q: "Does the ONLINE sign-up apply the $99 end-of-year special, or only the desk? The site tells people to call or walk in to be safe. And is there an end date before Dec 31?" },
   // FOUND — two independent published sources. Confirm with the family before publish:
   // the Enjoy Magazine piece is from Jan 2019, and ownership can move in seven years.
-  ownerName:        { v: "the Stroman family", ask: null, q: "Confirm ownership + how they want to be named",
-                      src: "Enjoy Magazine Jan 2019 · North State Parent", verify: true },
+  ownerName:        { v: "family owned and operated", ask: null,
+                      q: "ANSWERED 2026-09-22: describe as a family-owned business, do not name the owners on the site" },
   childcareAges:    { v: null, ask: "Ask at the desk",               q: "Childcare ages accepted" },
   childcareSignup:  { v: null, ask: "Ask at the desk",               q: "Childcare registration + first visit" },
   childcareIncluded:{ v: null, ask: null,                            q: "Childcare included or extra" },
@@ -268,9 +268,9 @@ export const staff = { frontDesk: "Courtney", childcare: "Alma" };
  * people in a town of fourteen thousand and their neighbours would know.
  * ------------------------------------------------------------------ */
 const ROLES = {
-  Karla:    { full: "Karla Stroman",  role: "Owner",            desk: false },
-  Aubrie:   { full: "Aubrie Thomas",  role: "Co-owner",         desk: false },
-  Kyle:     { full: "Kyle Tingley",   role: "Co-owner",         desk: false },
+  Karla:    { full: "Karla Stroman",  role: "Instructor",       desk: false },
+  Aubrie:   { full: "Aubrie Thomas",  role: "Instructor",       desk: false },
+  Kyle:     { full: "Kyle Tingley",   role: "Instructor",       desk: false },
   Kevin:    { full: "Kevin Weaver",   role: "Instructor",       desk: false },
   Tonnie:   { full: "Tonnie Spencer", role: "Instructor",       desk: false },
   Jami:     { full: "Jami Ramey",     role: "Instructor",       desk: false },
@@ -424,7 +424,7 @@ export const classes = [
     bring: "Water, a towel, and shoes you can move sideways in." },
   { slug: "lean-and-mean", hero: "nautilus", hero2: "gymfloor", name: "Lean & Mean", room: "Studio",
     blurb: "Mid-morning strength-and-cardio mix.",
-    what: "Strength blocks alternated with cardio blocks, mid-morning, with Aubrie — who is also one of the owners. Weights are light enough to keep moving and heavy enough to count.",
+    what: "Strength blocks alternated with cardio blocks, mid-morning, with Aubrie. Weights are light enough to keep moving and heavy enough to count.",
     bring: "Water and a towel." },
   { slug: "hybrid", hero: "crosstrain", hero2: "dumbbells", name: "Hybrid", room: "Studio",
     blurb: "5:30 AM strength-and-cardio combo, Tue/Thu.",
@@ -752,6 +752,10 @@ export const leadForm = {
  * The kicker: Karla, Aubrie and Kyle are all on the 2026 class schedule.
  * The people who own the building teach the 6 AM spin class.
  * ------------------------------------------------------------------ */
+/* NOT RENDERED. The club asked on 2026-09-22 to be described as a family-owned
+   business rather than by the owners' names, so nothing below reaches a page —
+   only `founded` is used. Kept because it is sourced, and because somebody will
+   otherwise re-derive it from the same two articles in six months. */
 export const owners = {
   verify: true,
   founded: "September 2001",

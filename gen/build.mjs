@@ -1874,8 +1874,7 @@ const todayStrip = () => `
             const a = mins(x.time), b = a + lengthOf(x);
             return `<li data-start="${a}" data-end="${b}">
             <span class="td-t">${x.time.replace(":00", "").replace(" AM", "a").replace(" PM", "p")}</span>
-            <span class="td-n"><b>${esc(x.name)}</b>${x.who ? `<i>${esc(x.who)}${
-              owners.people.some(o => o.name.split(" ")[0] === x.who) && NAMES ? " \u00b7 owner" : ""}</i>` : ""}</span>
+            <span class="td-n"><b>${esc(x.name)}</b>${x.who ? `<i>${esc(x.who)}</i>` : ""}</span>
             <span class="td-c">${childcareOpenAt(d, x.time)
               ? '<span class="tag tag-cc">Kids open</span>' : '<span class="tag tag-no">Kids closed</span>'}</span>
           </li>`; }).join("")}</ol>`
@@ -2185,7 +2184,7 @@ var RULES=[
  {k:/tour|look around|visit|try|day pass|guest|drop in/i, a:function(){
    return "Walk in any day we are open and ask for a look around \u2014 ten minutes, no pressure, no appointment. Day-pass pricing is one of the things not published yet, so ask at the desk.<br><br><a href='"+K.u.tour+"'>Take the tour \u2192</a><br><a href='"+K.u.daypass+"'>Day pass \u2192</a>";}},
  {k:/who teaches|instructor|staff|team|trainer name/i, a:function(){
-   return K.nInstructors+" instructors between them teach "+K.nClass+" classes a week, and three of the owners are on the schedule.<br><br><a href='"+K.u.team+"'>Meet the team \u2192</a>";}},
+   return K.nInstructors+" instructors between them teach "+K.nClass+" classes a week at this family-owned gym.<br><br><a href='"+K.u.team+"'>Meet the team \u2192</a>";}},
  {k:/class|spin|yoga|barre|zumba|pilates|tai ?chi|kettlebell|drums|circuit|u-?jam|stretch|tone|hybrid|body burner|lean/i, a:function(q){
    var hit=K.classes.filter(function(c){ return q.toLowerCase().indexOf(c.n.toLowerCase().split(' ')[0].toLowerCase())>-1; });
    if(hit.length===1&&hit[0].s){
@@ -2483,10 +2482,8 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
 
 ${todayStrip()}
 
-${NAMES ? spread(team.find(t => t.slug === "karla")?.portrait || photos.frontdesk, { eyebrow: "Who runs it", tone: "cool",
-  h2: "Karla Stroman owns this gym. She teaches the 6:00 AM spin.",
-  body: "Her daughter Aubrie teaches Lean & Mean most weekday mornings. You will not find that at a franchise, and you cannot buy it.",
-  cta: ["/team/", "Meet the team \u2192"] }) : ""}
+${statement("Family owned since 2001. Same family, same building.",
+  "Not a franchise, not a chain, and no head office in another state. The people who run it are in the building, on the class board, most weeks of the year.")}
 
 ${spread(photos.childcare, { eyebrow: "Bring the kids", flip: true,
   h2: "The kids' room is<br>in the building",
@@ -3392,14 +3389,14 @@ ${band("It's included. Just turn up.",
 
 /* =========================== INSTRUCTORS ============================== */
 P("/team/", `Our Team — ${team.length} People | ${biz.short} Red Bluff`,
-  `Meet the team at Tehama Family Fitness Center in Red Bluff — instructors, trainers and the owners, photographed in the building.`,
+  `Meet the team at Tehama Family Fitness Center in Red Bluff — the instructors and trainers at this family-owned gym, photographed in the building.`,
   `
 ${phero(photos.barre, { kick: `${team.length} people`,
   h1: "Our <em>team</em>",
-  lede: `The people you will meet in the building, photographed here in September 2026. Two of them own it, and both are on the class board every week.` })}
+  lede: `The people you will meet in the building, photographed here in September 2026. Family owned since 2001, and the family is on the class board every week.` })}
 
-${NAMES ? statement("Two of the people on this list own the building.",
-  "Karla teaches the six o'clock spin class. Aubrie has Lean & Mean most weekday mornings. You will not find that at a franchise.") : ""}
+${statement("A family-owned gym, and the family is in the building.",
+  "Not a rotating cast of staff passing through on their way somewhere else \u2014 most of these people have been teaching here for years.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -3614,7 +3611,7 @@ ${band("Come and compare it yourself.", "Walk in, see the building, then decide.
 
 /* ============================== ABOUT ================================= */
 P("/about/", `About — Locally Owned in Red Bluff Since 2001 | ${biz.short}`,
-  `Tehama Family Fitness Center has been on South Main in Red Bluff since September 2001 — 30,000 square feet, locally owned, with the owners still teaching classes on the schedule.`,
+  `Tehama Family Fitness Center has been on South Main in Red Bluff since September 2001 — 30,000 square feet, family owned and operated.`,
   `
 ${phero(photos.exteriorDay, { kick: "South Main Street \u00b7 since September 2001",
   h1: "In the <em>same building</em> since 2001",
@@ -3626,34 +3623,27 @@ ${phero(photos.exteriorDay, { kick: "South Main Street \u00b7 since September 20
              ["15", "instructors"]], false)}
 </div></section>
 
-${NAMES ? `
-${statement("The person taking your six o'clock spin class owns the building.",
-  "That is not a figure of speech. Look at the class schedule and you will find them on it \u2014 which is a thing that cannot be said of a single competitor in this county.")}
+${statement("Family owned since 2001, in the same building.",
+  "Not a franchise, not a chain, no head office in another state. The people who run this place are the people you see in it.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
-    <div><p class="eyebrow">Who runs it</p><h2>A family, and they are<br>on the schedule</h2>
-      <p class="lede">Karla, Aubrie and Kyle are on the board every week. In a town of fourteen thousand
-      you already know who they are \u2014 here they are with their names on.</p></div>
-    <div>${steps(owners.people.map(o => [
-      `${esc(o.name)} \u2014 ${esc(o.role.toLowerCase().replace("opened the club in", "opened the doors in"))}`,
-      `${esc(o.note)}${o.teaches ? ` Teaches ${esc(o.teaches)}.` : ""}`]))}
-      <p style="margin-top:22px;color:var(--ink-3);font-size:.9rem">Ownership and founding details as
-      reported in <em>Enjoy Magazine</em> (January 2019) and <em>North State Parent</em>.</p></div>
+    <div><p class="eyebrow">Who runs it</p><h2>A family<br>business</h2></div>
+    <div><p class="lede">Tehama Family Fitness Center has been family owned and operated since it opened
+    in ${owners.founded}, in the same building on South Main. The family teach on the class board most
+    weeks of the year \u2014 which is a thing that cannot be said of a single competitor in this county.</p>
+    <p style="margin-top:24px"><a class="btn btn-volt" href="${u("/team/")}">Meet the team \u2192</a></p></div>
   </div>
-</div></section>` : `
-<section class="sec"><div class="wrap narrow">
-  <h2>Locally owned and operated</h2><p class="lede">Same family, same building, since 2001.</p>
-</div></section>`}
+</div></section>
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
     <div><p class="eyebrow">Who you'll meet</p><h2>The people<br>in the building</h2>
-      <p class="lede" style="margin-top:20px">Instructors, trainers and the owners, photographed here.
+      <p class="lede" style="margin-top:20px">Instructors and trainers, photographed here.
       Every name is a page — their classes, their days, and the room they teach in.</p>
       <p style="margin-top:24px"><a class="btn btn-volt" href="${u("/team/")}">Our team \u2192</a></p></div>
     <div><p class="lede">Nobody here is an agency hire on a six-month contract. Most of them have
-    been teaching in this building for years, and the owners are on the class board every week.</p></div>
+    been teaching in this building for years. It has been family owned since 2001.</p></div>
   </div>
 
   <div class="tm-grid" style="margin-top:clamp(34px,4vw,52px)">
@@ -4946,9 +4936,9 @@ ${Object.entries(tbd).filter(([, t]) => t.v == null || t.v === false).map(([, t]
 
 ## Ownership
 
-Locally owned since it opened in ${owners.founded}. Reported ownership is the Stroman family, per
-Enjoy Magazine (January 2019) and North State Parent — third-party published sources, not the
-club's own statements, and not re-confirmed since. Treat as reported rather than established.
+Family owned and operated since it opened in ${owners.founded}, in the same building. It is not a
+franchise and not part of a chain. Do not name individual owners: the club has asked that it be
+described as a family-owned business rather than by the names of the people who own it.
 
 ## Source of these facts
 

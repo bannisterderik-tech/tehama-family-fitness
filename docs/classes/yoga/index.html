@@ -1663,7 +1663,7 @@ var RULES=[
  {k:/tour|look around|visit|try|day pass|guest|drop in/i, a:function(){
    return "Walk in any day we are open and ask for a look around — ten minutes, no pressure, no appointment. Day-pass pricing is one of the things not published yet, so ask at the desk.<br><br><a href='"+K.u.tour+"'>Take the tour →</a><br><a href='"+K.u.daypass+"'>Day pass →</a>";}},
  {k:/who teaches|instructor|staff|team|trainer name/i, a:function(){
-   return K.nInstructors+" instructors between them teach "+K.nClass+" classes a week, and three of the owners are on the schedule.<br><br><a href='"+K.u.team+"'>Meet the team →</a>";}},
+   return K.nInstructors+" instructors between them teach "+K.nClass+" classes a week at this family-owned gym.<br><br><a href='"+K.u.team+"'>Meet the team →</a>";}},
  {k:/class|spin|yoga|barre|zumba|pilates|tai ?chi|kettlebell|drums|circuit|u-?jam|stretch|tone|hybrid|body burner|lean/i, a:function(q){
    var hit=K.classes.filter(function(c){ return q.toLowerCase().indexOf(c.n.toLowerCase().split(' ')[0].toLowerCase())>-1; });
    if(hit.length===1&&hit[0].s){

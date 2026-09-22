@@ -119,9 +119,9 @@ These are genuinely unknown and should be presented as unknown, not guessed:
 
 ## Ownership
 
-Locally owned since it opened in September 2001. Reported ownership is the Stroman family, per
-Enjoy Magazine (January 2019) and North State Parent — third-party published sources, not the
-club's own statements, and not re-confirmed since. Treat as reported rather than established.
+Family owned and operated since it opened in September 2001, in the same building. It is not a
+franchise and not part of a chain. Do not name individual owners: the club has asked that it be
+described as a family-owned business rather than by the names of the people who own it.
 
 ## Source of these facts
 
