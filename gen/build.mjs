@@ -946,7 +946,7 @@ font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s v
 
 
 /* ── homepage people mosaic ──────────────────────────────────────────── */
-.mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(150px,17vw,250px);gap:12px}
+.mosaic{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:clamp(150px,16vw,240px);gap:12px}
 .mo{position:relative;display:block;overflow:hidden;border-radius:var(--r);background:var(--paper-3)}
 .mo img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
 .mo:hover img{transform:scale(1.04)}
@@ -2467,7 +2467,7 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
 
 <section class="sec"><div class="wrap">
   <p class="eyebrow">One building</p>
-  <h2>Six things you can't get anywhere else in town</h2>
+  <h2>Five things you can't get anywhere else in town</h2>
   <div class="feats" style="margin-top:44px">
     ${[["/basketball/", "A full court", "Open gym twice a day, Monday through Friday. Racquetball too."],
        ["/pickleball/", "Pickleball \u2014 $5 to drop in", "Three indoor courts. Permanent lines. Climate controlled."],
