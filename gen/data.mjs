@@ -60,7 +60,7 @@ export const tbd = {
   dayPass:          { v: null, ask: "Call for the day-pass rate",    q: "Day pass / drop-in price" },
   pickleballFee:    { v: "$5", ask: null, q: "Confirm the $5 non-member drop-in",
                       src: "Places2Play (USA Pickleball)", verify: true },
-  promo:            { v: "End of year special — the rest of the year for $99", ask: null, q: "Current promotion",
+  promo:            { v: "End of year special — 3 months for $99", ask: null, q: "Current promotion",
                       src: "the club's own End of Year Special flyer, 2026-09-19" },
   promoOnline:      { v: null, ask: null, q: "Does the ONLINE sign-up apply the $99 end-of-year special, or only the desk? The site tells people to call or walk in to be safe. And is there an end date before Dec 31?" },
   // FOUND — two independent published sources. Confirm with the family before publish:
@@ -92,6 +92,7 @@ export const tbd = {
   donationGives:    { v: null, ask: null, q: "What do you actually donate — day passes, a month's membership, a gift basket? Any cap per year?" },
   donationLead:     { v: null, ask: null, q: "How much notice do you need for a donation request?" },
   newTeamRoles:     { v: null, ask: null, q: "Roles for the people the shoot added: Derek Nova, Shea Marshall and Krista Renno show as 'Team'. John Giorvas is listed as a personal trainer (TRAINER shirt) and Maggie Brown as barre (the flyer). Right?" },
+  events:           { v: null, ask: null, q: "Are there one-off events to publish (challenges, community days, holiday hours)? /events/ lists only what recurs until you tell us." },
   whoIsKris:        { v: null, ask: null, q: "The calendar's spin instructor 'Kris' (Tue & Fri 6 AM) — is that Kristi Havlin, Krista Renno, or someone else? Until we know, Kris keeps a monogram." },
   appDoes:          { v: null, ask: null, q: "The member app is Trainerize. Which parts are switched ON — schedule, booking, workout plans, messaging your trainer, check-in?" },
   // Legal pages. NONE of this is legal advice and none of it has been reviewed.
@@ -306,6 +307,7 @@ const teamAll = [
       teaches: i.teaches,
       sessions: sessions.filter(s => s.who === i.name),
       portrait: portraitFor(slugify(i.name), meta.full),
+      hero: { Aubrie: "frontdesk" }[i.name] || null,
       bio: null,               // ask the front desk
       desk: false,
     };
@@ -314,19 +316,19 @@ const teamAll = [
      are no sessions to pull. Roles are only what the evidence supports; where
      it supports nothing, the role says "Team" rather than guessing
      (tbd.newTeamRoles). */
-  { slug: "maggie", first: "Maggie", name: "Maggie Brown", role: "Barre instructor",
+  { slug: "maggie", first: "Maggie", name: "Maggie Brown", role: "Barre instructor", hero: "barreClass",
     teaches: [], sessions: [], portrait: portraitFor("maggie", "Maggie Brown"), bio: null, desk: true,
     blurb: "Teaches barre. Our own barre flyer lists her for Barre Basics, Barre Burn and Barre 30 — the live calendar has not caught up yet.",
     where: { text: "In the studio, at the barre. The class times on our flyer and on the calendar still disagree, so call before you plan around one.", href: "/classes/barre/", cta: "About barre →" } },
-  { slug: "john", first: "John", name: "John Giorvas", role: "Personal trainer",
+  { slug: "john", first: "John", name: "John Giorvas", role: "Personal trainer", hero: "nautilus",
     teaches: [], sessions: [], portrait: portraitFor("john", "John Giorvas"), bio: null, desk: true,
     blurb: "One of the trainers on the floor — he is the one in the TRAINER shirt in our photographs.",
     where: { text: "On the strength floor. Ask the desk to book a session with him.", href: "/personal-training/", cta: "Personal training →" } },
-  { slug: "kristi", first: "Kristi", name: "Kristi Havlin", role: "Macro coach and trainer",
+  { slug: "kristi", first: "Kristi", name: "Kristi Havlin", role: "Macro coach and trainer", hero: "fuelbar",
     teaches: [], sessions: [], portrait: portraitFor("kristi", "Kristi Havlin"), bio: null, desk: true,
     blurb: "Coaches macros and trains. The meal-prep recipes on our blog are hers, macros already worked out.",
     where: { text: "Her recipes are on the blog — five servings at a time, with the numbers done for you.", href: "/blog/food/", cta: "Kristi's recipes →" } },
-  { slug: "derek", first: "Derek", name: "Derek Nova", role: "Team",
+  { slug: "derek", first: "Derek", name: "Derek Nova", role: "Team", hero: "deskDerek",
     teaches: [], sessions: [], portrait: portraitFor("derek", "Derek Nova"), bio: null, desk: true,
     blurb: "Often behind the front desk. The printed schedule also lists a Derek for AMRAP on Thursday evenings.",
     where: { text: "Often at the front desk. Ask for him when you come in.", href: "/contact/", cta: "Contact and hours →" } },
@@ -412,7 +414,7 @@ export const classes = [
     bring: "Flat shoes. Nothing else." },
 
   /* ── the rest of the board. Same treatment, one page each. ───────────── */
-  { slug: "tone-zone", hero: "dumbbells", hero2: "studio", name: "Tone Zone", room: "Studio",
+  { slug: "tone-zone", hero: "freeweights", hero2: "dumbbells", name: "Tone Zone", room: "Studio",
     blurb: "Full-body toning with weights.",
     what: "Light-to-moderate dumbbells worked through timed sets, top to bottom. Higher reps than the strength floor, shorter rests, and the instructor keeps the room on the clock.",
     bring: "Water and a towel. The weights, bands and mats are already in the studio." },
@@ -450,7 +452,7 @@ export const classes = [
     blurb: "Swings, cleans, carries.",
     what: "Swings, cleans and carries in the freeweight room. Technique first — the hinge is the whole class the first time you come, and the bells stay light until it looks right.",
     bring: "Flat shoes. Water." },
-  { slug: "spin-tone", hero: "spin", hero2: "dumbbells", name: "Spin/Tone", room: "Spin Room",
+  { slug: "spin-tone", hero: "spin", hero2: "freeweights", name: "Spin/Tone", room: "Spin Room",
     blurb: "Half the class on the bike, half off it.",
     what: "Half on the bike, half off it — intervals on the spin bike, then dumbbell and band work beside it. Tuesday at 5:30 PM with Roxane.",
     bring: "Water and a towel. The desk will set your bike up the first time." },
@@ -634,12 +636,12 @@ export const SHOOT = {
                   alt: "The front of Tehama Family Fitness Center on South Main Street, Red Bluff" },
   exteriorDay:   { src: "/assets/photos/exteriorDay.jpg", w: 1024, h: 1505, shot: "DSC02326.jpg", pos: "center 68%",
                   alt: "The entrance gable of Tehama Family Fitness Center on a clear day" },
-  frontdesk:     { src: "/assets/photos/frontdesk.jpg", w: 1024, h: 695, shot: "DSC02322.jpg",
-                  alt: "The stone-faced front desk just inside the doors" },
+  frontdesk:     { src: "/assets/photos/frontdesk.jpg", w: 1024, h: 695, shot: "DSC02413.jpg", pos: "center 42%",
+                  alt: "Aubrie Thomas, co-owner, at the front desk" },
   lobby:         { src: "/assets/photos/lobby.jpg", w: 1024, h: 1470, shot: "DSC02316.jpg", pos: "center 52%",
                   alt: "The lobby seating area under the Tehama logo, racquetball courts behind glass" },
-  fuelbar:       { src: "/assets/photos/fuelbar.jpg", w: 1024, h: 682, shot: "DSC02317.jpg",
-                  alt: "The Fuel Bar counter with stools, drinks fridge and menu boards" },
+  fuelbar:       { src: "/assets/photos/fuelbar.jpg", w: 1024, h: 682, shot: "DSC02514.jpg", pos: "center 40%",
+                  alt: "Kristi Havlin making smoothies at the Fuel Bar" },
   coffee:        { src: "/assets/photos/coffee.jpg", w: 1024, h: 689, shot: "DSC02528.jpg",
                   alt: "The Fuel Bar menu boards under the lit FUEL sign" },
   basketball:    { src: "/assets/photos/basketball.jpg", w: 1024, h: 683, shot: "DSC02385.jpg",
@@ -664,16 +666,16 @@ export const SHOOT = {
                   alt: "Rows of treadmills and ellipticals on the cardio floor" },
   cardioTheater: { src: "/assets/photos/cardioTheater.jpg", w: 1024, h: 1498, shot: "DSC02347.jpg", pos: "center 60%",
                   alt: "Treadmills lined up under the screens" },
-  gymfloor:      { src: "/assets/photos/gymfloor.jpg", w: 1024, h: 662, shot: "DSC02358.jpg",
-                  alt: "The free-weight floor with benches and racks" },
-  freeweights:   { src: "/assets/photos/freeweights.jpg", w: 1024, h: 683, shot: "DSC02355.jpg",
-                  alt: "Benches, plate trees and racks in the free-weight room" },
+  gymfloor:      { src: "/assets/photos/gymfloor.jpg", w: 1024, h: 662, shot: "DSC02640.jpg", pos: "center 55%",
+                  alt: "A member training on the strength floor" },
+  freeweights:   { src: "/assets/photos/freeweights.jpg", w: 1024, h: 683, shot: "DSC02445.jpg", pos: "center 55%",
+                  alt: "A member squatting in the Smith machine on the strength floor" },
   platform:      { src: "/assets/photos/platform.jpg", w: 1024, h: 756, shot: "DSC02353.jpg",
                   alt: "Racks, benches and the free-weight floor" },
   dumbbells:     { src: "/assets/photos/dumbbells.jpg", w: 1024, h: 1504, shot: "DSC02363.jpg", pos: "center 58%",
                   alt: "The dumbbell rack running light to heavy" },
-  nautilus:      { src: "/assets/photos/nautilus.jpg", w: 1024, h: 1494, shot: "DSC02608.jpg", pos: "center 55%",
-                  alt: "A cable strength machine on the rubber floor" },
+  nautilus:      { src: "/assets/photos/nautilus.jpg", w: 1024, h: 1494, shot: "DSC02635.jpg",
+                  alt: "Trainer John Giorvas coaching a member on the cable row" },
   crosstrain:    { src: "/assets/photos/crosstrain.jpg", w: 1024, h: 683, shot: "DSC02403.jpg",
                   alt: "Members training in the cross-training rig" },
   kettlebells:   { src: "/assets/photos/kettlebells.jpg", w: 1024, h: 1456, shot: "DSC02407.jpg", pos: "center 58%",
@@ -690,6 +692,11 @@ export const SHOOT = {
                   alt: "A green smoothie on the Fuel Bar counter" },
   rack:          { src: "/assets/photos/rack.jpg", w: 1024, h: 1495, shot: "DSC02425.jpg", pos: "center 50%",
                   alt: "A blue power rack loaded with plates" },
+  // people, added for AIWANG-114/116
+  barreClass:    { src: "/assets/photos/barreClass.jpg", w: 1024, h: 1500, shot: "DSC02560.jpg", pos: "center 40%",
+                  alt: "Maggie Brown teaching barre in the studio" },
+  deskDerek:     { src: "/assets/photos/deskDerek.jpg", w: 1024, h: 1500, shot: "DSC02663.jpg", pos: "center 45%",
+                  alt: "Derek Nova at the front desk, the Fuel Bar behind him" },
 };
 // Real pixel sizes, written by gen/photos.mjs — so a full-resolution re-export
 // updates width/height/srcset everywhere without touching this file.
@@ -1378,7 +1385,7 @@ you got the real answer from the desk than a guess from a website:
     title: "A week that actually fits",
     dek: "Three real weekly templates built from the class board — for the early riser, the parent, and the after-work crowd.",
     kicker: "Four days, not seven",
-    hero: "corridor",
+    hero: "cardio",
     lede: "Most training plans fail on the calendar, not in the gym. So here are three weeks built out of classes that genuinely run, at times the building is genuinely open.",
     body: `
 ### If you train before work
@@ -1462,12 +1469,14 @@ export const specials = {
        Open question: does the ONLINE sign-up apply it? (tbd.promoOnline) */
     { id: "endOfYear", on: true, ends: "2026-12-31",
       name: "End of year special",
-      bar: "End of year special — the rest of the year for $99",
-      price: "$99", priceFor: "the rest of the year",
-      blurb: "Get the rest of the year for $99. Your membership starts the day you sign up.",
+      // Wording per AIWANG-101 (Van Tucker, 2026-09-11): "$99 flat rate special —
+      // 3 months for $99 — Sep–Dec." The flyer says "the rest of the year".
+      bar: "End of year special — 3 months for $99",
+      price: "$99", priceFor: "3 months",
+      blurb: "3 months for $99, September through December — one flat rate. Your membership starts the day you sign up.",
       urgency: "Don’t wait — this special won’t last.",
       includes: ["Group classes", "One-on-one trainers", "New equipment", "Nutrition coaches"],
-      src: "the club’s End of Year Special flyer" },
+      src: "the club’s End of Year Special flyer" },  // wording: AIWANG-101
     { id: "joinFeeWaived", on: false, ends: null,
       name: "Enrollment fee waived",
       bar: "Enrollment fee waived this month",

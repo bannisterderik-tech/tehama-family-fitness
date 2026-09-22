@@ -945,6 +945,16 @@ font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s v
 .nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
 
 
+/* ── homepage people mosaic ──────────────────────────────────────────── */
+.mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(150px,17vw,250px);gap:12px}
+.mo{position:relative;display:block;overflow:hidden;border-radius:var(--r);background:var(--paper-3)}
+.mo img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.mo:hover img{transform:scale(1.04)}
+.mo-lg{grid-column:span 2;grid-row:span 2}
+.mo span{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 13px;color:#fff;font-family:var(--disp);
+font-weight:700;font-size:.95rem;letter-spacing:-.02em;background:linear-gradient(transparent,rgba(8,14,32,.82))}
+@media(max-width:760px){.mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:40vw}.mo-lg{grid-column:span 2;grid-row:span 1}}
+
 /* ── live offer panel on /specials/ ───────────────────────────────────── */
 .offer{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(24px,4vw,56px);padding:clamp(26px,4vw,48px);
 background:#fff;border:1px solid var(--line);border-top:4px solid var(--volt);border-radius:var(--r)}
@@ -1174,7 +1184,15 @@ letter-spacing:0;text-transform:none;font-weight:400;color:var(--ice);cursor:poi
 const NAV = [
   ["/schedule/", "Schedule"], ["/classes/", "Classes"], ["/specials/", "Specials"],
   ["/amenities/", "The Building"], ["/pickleball/", "Pickleball"], ["/childcare/", "Childcare"],
-  ["/fuel-bar/", "Fuel Bar"], ["/blog/", "Blog"], ["/membership/", "Membership"],
+  ["/fuel-bar/", "Fuel Bar"],
+  ["/blog/", "Resources", [
+    ["/blog/food/", "Recipes", "Meal prep with the macros worked out"],
+    ["/blog/workouts/", "Fitness tips", "What to do on the equipment that is here"],
+    ["/blog/routines/", "Routines", "Fitting training into a real week"],
+    ["/events/", "Events", "League nights, open gym and what is on"],
+    ["/blog/", "All resources", "Everything in one place"],
+  ]],
+  ["/membership/", "Membership"],
   ["/about/", "About", [
     ["/about/", "About us", "Locally owned on South Main since 2001"],
     ["/team/", "Our team", "The people you will meet here"],
@@ -1626,9 +1644,16 @@ const pimg = (photo, { sizes, alt = null, cls = "", eager = false, style = "" } 
   // is each frame's focal point, so the spin hero is bikes rather than floor.
   ((style || photo.pos) ? ` style="${[photo.pos ? `object-position:${photo.pos}` : "", style].filter(Boolean).join(";")}"` : "") + `>`;
 
-const phero = (photo, { kick, h1, lede, acts: a = true, sm = true } = {}) => `
+// `film: true` puts the homepage film over the photo (AIWANG-115). Same element
+// id, so the one film script in the layout drives it on whichever page it is on.
+const heroFilm = poster => `<video id="hv" poster="${u(poster.src)}"
+           autoplay muted loop playsinline preload="metadata" aria-hidden="true"
+           width="1280" height="800"
+           data-sm="${u("/assets/video/real-720.mp4")}"
+           data-lg="${u("/assets/video/real-1280.mp4")}"></video>`;
+const phero = (photo, { kick, h1, lede, acts: a = true, sm = true, film = false } = {}) => `
 <section class="hero${sm ? " hero-sm" : ""}">
-  <div class="hero-media">${pimg(photo, { sizes: "100vw", alt: "", eager: true })}</div>
+  <div class="hero-media"${film ? ' id="hm"' : ""}>${pimg(photo, { sizes: "100vw", alt: "", eager: true })}${film ? heroFilm(photo) : ""}</div>
   <div class="wrap">
     ${kick ? `<p class="kick">${kick}</p>` : ""}
     <h1>${String(h1).replace(/<\/?em>/g, "")}</h1>
@@ -2392,10 +2417,8 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
     none of those.</p>
     <div class="acts">
       <a class="btn btn-volt" href="${biz.join}" rel="noopener">Become a member \u2192</a>
-      <a class="btn btn-ghost" href="${u("/membership/")}#rate">Get your rate</a>
       <a class="btn btn-ghost" href="${u("/day-pass/")}">Walk in today \u2014 open till 8</a>
     </div>
-    <p class="under">${NAMES ? "Karla Stroman, an owner, teaches the 6:00 AM spin. <b>" + staff.frontDesk + "</b> is at the desk." : "<b>" + staff.frontDesk + "</b> is at the desk."} No sales process.</p>
   </div>
 </section>
 
@@ -2420,9 +2443,27 @@ P("/", `${biz.name} — Gym in Red Bluff, CA`,
   </div>
 </div></section>
 
-${todayStrip()}
-
-${rateForm()}
+<!-- AIWANG-114 / 116: the homepage had fifteen sections and four photographs,
+     none of them with a person in. One section of the people who are actually
+     here, each tile a door to the page it belongs to. -->
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Inside the building</p><h2>A normal<br>morning here</h2></div>
+    <div><p class="lede">Classes, coaching, the Fuel Bar and the floor, photographed on an ordinary
+    weekday. These are our people, not models.</p></div>
+  </div>
+  <div class="mosaic" style="margin-top:clamp(30px,4vw,48px)">
+    ${[[photos.barre, "Barre with Maggie", "/classes/barre/"],
+       [photos.nautilus, "Coaching on the floor", "/personal-training/"],
+       [photos.fuelbar, "Kristi at the Fuel Bar", "/fuel-bar/"],
+       [photos.crosstrain, "The cross-training rig", "/strength-floor/"],
+       [photos.cardio, "The cardio floor", "/amenities/"],
+       [photos.frontdesk, "Aubrie at the front desk", "/about/"],
+      ].map(([ph, t, h], i) => `<a class="mo rv${i === 0 ? " mo-lg" : ""}" href="${u(h)}">
+        ${pimg(ph, { sizes: i === 0 ? "(max-width:760px) 92vw, 50vw" : "(max-width:760px) 46vw, 25vw" })}
+        <span>${t} \u2192</span></a>`).join("")}
+  </div>
+</div></section>
 
 <section class="sec"><div class="wrap">
   <p class="eyebrow">One building</p>
@@ -2440,99 +2481,21 @@ ${rateForm()}
   </div>
 </div></section>
 
-${NAMES ? `
-<section class="sec sec-void"><div class="wrap">
-  <div class="split">
-    <div><p class="eyebrow">Who runs it</p>
-      <h2 class="said rv">Karla Stroman owns this gym. She teaches the 6:00 AM spin.</h2></div>
-    <div><p class="lede">Her daughter <b style="color:#fff">Aubrie</b> teaches Lean &amp; Mean most weekday
-    mornings. <b style="color:#fff">Kyle Tingley</b>, co-owner, is in the studio on Wednesday evenings.
-    You will not find that at a franchise, and you cannot buy it.</p>
-    <p style="margin-top:26px"><a class="btn btn-volt" href="${u("/schedule/")}">See who's on the board this week \u2192</a></p></div>
-  </div>
-</div></section>` : ""}
+${todayStrip()}
 
-<section class="sec"><div class="wrap">
-  <div class="split">
-    <div><p class="eyebrow">Three gyms in this town</p><h2>What's actually<br>different</h2></div>
-    <div><p class="lede">Everyone here already knows the other two. No adjectives \u2014 just what is in
-    the buildings. Their price stays in, and so do our hours.</p></div>
-  </div>
-  <div class="tw cmp" style="margin-top:clamp(30px,3.5vw,46px)"><table>
-    <caption>Red Bluff, compared <span class="sub">checked against both</span></caption>
-    <thead><tr><th scope="col">&nbsp;</th><th scope="col">Tehama Family</th>
-      <th scope="col">Planet Fitness</th><th scope="col">RB Health &amp; Fitness</th></tr></thead>
-    <tbody>
-      ${[["Childcare", "In the building", "None", "None"],
-         ["Pickleball", "3 indoor courts, $5 drop-in", "None", "\u2014"],
-         ["Basketball", "Full court, twice a day", "None", "None"],
-         ["Racquetball", "Yes", "None", "None"],
-         ["Classes", `${counts.classes} a week, included`, "None", "Some"],
-         ["Published price", "Ask the desk", "$15/mo", "Not published"],
-         ["Weeknights", "5a\u20138p", "Late / 24h", "To 10p"],
-        ].map(([a, b, c, d]) => `<tr><td>${a}</td><td class="yes">${b}</td>
-        <td class="no">${c}</td><td class="no">${d}</td></tr>`).join("")}
-    </tbody></table></div>
-  <p class="lede" style="margin-top:26px;max-width:46ch"><b>If you train after 8, we are the wrong gym.</b>
-  If you need a court, a kids' room or a class that costs nothing extra, we are the only one.</p>
-</div></section>
+${NAMES ? spread(team.find(t => t.slug === "karla")?.portrait || photos.frontdesk, { eyebrow: "Who runs it", tone: "cool",
+  h2: "Karla Stroman owns this gym. She teaches the 6:00 AM spin.",
+  body: "Her daughter Aubrie teaches Lean & Mean most weekday mornings. You will not find that at a franchise, and you cannot buy it.",
+  cta: ["/team/", "Meet the team \u2192"] }) : ""}
 
-<section class="sec sec-dark" style="padding-bottom:0"><div class="wrap">
-  <div class="split">
-    <div>
-      <p class="eyebrow">New on the floor</p>
-      <h2>Brand-new, commercial-grade iron</h2>
-    </div>
-    <div>
-      <p class="lede">A full replacement of the strength floor with commercial Nautilus and Matrix. The room
-      we call the <b style="color:#fff">Wolf Cave</b> is lettered on the wall, so you'll
-      know when you're in it.</p>
-      <p style="margin-top:26px"><a class="btn btn-volt" href="${u("/strength-floor/")}">See the strength floor →</a></p>
-    </div>
-  </div>
-</div>
-<img src="${u("/assets/strength-floor.jpg")}" alt="New Matrix strength machines on the rubber floor at Tehama Family Fitness Center" width="1080" height="290" loading="lazy" style="width:100%;margin-top:clamp(40px,5vw,72px);object-fit:cover;max-height:340px">
-</section>
+${spread(photos.childcare, { eyebrow: "Bring the kids", flip: true,
+  h2: "The kids' room is<br>in the building",
+  body: `Open 8 to 1 every day but Sunday, plus 4 to 8 Monday through Thursday. Every session on our schedule says whether the kids' room is open at that hour \u2014 which is usually the thing that decides whether you get here at all.`,
+  cta: ["/childcare/", "Childcare \u2192"] })}
 
-<section class="sec"><div class="wrap narrow">
-  <p class="eyebrow">Membership</p>
-  <h2>What it costs</h2>
-  <p class="lede">One membership covers the court, the pickleball courts, racquetball, the weights, the cardio
-  deck, the sauna and every class on the schedule. There's no separate class fee and no per-court charge.</p>
-  <div style="margin-top:26px">${askBox("We'll give you the number over the phone.", "priceSingle",
-    "Rates aren't published online yet — call the desk and you'll have it in under a minute.")}</div>
-  <p style="margin-top:22px"><a class="btn btn-out" href="${u("/membership/")}">What's included →</a></p>
-</div></section>
-
-${spread(photos.studio, { eyebrow: "SilverSneakers", flip: true,
-  h2: "Your plan already<br>covers this gym",
-  body: "If you are on SilverSneakers, bring the card to the desk. Classic Monday, Wednesday and Friday. Cardio Circuit Tuesday and Thursday. And tai chi every single weekday morning at 7:15, without exception.",
-  cta: ["/silversneakers/", "SilverSneakers here \u2192"] })}
-
-<section class="sec"><div class="wrap">
-  <p class="eyebrow">Bring the kids</p>
-  <h2>Childcare is in the building</h2>
-  <p class="lede">Mornings 8 to 1 every day but Sunday, and evenings 4 to 8 Monday through Thursday. Every
-  class on our schedule tells you whether the kids' room is open at that hour — because that's the only
-  question that actually decides whether you make it in.</p>
-  <div class="grid g2" style="margin-top:26px">
-    <div class="tw"><table><caption>Childcare hours</caption>
-      <thead><tr><th scope="col">Day</th><th scope="col">Open</th></tr></thead>
-      <tbody>${biz.childcareHours.map(([d, h]) => `<tr><td class="t-time">${d}</td><td>${h}</td></tr>`).join("")}</tbody></table></div>
-    <div>${askBox("Ages, sign-up and first visit", "childcareAges",
-      "Call the desk and ask for the childcare room — they'll walk you through it.")}
-      <p style="margin-top:16px"><a class="btn btn-volt" href="${u("/schedule/?cc=1")}">Classes you can make \u2192</a></p></div>
-  </div>
-</div></section>
+${rateForm()}
 
 ${proof()}
-
-${fullBleed(photos.basketball, "The only full court in Red Bluff \u2014 open gym at one and again at six, Monday to Friday.")}
-
-${spread(photos.childcare, { eyebrow: "While you train", flip: true,
-  h2: "Alma has<br>the kids",
-  body: `Open 8 to 1 every day but Sunday, plus 4 to 8 Monday through Thursday. Every session on our schedule says whether the kids' room is open at that hour \u2014 which is usually the thing that decides whether you get here at all.`,
-  cta: ["/schedule/?cc=1", "Classes you can actually make \u2192"] })}
 
 ${band("Come and look at it.",
   `Walk in any day we're open. Nobody's going to put you through a sales process — the front desk will hand you a towel and walk you round.`,
@@ -3086,7 +3049,7 @@ ${phero(photos.childcare, { kick: "In the building",
 ${statement("Nowhere else in Red Bluff will take your kids while you train.",
   "Planet Fitness has no childcare. Red Bluff Health & Fitness has no childcare. For most parents in this town that is the whole decision, and it is why a lot of our members are here.")}
 
-${fullBleed(photos.corridor, "The kids\u2019 room is off the main corridor \u2014 a short walk from wherever you are training.")}
+${fullBleed(photos.kidsroom, "The kids\u2019 room is off the main corridor \u2014 a short walk from wherever you are training.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -3207,7 +3170,7 @@ ${band("Coffee is free until nine.", "Which is a decent reason to make the early
 P("/amenities/", `Everything in the Building | ${biz.short} Red Bluff`,
   `The full amenity list at Tehama Family Fitness Center, Red Bluff: 30,000 sq ft with a full basketball court, racquetball, indoor pickleball, sauna, childcare, tanning, esthetician and more.`,
   `
-${phero(photos.locker, { kick: `${biz.sqft} square feet \u00b7 single storey`,
+${phero(photos.exterior, { film: true, kick: `${biz.sqft} square feet \u00b7 single storey`,
   h1: "Everything in <em>the building</em>",
   lede: "Twenty-five things under one roof, and one membership covers all of them." })}
 
@@ -3481,7 +3444,7 @@ for (const m of team) {
     : `${m.name} teaches ${m.teaches.length ? m.teaches.join(", ") + " at" : "at"} Tehama Family Fitness Center in Red Bluff — ${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week, included with membership.`;
 
   P(`/team/${m.slug}/`, `${m.name} — ${m.role} | ${biz.short} Red Bluff`, desc, `
-${phero(photos.studio, { kick: m.role, h1: esc(m.name),
+${phero(photos[m.hero] || photos.studio, { kick: m.role, h1: esc(m.name),
   lede: m.desk ? esc(m.blurb)
     : `${m.teaches.length ? esc(m.teaches.join(" · ")) : "On the schedule"}. ${m.sessions.length} session${m.sessions.length === 1 ? "" : "s"} a week, included with membership.`,
   sm: true })}
@@ -4466,6 +4429,67 @@ ${band("Come and see what you are asking.", "Walk in any day we are open. Ten-mi
   [[`tel:${biz.tel}`, `Call ${biz.phone}`], ["/about/", "About us", "btn-ghost"], ["/tour/", "Take the tour", "btn-ghost"]])}
 `);
 
+
+/* ============================== EVENTS =================================
+   AIWANG-91 asked for an Events entry under Resources. There is no events
+   calendar in anything the club has given us, so this page lists what
+   genuinely recurs — league nights, open gym, the current special — from the
+   same data the schedule uses, and says plainly that one-off events are not
+   published yet (tbd.events). Nothing here is made up to fill the page.
+   ====================================================================== */
+{
+  const openGym = sessions.filter(x => x.kind === "open");
+  const days = [...new Set(openGym.map(x => x.day))];
+  const pbRows = pickleball.play;
+  P("/events/", `Events & What's On | ${biz.short} Red Bluff`,
+    `What's on at Tehama Family Fitness Center in Red Bluff beyond the class board: pickleball league nights, basketball open gym, and current specials.`,
+    `
+${phero(photos.basketball, { kick: "Beyond the class board", h1: "Events &amp; <em>what's on</em>",
+  lede: "League nights, open gym and anything happening in the building. The class schedule has its own page — this is everything else.", acts: false })}
+
+${LIVE.length ? `<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Running now</p><h2>${esc(LIVE[0].name)}</h2></div>
+    <div><p class="lede">${esc(LIVE[0].blurb)}</p>
+      <p style="margin-top:22px"><a class="btn btn-volt" href="${u("/specials/")}">The details →</a></p></div>
+  </div>
+</div></section>` : ""}
+
+<section class="sec sec-tint"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Every week</p><h2>Pickleball<br>league nights</h2>
+      <p class="lede" style="margin-top:18px">Organised play on our three indoor courts, run by the Red Bluff
+      pickleball community. Levels ${esc(pickleball.levels)}. Members play at no extra charge.</p>
+      <p style="margin-top:22px"><a class="btn btn-out" href="${u("/pickleball/")}">Pickleball →</a></p></div>
+    <div><div class="tw"><table><caption>League play</caption>
+      <thead><tr><th scope="col">Day</th><th scope="col">Time</th></tr></thead>
+      <tbody>${pbRows.map(([d, t]) => `<tr><td class="t-time">${d}</td><td>${t}</td></tr>`).join("")}</tbody></table></div>
+      ${pickleball.verify ? `<p style="margin-top:14px;color:var(--ink-3);font-size:.9rem">From Places2Play. Our own calendar
+      shows Tuesday and Saturday only, so call before a Thursday.</p>` : ""}</div>
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="split">
+    <div><p class="eyebrow">Every weekday</p><h2>Basketball<br>open gym</h2>
+      <p class="lede" style="margin-top:18px">The full court, open for pick-up games. ${openGym.length} blocks a week,
+      ${esc(list(days.map(d => DAYNAME[d])))}.</p>
+      <p style="margin-top:22px"><a class="btn btn-out" href="${u("/basketball/")}">Basketball →</a></p></div>
+    <div>${miniTable(openGym)}</div>
+  </div>
+</div></section>
+
+<section class="sec sec-tint"><div class="wrap narrow">
+  <div class="note"><b>One-off events go here first.</b> Challenges, holiday hours, community days —
+  when the club announces one it goes on this page and in the newsletter.
+  <a href="#newsletter" data-newsletter>Get the newsletter</a> or
+  <a href="tel:${biz.tel}">call ${biz.phone}</a> to ask what is coming up.</div>
+</div></section>
+
+${band("Everything on the board is included.", "League nights, open gym and every class — one membership.",
+  [[biz.join, "Become a member →"], ["/schedule/", "Class schedule", "btn-ghost"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
+`);
+}
 
 /* ============================== LEGAL =================================
    Written from what this website actually does, verified against the

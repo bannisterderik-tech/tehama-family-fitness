@@ -24,6 +24,8 @@
 | A14 | Current promo running? ("bring a friend," first week, etc.) | **Yes — End of Year Special, the rest of the year for $99. Live on the site since 2026-09-19.** |
 | A14b | **Does the online sign-up apply the $99?** Until we know, the specials page sends people to call or walk in, not to the online join. | |
 | A14c | Does the special end before Dec 31? The site takes it down on its own on Jan 1; tell us if it should go sooner. | |
+| A14d | The special now reads **3 months for $99, September to December, flat rate** (per AIWANG-101). The flyer says "the rest of the year". Confirm which wording the club wants. | |
+| A15 | **Events.** /events/ lists league nights, open gym and the current special. Any one-off events to add (challenges, community days, holiday hours)? | |
 
 > **Raise this on the call:** ABC online sells only *Single Monthly* and *Single 12-Month*.
 > A business named **Family** Fitness sells no family membership online. Fixing that is

@@ -894,6 +894,16 @@ font-size:1.15rem;line-height:1;display:grid;place-items:center;transition:.2s v
 .nl-x:hover{background:rgba(184,208,224,.14);color:#fff}
 
 
+/* ── homepage people mosaic ──────────────────────────────────────────── */
+.mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:clamp(150px,17vw,250px);gap:12px}
+.mo{position:relative;display:block;overflow:hidden;border-radius:var(--r);background:var(--paper-3)}
+.mo img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.mo:hover img{transform:scale(1.04)}
+.mo-lg{grid-column:span 2;grid-row:span 2}
+.mo span{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 13px;color:#fff;font-family:var(--disp);
+font-weight:700;font-size:.95rem;letter-spacing:-.02em;background:linear-gradient(transparent,rgba(8,14,32,.82))}
+@media(max-width:760px){.mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:40vw}.mo-lg{grid-column:span 2;grid-row:span 1}}
+
 /* ── live offer panel on /specials/ ───────────────────────────────────── */
 .offer{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(24px,4vw,56px);padding:clamp(26px,4vw,48px);
 background:#fff;border:1px solid var(--line);border-top:4px solid var(--volt);border-radius:var(--r)}
