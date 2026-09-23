@@ -2539,7 +2539,7 @@ ${phero(photos.studio, { kick: "Straight from our live calendar",
 ${statement("Sixty-four ways into this building every week.",
   "Spin before dawn, tai chi at 7:15, Zumba mid-morning, open gym at one and again at six, pickleball on Tuesday nights. All of it included, none of it booked.")}
 
-${fullBleed(photos.gymfloor, "Sixty-four sessions a week, and every one of them is already paid for.")}
+${fullBleed(photos.gymfloorWide, "Sixty-four sessions a week, and every one of them is already paid for.")}
 
 ${band("Every one of these is included.",
   "No class fee, no booking, no app. Show up a few minutes early the first time and tell the instructor it's your first one.",
@@ -2631,7 +2631,7 @@ ${band("Every one of these is included.",
 P("/membership/", `Membership — What's Included | ${biz.short} Red Bluff`,
   `One membership at Tehama Family Fitness Center covers the full basketball court, racquetball, indoor pickleball, the new strength floor, all ${counts.classes} weekly classes, sauna and more.`,
   `
-${phero(photos.gymfloor, { kick: "Membership",
+${phero(photos.gymfloorWide, { kick: "Membership",
   h1: "One membership.<br>The <em>whole building.</em>",
   lede: "There is no class fee. There is no court fee. There is no separate charge for anything in here. If it is in the building, it is in the membership." })}
 
@@ -2665,7 +2665,7 @@ ${fullBleed(photos.tanning, "Tanning, the esthetician room and the saunas are in
   <p style="margin-top:26px"><a href="${u("/amenities/")}">See the full amenity list \u2192</a></p>
 </div></section>
 
-${fullBleed(photos.freeweights, "The freeweight room and the Olympic platform \u2014 included, like everything else.")}
+${fullBleed(photos.freeweightsWide, "The freeweight room and the Olympic platform \u2014 included, like everything else.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -2886,7 +2886,7 @@ ${phero(photos.pickleball, { sm: false, kick: "2498 S Main St · Red Bluff",
 ${statement("Three indoor courts, and half the town still does not know.",
   "Pickleheads, Places2Play, Bounce and Pickleballify all list our courts. Most people in Red Bluff still have no idea they are here.")}
 
-${fullBleed(photos.racquetball, "The same high-bay floor carries the racquetball court \u2014 the only one in town.")}
+${fullBleed(photos.basketball, "The same high-bay floor carries the racquetball court \u2014 the only one in town.")}
 
 ${spread(photos.paddles, { eyebrow: "Why indoors matters here", flip: true,
   h2: "A twelve-month season",
@@ -2996,7 +2996,7 @@ ${spread(photos.freeweights, { eyebrow: "Freeweights", flip: true,
   <p style="margin-top:30px"><a class="btn btn-out" href="${u("/womens-weight-room/")}">The women's weight room \u2192</a></p>
 </div></section>
 
-${fullBleed(photos.dumbbells, "Dumbbells light to heavy, and benches enough that you are not waiting for one.")}
+${fullBleed(photos.freeweightsWide, "Dumbbells light to heavy, and benches enough that you are not waiting for one.")}
 
 ${band("Put your hands on it.", "Walk in and try the new equipment before you decide anything.",
   [["/day-pass/", "Day pass"], [`tel:${biz.tel}`, `Call ${biz.phone}`, "btn-ghost"]])}
@@ -3046,7 +3046,7 @@ ${phero(photos.childcare, { kick: "In the building",
 ${statement("Nowhere else in Red Bluff will take your kids while you train.",
   "Planet Fitness has no childcare. Red Bluff Health & Fitness has no childcare. For most parents in this town that is the whole decision, and it is why a lot of our members are here.")}
 
-${fullBleed(photos.kidsroom, "The kids\u2019 room is off the main corridor \u2014 a short walk from wherever you are training.")}
+${fullBleed(photos.childcare, "The kids\u2019 room is off the main corridor \u2014 a short walk from wherever you are training.")}
 
 <section class="sec"><div class="wrap">
   <div class="split">
@@ -3150,7 +3150,7 @@ ${spread(photos.coffee, { eyebrow: "Where it is", flip: true,
   </div>
 </div></section>
 
-${fullBleed(photos.fuelServe, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
+${fullBleed(photos.fuelbarWide, "The counter is by the lobby \u2014 you pass it on the way in and on the way out.")}
 
 <section class="sec"><div class="wrap narrow">
   <h2>Nutrition coaching</h2>
@@ -3202,7 +3202,7 @@ ${spread(photos.saunaDoor, { eyebrow: "The recovery end", flip: true,
          "Full-service lockers, showers and benches",
          "Tanning and an on-site esthetician"] })}
 
-${fullBleed(photos.cardioTheater, "Thirty-plus pieces of cardio, plus the cardio theater, TRX and a cross-training box.")}
+${fullBleed(photos.cardio, "Thirty-plus pieces of cardio, plus the cardio theater, TRX and a cross-training box.")}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">
@@ -4131,7 +4131,7 @@ const ANDROID = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
 P("/specials/", `Specials & What's Included | ${biz.short} Red Bluff`,
   `What's running right now at Tehama Family Fitness Center in Red Bluff, plus everything that is always included with a membership — all 54 classes, the whole building, and free coffee before 9 AM.`,
   `
-${phero(LIVE[0]?.price ? photos.gymfloor : photos.frontdesk, { kick: LIVE.length ? (LIVE[0].price ? esc(LIVE[0].name) : `${LIVE.length} running now`) : "Everything below is always true",
+${phero(LIVE[0]?.price ? photos.gymfloorWide : photos.frontdeskWide, { kick: LIVE.length ? (LIVE[0].price ? esc(LIVE[0].name) : `${LIVE.length} running now`) : "Everything below is always true",
   h1: LIVE[0]?.price ? `${esc(LIVE[0].priceFor)} <em>for ${esc(LIVE[0].price)}</em>`
     : LIVE.length ? "What's <em>on</em> right now" : "What you get <em>without</em><br>paying extra",
   lede: LIVE.length
@@ -4194,7 +4194,7 @@ ${statement("There is no class fee. There is no court fee.",
   </div>
 </div></section>
 
-${fullBleed(photos.gymfloor, "One membership, and nothing in here behind a second paywall.")}
+${fullBleed(photos.gymfloorWide, "One membership, and nothing in here behind a second paywall.")}
 
 <section class="sec sec-tint"><div class="wrap">
   <div class="split">

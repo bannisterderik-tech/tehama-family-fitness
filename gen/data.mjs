@@ -658,7 +658,7 @@ export const SHOOT = {
                   alt: "The studio with mirrored walls, wood floor and a ballet barre" },
   yoga:          { src: "/assets/photos/yoga.jpg", w: 1024, h: 665, shot: "DSC02479.jpg",
                   alt: "The yoga, Pilates and dance studio with its wood floor and mirrors" },
-  barre:         { src: "/assets/photos/barre.jpg", w: 1024, h: 756, shot: "DSC02571.jpg",
+  barre:         { src: "/assets/photos/barre.jpg", w: 1024, h: 756, shot: "DSC02571.jpg", pos: "center 30%",
                   alt: "An instructor holding a position at the barre in the studio" },
   spin:          { src: "/assets/photos/spin.jpg", w: 1024, h: 1475, shot: "DSC02475.jpg", pos: "center 52%",
                   alt: "The spin room, rows of Spinning bikes facing the mirror" },
@@ -666,7 +666,7 @@ export const SHOOT = {
                   alt: "Rows of treadmills and ellipticals on the cardio floor" },
   cardioTheater: { src: "/assets/photos/cardioTheater.jpg", w: 1024, h: 1498, shot: "DSC02347.jpg", pos: "center 60%",
                   alt: "Treadmills lined up under the screens" },
-  gymfloor:      { src: "/assets/photos/gymfloor.jpg", w: 1024, h: 662, shot: "DSC02640.jpg", pos: "center 55%",
+  gymfloor:      { src: "/assets/photos/gymfloor.jpg", w: 1024, h: 662, shot: "DSC02640.jpg", pos: "center 30%",
                   alt: "A member training on the strength floor" },
   freeweights:   { src: "/assets/photos/freeweights.jpg", w: 1024, h: 683, shot: "DSC02445.jpg", pos: "center 55%",
                   alt: "A member squatting in the Smith machine on the strength floor" },
@@ -684,7 +684,7 @@ export const SHOOT = {
                   alt: "A trainer coaching a member on the TRX straps" },
   locker:        { src: "/assets/photos/locker.jpg", w: 1024, h: 1536, shot: "DSC02391.jpg", pos: "center 50%",
                   alt: "The locker room — wood lockers and benches" },
-  pt:            { src: "/assets/photos/pt.jpg", w: 1024, h: 1536, shot: "DSC02624.jpg", pos: "center 40%",
+  pt:            { src: "/assets/photos/pt.jpg", w: 1024, h: 1536, shot: "DSC02624.jpg", pos: "center 45%",
                   alt: "A trainer coaching a member through a cable pulldown" },
   fuelServe:     { src: "/assets/photos/fuelServe.jpg", w: 1024, h: 1538, shot: "DSC02534.jpg",
                   alt: "A member being handed a drink across the Fuel Bar counter" },
@@ -693,10 +693,21 @@ export const SHOOT = {
   rack:          { src: "/assets/photos/rack.jpg", w: 1024, h: 1495, shot: "DSC02425.jpg", pos: "center 50%",
                   alt: "A blue power rack loaded with plates" },
   // people, added for AIWANG-114/116
-  barreClass:    { src: "/assets/photos/barreClass.jpg", w: 1024, h: 1500, shot: "DSC02560.jpg", pos: "center 40%",
+  barreClass:    { src: "/assets/photos/barreClass.jpg", w: 1024, h: 1500, shot: "DSC02560.jpg", pos: "center 45%",
                   alt: "Maggie Brown teaching barre in the studio" },
   deskDerek:     { src: "/assets/photos/deskDerek.jpg", w: 1024, h: 1500, shot: "DSC02663.jpg", pos: "center 45%",
                   alt: "Derek Nova at the front desk, the Fuel Bar behind him" },
+  // Landscape frames of the same rooms, for full-width bands and wide heroes.
+  // A portrait in a 3.35:1 band shows a 20% strip of it — which is what was
+  // slicing the tops off people's heads (fixed 2026-09-22).
+  fuelbarWide:   { src: "/assets/photos/fuelbarWide.jpg", w: 1024, h: 682, shot: "DSC02317.jpg",
+                  alt: "The Fuel Bar counter with stools, drinks fridge and menu boards" },
+  freeweightsWide:{ src: "/assets/photos/freeweightsWide.jpg", w: 1024, h: 683, shot: "DSC02355.jpg",
+                  alt: "Benches, plate trees and racks in the free-weight room" },
+  gymfloorWide:  { src: "/assets/photos/gymfloorWide.jpg", w: 1024, h: 662, shot: "DSC02358.jpg",
+                  alt: "The free-weight floor with benches and racks" },
+  frontdeskWide: { src: "/assets/photos/frontdeskWide.jpg", w: 1024, h: 695, shot: "DSC02322.jpg",
+                  alt: "The stone-faced front desk just inside the doors" },
 };
 // Real pixel sizes, written by gen/photos.mjs — so a full-resolution re-export
 // updates width/height/srcset everywhere without touching this file.

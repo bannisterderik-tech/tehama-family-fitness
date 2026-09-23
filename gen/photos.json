@@ -126,5 +126,21 @@
  "deskDerek": {
   "w": 1024,
   "h": 1485
+ },
+ "fuelbarWide": {
+  "w": 1024,
+  "h": 682
+ },
+ "freeweightsWide": {
+  "w": 1024,
+  "h": 683
+ },
+ "gymfloorWide": {
+  "w": 1024,
+  "h": 662
+ },
+ "frontdeskWide": {
+  "w": 1024,
+  "h": 695
  }
 }
